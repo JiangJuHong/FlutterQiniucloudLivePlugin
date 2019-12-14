@@ -34,8 +34,10 @@ android {
 dependencies {
     api fileTree(dir: 'libs', include: ['*.jar'])
     // happy-dns 依赖
-    api 'com.qiniu:happy-dns:0.2.8'
+    api 'com.qiniu:happy-dns:0.2.13'
     api 'com.android.support:appcompat-v7:28.0.0'
     // 七牛云推流/播放 SDK
     api files('libs/pldroid-media-streaming-2.4.0.jar')
+    // json序列化
+    api 'com.alibaba:fastjson:1.2.55'
 }

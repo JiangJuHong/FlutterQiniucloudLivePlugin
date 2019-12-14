@@ -9,12 +9,12 @@ class QiniucloudPushViewController {
 
   final MethodChannel _channel;
 
-  /// 初始化推流
-  Future<void> init({
-    @required String url, // 推流URL，格式为: rtmp://xxxx
-  }) async {
-    return _channel.invokeMethod('init', {
-      "url": url,
-    });
-  }
+//  /// 初始化推流
+//  Future<void> init({
+//    @required String url, // 推流URL，格式为: rtmp://xxxx
+//  }) async {
+//    return _channel.invokeMethod('init', {
+//      "url": url,
+//    });
+//  }
 }

@@ -1,14 +1,19 @@
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_qiniucloud_live_plugin/controller/qiniucloud_push_view_controller.dart';
 
 /// 七牛云推流预览窗口
 class QiniucloudPushView extends StatefulWidget {
+  /// 推流URL，格式为: rtmp://xxxx
+  final String url;
+
   /// 创建事件
   final ValueChanged<QiniucloudPushViewController> onViewCreated;
 
-  const QiniucloudPushView({Key key, this.onViewCreated}) : super(key: key);
+  const QiniucloudPushView({Key key, this.onViewCreated, @required this.url})
+      : super(key: key);
 
   @override
   State<StatefulWidget> createState() => QiniucloudPushViewState();
@@ -20,15 +25,26 @@ class QiniucloudPushViewState extends State<QiniucloudPushView> {
 
   @override
   Widget build(BuildContext context) {
+    // 请求参数
+    Map<String, dynamic> params = {
+      "url": widget.url,
+    };
+    // 请求参数解码器
+    var paramsCodec = StandardMessageCodec();
+
     if (Platform.isAndroid) {
       return AndroidView(
         viewType: type,
+        creationParams: params,
         onPlatformViewCreated: _onPlatformViewCreated,
+        creationParamsCodec: paramsCodec,
       );
     } else if (Platform.isIOS) {
       return UiKitView(
         viewType: type,
+        creationParams: params,
         onPlatformViewCreated: _onPlatformViewCreated,
+        creationParamsCodec: paramsCodec,
       );
     } else {
       return Text("不支持的平台");
