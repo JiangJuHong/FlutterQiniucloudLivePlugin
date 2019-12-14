@@ -1,0 +1,2 @@
+# 七牛云直播云
+-keep class com.qiniu.pili.droid.streaming.** { *; }
