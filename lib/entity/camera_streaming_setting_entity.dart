@@ -42,7 +42,7 @@ class CameraStreamingSettingEntity {
     this.cameraFacingId: QiniucloudPushCameraTypeEnum.CAMERA_FACING_BACK,
     this.frontCameraPreviewMirror: false,
     this.faceBeauty,
-    this.frontCameraMirror: true,
+    this.frontCameraMirror: false,
     this.continuousFocusModeEnabled: true,
     this.focusMode: QiniucloudPushFocusModeEnum.FOCUS_MODE_CONTINUOUS_VIDEO,
     this.cameraPrvSizeRatio: QiniucloudPushPreviewSizeRatioEnum.RATIO_16_9,

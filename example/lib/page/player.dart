@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_qiniucloud_live_plugin/view/qiniucloud_player_view.dart';
 import 'package:flutter_qiniucloud_live_plugin/controller/qiniucloud_player_view_controller.dart';
+import 'package:flutter_qiniucloud_live_plugin/enums/qiniucloud_player_listener_type_enum.dart';
 
 /// 播放界面
 class PlayerPage extends StatefulWidget {
@@ -15,6 +18,18 @@ class PlayerPageState extends State<PlayerPage> {
 
   /// 描述信息
   String hint;
+
+  /// 状态
+  int status;
+
+  /// 错误信息
+  int error;
+
+  /// 视频宽度
+  int width = 0;
+
+  /// 视频高度
+  int height = 0;
 
   @override
   void initState() {
@@ -41,7 +56,105 @@ class PlayerPageState extends State<PlayerPage> {
   }
 
   /// 监听器
-  onListener(type, params) {}
+  onListener(type, params) {
+    // 错误
+    if (type == QiniucloudPlayerListenerTypeEnum.Error) {
+      this.setState(() => error = params);
+    }
+
+    // 状态改变
+    if (type == QiniucloudPlayerListenerTypeEnum.Info) {
+      Map<String,dynamic> paramsObj = jsonDecode(params);
+      this.setState(() => status = paramsObj["what"]);
+    }
+
+    // 大小改变
+    if (type == QiniucloudPlayerListenerTypeEnum.VideoSizeChanged) {
+      Map<String,dynamic> paramsObj = jsonDecode(params);
+      this.setState(() {
+        width = paramsObj["width"];
+        height = paramsObj["height"];
+      });
+    }
+  }
+
+  /// 获得状态文本
+  getStatusText() {
+    if (status == null) {
+      return "等待中";
+    }
+
+    switch (status) {
+      case 1:
+        return "未知消息";
+      case 3:
+        return "第一帧视频已成功渲染";
+      case 200:
+        return "连接成功";
+      case 340:
+        return "读取到 metadata 信息";
+      case 701:
+        return "开始缓冲";
+      case 702:
+        return "停止缓冲";
+      case 802:
+        return "硬解失败，自动切换软解";
+      case 901:
+        return "预加载完成";
+      case 8088:
+        return "loop 中的一次播放完成";
+      case 10001:
+        return "获取到视频的播放角度";
+      case 10002:
+        return "第一帧音频已成功播放";
+      case 10003:
+        return "获取视频的I帧间隔";
+      case 20001:
+        return "视频的码率统计结果";
+      case 20002:
+        return "视频的帧率统计结果";
+      case 20003:
+        return "音频的帧率统计结果";
+      case 20003:
+        return "音频的帧率统计结果";
+      case 10004:
+        return "视频帧的时间戳";
+      case 10005:
+        return "音频帧的时间戳";
+      case 1345:
+        return "离线缓存的部分播放完成";
+      case 565:
+        return "上一次 seekTo 操作尚未完成";
+      default:
+        return "未知状态";
+    }
+  }
+
+  /// 获得状态文本
+  getErrorText() {
+    switch (error) {
+      case -1:
+        return "未知错误";
+      case -2:
+        return "播放器打开失败";
+      case -3:
+        return "网络异常";
+      case -4:
+        return "拖动失败";
+      case -5:
+        return "预加载失败";
+      case -2003:
+        return "硬解失败";
+      case -2008:
+        return "播放器已被销毁，需要再次 setVideoURL 或 prepareAsync";
+      case -9527:
+        return "so 库版本不匹配，需要升级";
+      case -4410:
+        return "AudioTrack 初始化失败，可能无法播放音频";
+      default:
+        return "未知错误";
+    }
+  }
 
   /// 开始播放
   onStart() async {
@@ -92,7 +205,12 @@ class PlayerPageState extends State<PlayerPage> {
             height: MediaQuery.of(context).size.height / 2,
             child: Column(
               children: <Widget>[
+                Text(
+                  error != null ? "发生错误，错误信息为:${getErrorText()}" : "",
+                  style: TextStyle(color: Colors.red),
+                ),
                 Text(hint ?? ""),
+                Text("当前状态:${getStatusText()},视频高宽:$height,$width"),
                 Expanded(
                   child: ListView(
                     children: <Widget>[

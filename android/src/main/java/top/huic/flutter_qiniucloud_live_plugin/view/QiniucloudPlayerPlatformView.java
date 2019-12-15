@@ -17,6 +17,7 @@ import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.StandardMessageCodec;
 import io.flutter.plugin.platform.PlatformView;
 import io.flutter.plugin.platform.PlatformViewFactory;
+import top.huic.flutter_qiniucloud_live_plugin.listener.QiniucloudPlayerListener;
 import top.huic.flutter_qiniucloud_live_plugin.util.CommonUtil;
 import top.huic.flutter_qiniucloud_live_plugin.widget.MediaController;
 
@@ -136,9 +137,14 @@ public class QiniucloudPlayerPlatformView extends PlatformViewFactory implements
         // 初始化视图
         view = new PLVideoView(context);
         view.setMediaController(new MediaController(context));
-        TextView textView = new TextView(context);
-        textView.setText("内容加载中");
-        view.setBufferingIndicator(textView);
+
+        // 监听器
+        QiniucloudPlayerListener listener = new QiniucloudPlayerListener(context, methodChannel);
+        view.setOnPreparedListener(listener);
+        view.setOnInfoListener(listener);
+        view.setOnCompletionListener(listener);
+        view.setOnVideoSizeChangedListener(listener);
+        view.setOnErrorListener(listener);
     }
 
     /**

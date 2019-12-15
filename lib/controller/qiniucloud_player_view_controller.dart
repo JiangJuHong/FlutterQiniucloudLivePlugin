@@ -2,13 +2,9 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_qiniucloud_live_plugin/entity/face_beauty_setting_entity.dart';
-import 'package:flutter_qiniucloud_live_plugin/entity/watermark_setting_entity.dart';
 import 'package:flutter_qiniucloud_live_plugin/enums/qiniucloud_player_display_aspect_ratio_enum.dart';
-import 'package:flutter_qiniucloud_live_plugin/enums/qiniucloud_push_camera_type_enum.dart';
-import 'package:flutter_qiniucloud_live_plugin/enums/qiniucloud_push_listener_type_enum.dart';
+import 'package:flutter_qiniucloud_live_plugin/enums/qiniucloud_player_listener_type_enum.dart';
 import 'package:flutter_qiniucloud_live_plugin/view/qiniucloud_player_view.dart';
-import 'package:flutter_qiniucloud_live_plugin/view/qiniucloud_push_view.dart';
 
 /// 视图控制器
 class QiniucloudPlayerViewController {
@@ -108,14 +104,14 @@ class QiniucloudPlayerListener {
           String paramsStr = arguments['params'];
 
           // 封装回调类型和参数
-          QiniucloudPushListenerTypeEnum type;
+          QiniucloudPlayerListenerTypeEnum type;
           Object params;
 
           // 初始化类型
-          for (var item in QiniucloudPushListenerTypeEnum.values) {
+          for (var item in QiniucloudPlayerListenerTypeEnum.values) {
             if (item
                     .toString()
-                    .replaceFirst("QiniucloudPushListenerTypeEnum.", "") ==
+                    .replaceFirst("QiniucloudPlayerListenerTypeEnum.", "") ==
                 typeStr) {
               type = item;
               break;
@@ -152,4 +148,4 @@ class QiniucloudPlayerListener {
 
 /// 推流监听器值模型
 typedef QiniucloudPlayerListenerValue<P> = void Function(
-    QiniucloudPushListenerTypeEnum type, P params);
+    QiniucloudPlayerListenerTypeEnum type, P params);
