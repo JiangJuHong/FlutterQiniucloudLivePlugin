@@ -21,6 +21,7 @@ import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 
+import androidx.annotation.MainThread;
 import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
@@ -119,7 +120,7 @@ public class QiniucloudPushPlatformView extends PlatformViewFactory implements P
     }
 
     /**
-     * 初始化七牛云推流
+     * 初始化七牛云推流信息
      *
      * @param url           推流地址
      * @param methodChannel 方法通道
@@ -167,19 +168,6 @@ public class QiniucloudPushPlatformView extends PlatformViewFactory implements P
      * 开始推流
      */
     private void startStreaming(MethodCall call, final MethodChannel.Result result) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                final boolean execResult = manager.startStreaming();
-                // 切换到主线程
-                Handler mainHandler = new Handler(Looper.getMainLooper());
-                mainHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        result.success(execResult);
-                    }
-                });
-            }
-        }).start();
+        result.success(manager.startStreaming());
     }
 }

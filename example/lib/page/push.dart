@@ -68,6 +68,9 @@ class PushPageState extends State<PushPage> {
       case "OPEN_CAMERA_FAIL":
         print("StateChanged:摄像头打开失败");
         break;
+      case "AUDIO_RECORDING_FAIL":
+        print("StateChanged:麦克风打开失败");
+        break;
       case "DISCONNECTED":
         print("StateChanged:已经断开连接");
         break;
@@ -75,7 +78,7 @@ class PushPageState extends State<PushPage> {
         print("StateChanged:可开启闪光灯");
         break;
       default:
-        print("StateChanged:未绑定事件x");
+        print("StateChanged:未绑定事件:$status,$extra");
         break;
     }
   }
@@ -87,7 +90,7 @@ class PushPageState extends State<PushPage> {
         children: <Widget>[
           QiniucloudPushView(
             url:
-                "rtmp://pili-publish.tianshitaiyuan.com/zuqulive/1576329687316A?e=1576333287&token=v740N_w0pHblR7KZMSPHhfdqjxrHEv5e_yBaiq0e:2bpAwTnvJsH-S0AFveG6FVAguEc=",
+                "rtmp://pili-publish.tianshitaiyuan.com/zuqulive/1576377182468A?e=1576380782&token=v740N_w0pHblR7KZMSPHhfdqjxrHEv5e_yBaiq0e:SWWOtiXbZXZgrMiW3WaHLfJIkT4=",
             onViewCreated: onViewCreated,
           )
         ],

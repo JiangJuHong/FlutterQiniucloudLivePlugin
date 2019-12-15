@@ -1,5 +1,8 @@
 package top.huic.flutter_qiniucloud_live_plugin.util;
 
+import android.os.Handler;
+import android.os.Looper;
+
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 
@@ -7,6 +10,11 @@ import io.flutter.plugin.common.MethodChannel;
  * 工具类
  */
 public class CommonUtil {
+    /**
+     * 主线程处理器
+     */
+    private final static Handler MAIN_HANDLER = new Handler(Looper.getMainLooper());
+
     /**
      * 通用方法，获得参数值，如未找到参数，则直接中断
      *
@@ -21,5 +29,20 @@ public class CommonUtil {
             throw new RuntimeException("Cannot find parameter `" + param + "` or `" + param + "` is null!");
         }
         return par;
+    }
+
+    /**
+     * 运行主线程返回结果执行
+     *
+     * @param result 返回结果对象
+     * @param param  返回参数
+     */
+    public static void runMainThreadReturn(final MethodChannel.Result result, final Object param) {
+        MAIN_HANDLER.post(new Runnable() {
+            @Override
+            public void run() {
+                result.success(param);
+            }
+        });
     }
 }
