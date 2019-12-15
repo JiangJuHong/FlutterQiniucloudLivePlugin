@@ -223,7 +223,7 @@ class PushPageState extends State<PushPage> {
                   faceBeauty: faceBeautySettingEntity),
               streamingProfile: StreamingProfileEntity(
                 publishUrl:
-                    "rtmp://pili-publish.tianshitaiyuan.com/zuqulive/1576377182468A?e=1576380782&token=v740N_w0pHblR7KZMSPHhfdqjxrHEv5e_yBaiq0e:SWWOtiXbZXZgrMiW3WaHLfJIkT4=",
+                    "rtmp://pili-publish.tianshitaiyuan.com/zuqulive/1576400046230A?e=1581756846&token=v740N_w0pHblR7KZMSPHhfdqjxrHEv5e_yBaiq0e:nlza8l7AsBDNkp47AD09ItfZSKA=",
               ),
               onViewCreated: onViewCreated,
             ),
