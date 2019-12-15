@@ -6,6 +6,8 @@ import 'package:flutter_qiniucloud_live_plugin/view/qiniucloud_push_view.dart';
 import 'package:flutter_qiniucloud_live_plugin/controller/qiniucloud_push_view_controller.dart';
 import 'package:flutter_qiniucloud_live_plugin/enums/qiniucloud_push_listener_type_enum.dart';
 import 'package:flutter_qiniucloud_live_plugin/enums/qiniucloud_push_camera_type_enum.dart';
+import 'package:flutter_qiniucloud_live_plugin/entity/face_beauty_setting_entity.dart';
+import 'package:flutter_qiniucloud_live_plugin/entity/camera_streaming_setting_entity.dart';
 
 /// 推流界面
 class PushPage extends StatefulWidget {
@@ -22,6 +24,10 @@ class PushPageState extends State<PushPage> {
 
   /// 描述信息
   String info;
+
+  /// 美颜对象
+  FaceBeautySettingEntity faceBeautySettingEntity =
+      FaceBeautySettingEntity(beautyLevel: 0, redden: 0, whiten: 0);
 
   @override
   void initState() {
@@ -185,7 +191,7 @@ class PushPageState extends State<PushPage> {
   /// 暂停
   onPause() async {
     await controller.pause();
-    this.setState((){
+    this.setState(() {
       info = "已成功执行暂停";
       status = null;
     });
@@ -195,6 +201,13 @@ class PushPageState extends State<PushPage> {
   onDestroy() async {
     await controller.destroy();
     this.setState(() => info = "已成功执行销毁");
+  }
+
+  /// 更新美颜信息
+  onUpdateFaceBeautySetting() async {
+    await controller.updateFaceBeautySetting(faceBeautySettingEntity);
+    this.setState(() => info =
+        "更新美颜信息成功:${faceBeautySettingEntity.beautyLevel},${faceBeautySettingEntity.redden},${faceBeautySettingEntity.whiten}");
   }
 
   @override
@@ -207,6 +220,9 @@ class PushPageState extends State<PushPage> {
             child: QiniucloudPushView(
               url:
                   "rtmp://pili-publish.tianshitaiyuan.com/zuqulive/1576377182468A?e=1576380782&token=v740N_w0pHblR7KZMSPHhfdqjxrHEv5e_yBaiq0e:SWWOtiXbZXZgrMiW3WaHLfJIkT4=",
+              cameraStreamingSetting: CameraStreamingSettingEntity(
+                faceBeauty: faceBeautySettingEntity
+              ),
               onViewCreated: onViewCreated,
             ),
           ),
@@ -221,6 +237,67 @@ class PushPageState extends State<PushPage> {
                     children: <Widget>[
                       Wrap(
                         children: <Widget>[
+                          Row(
+                            children: <Widget>[
+                              Container(width: 10),
+                              Text("磨皮"),
+                              Expanded(
+                                child: new Slider(
+                                  value: faceBeautySettingEntity.beautyLevel,
+                                  max: 1,
+                                  min: 0,
+                                  activeColor: Colors.blue,
+                                  onChanged: (double val) {
+                                    this.setState(() {
+                                      this.faceBeautySettingEntity.beautyLevel =
+                                          val;
+                                    });
+                                    onUpdateFaceBeautySetting();
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: <Widget>[
+                              Container(width: 10),
+                              Text("红润"),
+                              Expanded(
+                                child: new Slider(
+                                  value: faceBeautySettingEntity.redden,
+                                  max: 1,
+                                  min: 0,
+                                  activeColor: Colors.blue,
+                                  onChanged: (double val) {
+                                    this.setState(() {
+                                      this.faceBeautySettingEntity.redden = val;
+                                    });
+                                    onUpdateFaceBeautySetting();
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: <Widget>[
+                              Container(width: 10),
+                              Text("美白"),
+                              Expanded(
+                                child: new Slider(
+                                  value: faceBeautySettingEntity.whiten,
+                                  max: 1,
+                                  min: 0,
+                                  activeColor: Colors.blue,
+                                  onChanged: (double val) {
+                                    this.setState(() {
+                                      this.faceBeautySettingEntity.whiten = val;
+                                    });
+                                    onUpdateFaceBeautySetting();
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
                           RaisedButton(
                             onPressed: this.status == null ? onResume : null,
                             child: Text("开始预览"),

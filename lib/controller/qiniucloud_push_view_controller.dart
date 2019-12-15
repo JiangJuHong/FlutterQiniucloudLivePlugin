@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_qiniucloud_live_plugin/entity/face_beauty_setting_entity.dart';
 import 'package:flutter_qiniucloud_live_plugin/entity/watermark_setting_entity.dart';
 import 'package:flutter_qiniucloud_live_plugin/enums/qiniucloud_push_camera_type_enum.dart';
 import 'package:flutter_qiniucloud_live_plugin/enums/qiniucloud_push_listener_type_enum.dart';
@@ -122,6 +123,11 @@ class QiniucloudPushViewController {
   /// 更新水印信息
   Future<void> updateWatermarkSetting(WatermarkSettingEntity data) async {
     return _channel.invokeMethod('updateWatermarkSetting', data.toJson());
+  }
+
+  /// 更新美颜信息
+  Future<void> updateFaceBeautySetting(FaceBeautySettingEntity data) async {
+    return _channel.invokeMethod('updateFaceBeautySetting', data.toJson());
   }
 }
 

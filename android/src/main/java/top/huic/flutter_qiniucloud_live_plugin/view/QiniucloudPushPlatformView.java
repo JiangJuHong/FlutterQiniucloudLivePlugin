@@ -12,6 +12,7 @@ import com.alibaba.fastjson.JSON;
 import com.qiniu.pili.droid.streaming.AVCodecType;
 import com.qiniu.pili.droid.streaming.CameraStreamingSetting;
 import com.qiniu.pili.droid.streaming.MediaStreamingManager;
+import com.qiniu.pili.droid.streaming.MicrophoneStreamingSetting;
 import com.qiniu.pili.droid.streaming.StreamStatusCallback;
 import com.qiniu.pili.droid.streaming.StreamingProfile;
 import com.qiniu.pili.droid.streaming.StreamingState;
@@ -19,6 +20,7 @@ import com.qiniu.pili.droid.streaming.StreamingStateChangedListener;
 import com.qiniu.pili.droid.streaming.WatermarkSetting;
 
 import java.net.URISyntaxException;
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -95,7 +97,7 @@ public class QiniucloudPushPlatformView extends PlatformViewFactory implements P
         MethodChannel methodChannel = new MethodChannel(messenger, SIGN + "_" + viewId);
         methodChannel.setMethodCallHandler(view);
         // 初始化
-        view.init(params.get("url").toString(), methodChannel);
+        view.init(params, methodChannel);
         return view;
     }
 
@@ -157,6 +159,9 @@ public class QiniucloudPushPlatformView extends PlatformViewFactory implements P
             case "updateWatermarkSetting":
                 this.updateWatermarkSetting(call, result);
                 break;
+            case "updateFaceBeautySetting":
+                this.updateFaceBeautySetting(call, result);
+                break;
             default:
                 result.notImplemented();
         }
@@ -165,10 +170,17 @@ public class QiniucloudPushPlatformView extends PlatformViewFactory implements P
     /**
      * 初始化七牛云推流信息
      *
-     * @param url           推流地址
+     * @param params        参数
      * @param methodChannel 方法通道
      */
-    private void init(String url, MethodChannel methodChannel) {
+    private void init(Map<String, Object> params, MethodChannel methodChannel) {
+        // 推流地址
+        String url = (String) params.get("url");
+        // 相机参数
+        String cameraSettingStr = (String) params.get("cameraStreamingSetting");
+        Map<String, Object> cameraSettingMap = JSON.parseObject(cameraSettingStr);
+
+        Log.i(TAG, "init: 相机参数:" + cameraSettingStr);
         Log.d(TAG, "init push,address:`" + url + "`");
         try {
             // 初始化视图
@@ -183,15 +195,27 @@ public class QiniucloudPushPlatformView extends PlatformViewFactory implements P
                     .setPublishUrl(url);
 
             // 预览设置
-            CameraStreamingSetting cameraStreamingSetting = new CameraStreamingSetting();
-            cameraStreamingSetting.setCameraId(Camera.CameraInfo.CAMERA_FACING_BACK)
-                    .setContinuousFocusModeEnabled(true)
-                    .setCameraPrvSizeLevel(CameraStreamingSetting.PREVIEW_SIZE_LEVEL.MEDIUM)
-                    .setCameraPrvSizeRatio(CameraStreamingSetting.PREVIEW_SIZE_RATIO.RATIO_16_9);
+            CameraStreamingSetting cameraStreamingSetting = JSON.parseObject(cameraSettingStr, CameraStreamingSetting.class);
+            if (cameraStreamingSetting == null) {
+                Log.e(TAG, "init: 相机信息初始化失败!");
+            } else {
+                // 美颜过滤(设置美颜后，启用美颜过滤，没设置美颜，则自动过滤空)
+                cameraStreamingSetting.setVideoFilter(CameraStreamingSetting.VIDEO_FILTER_TYPE.VIDEO_FILTER_BEAUTY);
+
+                // 美颜设置
+                Map faceBeauty = (Map) cameraSettingMap.get("faceBeauty");
+                if (faceBeauty != null) {
+                    cameraStreamingSetting.setFaceBeautySetting(new CameraStreamingSetting.FaceBeautySetting(Float.valueOf(faceBeauty.get("beautyLevel").toString()), Float.valueOf(faceBeauty.get("whiten").toString()), Float.valueOf(faceBeauty.get("redden").toString())));
+                }
+            }
+
+            // 麦克风设置
+            MicrophoneStreamingSetting microphoneStreamingSetting = new MicrophoneStreamingSetting();
+            microphoneStreamingSetting.setBluetoothSCOEnabled(true);
 
             // 流管理实现
             manager = new MediaStreamingManager(context, view, AVCodecType.SW_VIDEO_WITH_SW_AUDIO_CODEC);  // soft codec
-            manager.prepare(cameraStreamingSetting, mProfile);
+            manager.prepare(cameraStreamingSetting,microphoneStreamingSetting, mProfile);
 
             // 绑定监听器
             QiniucloudPushListener listener = new QiniucloudPushListener(context, methodChannel);
@@ -329,6 +353,18 @@ public class QiniucloudPushPlatformView extends PlatformViewFactory implements P
         watermarkSetting.setLocation(WatermarkSetting.WATERMARK_LOCATION.valueOf(CommonUtil.getParam(call, result, "location").toString()));
         watermarkSetting.setAlpha(Integer.valueOf(CommonUtil.getParam(call, result, "alpha").toString()));
         manager.updateWatermarkSetting(watermarkSetting);
+        result.success(null);
+    }
+
+    /**
+     * 更新美颜设置
+     */
+    private void updateFaceBeautySetting(MethodCall call, final MethodChannel.Result result) {
+        double beautyLevel = CommonUtil.getParam(call, result, "beautyLevel");
+        double redden = CommonUtil.getParam(call, result, "redden");
+        double whiten = CommonUtil.getParam(call, result, "whiten");
+        manager.setVideoFilterType(CameraStreamingSetting.VIDEO_FILTER_TYPE.VIDEO_FILTER_BEAUTY);
+        manager.updateFaceBeautySetting(new CameraStreamingSetting.FaceBeautySetting((float) beautyLevel, (float) whiten, (float) redden));
         result.success(null);
     }
 }
