@@ -1,6 +1,9 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_qiniucloud_live_plugin/entity/watermark_setting_entity.dart';
+import 'package:flutter_qiniucloud_live_plugin/enums/qiniucloud_push_camera_type_enum.dart';
 import 'package:flutter_qiniucloud_live_plugin/enums/qiniucloud_push_listener_type_enum.dart';
 import 'package:flutter_qiniucloud_live_plugin/view/qiniucloud_push_view.dart';
 
@@ -30,9 +33,95 @@ class QiniucloudPushViewController {
     listener.removeListener(func);
   }
 
+  /// 开启预览
+  Future<bool> resume() async {
+    return _channel.invokeMethod('resume');
+  }
+
+  /// 退出 MediaStreamingManager，该操作会主动断开当前的流链接，并关闭 Camera 和释放相应的资源。
+  Future<void> pause() async {
+    return _channel.invokeMethod('pause');
+  }
+
+  /// 释放不紧要资源。
+  Future<void> destroy() async {
+    return _channel.invokeMethod('destroy');
+  }
+
   /// 开始推流
   Future<bool> startStreaming() async {
     return _channel.invokeMethod('startStreaming');
+  }
+
+  /// 停止推流
+  Future<bool> stopStreaming() async {
+    return _channel.invokeMethod('stopStreaming');
+  }
+
+  /// 是否支持缩放
+  Future<bool> isZoomSupported() async {
+    return _channel.invokeMethod('isZoomSupported');
+  }
+
+  /// 设置缩放比例
+  Future<void> setZoomValue({
+    @required int value,
+  }) async {
+    return _channel.invokeMethod('setZoomValue', {"value": value});
+  }
+
+  /// 获得最大缩放比例
+  Future<int> getMaxZoom() async {
+    return _channel.invokeMethod('getMaxZoom');
+  }
+
+  /// 获得当前缩放比例
+  Future<int> getZoom() async {
+    return _channel.invokeMethod('getZoom');
+  }
+
+  /// 开启闪光灯
+  Future<bool> turnLightOn() async {
+    return _channel.invokeMethod('turnLightOn');
+  }
+
+  /// 关闭闪光灯
+  Future<bool> turnLightOff() async {
+    return _channel.invokeMethod('turnLightOff');
+  }
+
+  /// 切换摄像头
+  Future<bool> switchCamera({
+    QiniucloudPushCameraTypeEnum target, // 目标摄像头，不填代表反向切换,
+  }) async {
+    return _channel.invokeMethod('switchCamera', {
+      "target": target == null
+          ? null
+          : target.toString().replaceAll("QiniucloudPushCameraTypeEnum.", ""),
+    });
+  }
+
+  /// 静音
+  Future<bool> mute({
+    @required bool mute,
+  }) async {
+    return _channel.invokeMethod('mute', {
+      "mute": mute,
+    });
+  }
+
+  /// 关闭/启用日志
+  Future<bool> setNativeLoggingEnabled({
+    @required bool enabled,
+  }) async {
+    return _channel.invokeMethod('setNativeLoggingEnabled', {
+      "enabled": enabled,
+    });
+  }
+
+  /// 更新水印信息
+  Future<void> updateWatermarkSetting(WatermarkSettingEntity data) async {
+    return _channel.invokeMethod('updateWatermarkSetting', data.toJson());
   }
 }
 

@@ -16,6 +16,7 @@ import com.qiniu.pili.droid.streaming.StreamStatusCallback;
 import com.qiniu.pili.droid.streaming.StreamingProfile;
 import com.qiniu.pili.droid.streaming.StreamingState;
 import com.qiniu.pili.droid.streaming.StreamingStateChangedListener;
+import com.qiniu.pili.droid.streaming.WatermarkSetting;
 
 import java.net.URISyntaxException;
 import java.util.HashMap;
@@ -111,8 +112,50 @@ public class QiniucloudPushPlatformView extends PlatformViewFactory implements P
     public void onMethodCall(MethodCall call, MethodChannel.Result result) {
         Log.d(TAG, "调用方法: " + call.method);
         switch (call.method) {
+            case "resume":
+                this.resume(call, result);
+                break;
+            case "pause":
+                this.pause(call, result);
+                break;
+            case "destroy":
+                this.destroy(call, result);
+                break;
             case "startStreaming":
                 this.startStreaming(call, result);
+                break;
+            case "stopStreaming":
+                this.stopStreaming(call, result);
+                break;
+            case "isZoomSupported":
+                this.isZoomSupported(call, result);
+                break;
+            case "setZoomValue":
+                this.setZoomValue(call, result);
+                break;
+            case "getZoom":
+                this.getZoom(call, result);
+                break;
+            case "getMaxZoom":
+                this.getMaxZoom(call, result);
+                break;
+            case "turnLightOn":
+                this.turnLightOn(call, result);
+                break;
+            case "turnLightOff":
+                this.turnLightOff(call, result);
+                break;
+            case "switchCamera":
+                this.switchCamera(call, result);
+                break;
+            case "mute":
+                this.mute(call, result);
+                break;
+            case "setNativeLoggingEnabled":
+                this.setNativeLoggingEnabled(call, result);
+                break;
+            case "updateWatermarkSetting":
+                this.updateWatermarkSetting(call, result);
                 break;
             default:
                 result.notImplemented();
@@ -140,15 +183,15 @@ public class QiniucloudPushPlatformView extends PlatformViewFactory implements P
                     .setPublishUrl(url);
 
             // 预览设置
-            CameraStreamingSetting camerasetting = new CameraStreamingSetting();
-            camerasetting.setCameraId(Camera.CameraInfo.CAMERA_FACING_BACK)
+            CameraStreamingSetting cameraStreamingSetting = new CameraStreamingSetting();
+            cameraStreamingSetting.setCameraId(Camera.CameraInfo.CAMERA_FACING_BACK)
                     .setContinuousFocusModeEnabled(true)
                     .setCameraPrvSizeLevel(CameraStreamingSetting.PREVIEW_SIZE_LEVEL.MEDIUM)
                     .setCameraPrvSizeRatio(CameraStreamingSetting.PREVIEW_SIZE_RATIO.RATIO_16_9);
 
             // 流管理实现
             manager = new MediaStreamingManager(context, view, AVCodecType.SW_VIDEO_WITH_SW_AUDIO_CODEC);  // soft codec
-            manager.prepare(camerasetting, mProfile);
+            manager.prepare(cameraStreamingSetting, mProfile);
 
             // 绑定监听器
             QiniucloudPushListener listener = new QiniucloudPushListener(context, methodChannel);
@@ -156,12 +199,32 @@ public class QiniucloudPushPlatformView extends PlatformViewFactory implements P
             manager.setStreamingSessionListener(listener);
             manager.setStreamStatusCallback(listener);
             manager.setAudioSourceCallback(listener);
-
-            // 开启预览
-            manager.resume();
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * 开启摄像头预览
+     */
+    private void resume(MethodCall call, final MethodChannel.Result result) {
+        result.success(manager.resume());
+    }
+
+    /**
+     * 退出 MediaStreamingManager，该操作会主动断开当前的流链接，并关闭 Camera 和释放相应的资源。
+     */
+    private void pause(MethodCall call, final MethodChannel.Result result) {
+        manager.pause();
+        result.success(null);
+    }
+
+    /**
+     * 释放不紧要资源。
+     */
+    private void destroy(MethodCall call, final MethodChannel.Result result) {
+        manager.destroy();
+        result.success(null);
     }
 
     /**
@@ -169,5 +232,103 @@ public class QiniucloudPushPlatformView extends PlatformViewFactory implements P
      */
     private void startStreaming(MethodCall call, final MethodChannel.Result result) {
         result.success(manager.startStreaming());
+    }
+
+    /**
+     * 停止推流
+     */
+    private void stopStreaming(MethodCall call, final MethodChannel.Result result) {
+        result.success(manager.stopStreaming());
+    }
+
+    /**
+     * 查询是否支持缩放
+     */
+    private void isZoomSupported(MethodCall call, final MethodChannel.Result result) {
+        result.success(manager.isZoomSupported());
+    }
+
+    /**
+     * 设置缩放比例
+     */
+    private void setZoomValue(MethodCall call, final MethodChannel.Result result) {
+        int value = CommonUtil.getParam(call, result, "value");
+        manager.setZoomValue(value);
+        result.success(null);
+    }
+
+    /**
+     * 获得最大缩放比例
+     */
+    private void getMaxZoom(MethodCall call, final MethodChannel.Result result) {
+        result.success(manager.getMaxZoom());
+    }
+
+    /**
+     * 获得缩放比例
+     */
+    private void getZoom(MethodCall call, final MethodChannel.Result result) {
+        result.success(manager.getZoom());
+    }
+
+    /**
+     * 开启闪光灯
+     */
+    private void turnLightOn(MethodCall call, final MethodChannel.Result result) {
+        result.success(manager.turnLightOn());
+    }
+
+    /**
+     * 关闭闪光灯
+     */
+    private void turnLightOff(MethodCall call, final MethodChannel.Result result) {
+        result.success(manager.turnLightOff());
+    }
+
+    /**
+     * 切换摄像头
+     */
+    private void switchCamera(MethodCall call, final MethodChannel.Result result) {
+        // 指定摄像头
+        String target = call.argument("target");
+        CameraStreamingSetting.CAMERA_FACING_ID id = target == null ? null : CameraStreamingSetting.CAMERA_FACING_ID.valueOf(target);
+        boolean executeResult;
+        if (id == null) {
+            executeResult = manager.switchCamera();
+        } else {
+            executeResult = manager.switchCamera(id);
+        }
+        result.success(executeResult);
+    }
+
+    /**
+     * 切换静音
+     */
+    private void mute(MethodCall call, final MethodChannel.Result result) {
+        boolean mute = CommonUtil.getParam(call, result, "mute");
+        manager.mute(mute);
+        result.success(null);
+    }
+
+    /**
+     * 启用/关闭日志
+     */
+    private void setNativeLoggingEnabled(MethodCall call, final MethodChannel.Result result) {
+        boolean enabled = CommonUtil.getParam(call, result, "enabled");
+        manager.setNativeLoggingEnabled(enabled);
+        result.success(null);
+    }
+
+    /**
+     * 更新动态水印
+     */
+    private void updateWatermarkSetting(MethodCall call, final MethodChannel.Result result) {
+        WatermarkSetting watermarkSetting = new WatermarkSetting(context);
+        watermarkSetting.setResourcePath(CommonUtil.getParam(call, result, "resourcePath").toString());
+        watermarkSetting.setSize(WatermarkSetting.WATERMARK_SIZE.valueOf(CommonUtil.getParam(call, result, "size").toString()));
+        watermarkSetting.setLocation(WatermarkSetting.WATERMARK_LOCATION.valueOf(CommonUtil.getParam(call, result, "location").toString()));
+        watermarkSetting.setAlpha(Integer.valueOf(CommonUtil.getParam(call, result, "alpha").toString()));
+        manager.updateWatermarkSetting(watermarkSetting);
+        result.success(null);
     }
 }
