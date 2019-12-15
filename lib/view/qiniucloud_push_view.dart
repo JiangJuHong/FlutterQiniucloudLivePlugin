@@ -5,11 +5,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_qiniucloud_live_plugin/controller/qiniucloud_push_view_controller.dart';
 import 'package:flutter_qiniucloud_live_plugin/entity/camera_streaming_setting_entity.dart';
+import 'package:flutter_qiniucloud_live_plugin/entity/streaming_profile_entity.dart';
 
 /// 七牛云推流预览窗口
 class QiniucloudPushView extends StatefulWidget {
-  /// 推流URL，格式为: rtmp://xxxx
-  final String url;
+  /// 系统参数
+  final StreamingProfileEntity streamingProfile;
 
   /// 相机设置
   final CameraStreamingSettingEntity cameraStreamingSetting;
@@ -20,8 +21,8 @@ class QiniucloudPushView extends StatefulWidget {
   const QiniucloudPushView({
     Key key,
     this.onViewCreated,
-    @required this.url,
     this.cameraStreamingSetting,
+    @required this.streamingProfile,
   }) : super(key: key);
 
   @override
@@ -36,7 +37,7 @@ class QiniucloudPushViewState extends State<QiniucloudPushView> {
   Widget build(BuildContext context) {
     // 请求参数
     Map<String, dynamic> params = {
-      "url": widget.url,
+      "streamingProfile": jsonEncode(widget.streamingProfile),
       "cameraStreamingSetting": widget.cameraStreamingSetting != null
           ? jsonEncode(widget.cameraStreamingSetting)
           : null,

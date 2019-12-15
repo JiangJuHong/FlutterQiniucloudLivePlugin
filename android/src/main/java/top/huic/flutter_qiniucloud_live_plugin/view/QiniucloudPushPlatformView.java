@@ -9,6 +9,12 @@ import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.alibaba.fastjson.JSON;
+import com.qiniu.android.dns.DnsManager;
+import com.qiniu.android.dns.IResolver;
+import com.qiniu.android.dns.NetworkInfo;
+import com.qiniu.android.dns.http.DnspodFree;
+import com.qiniu.android.dns.local.AndroidDnsServer;
+import com.qiniu.android.dns.local.Resolver;
 import com.qiniu.pili.droid.streaming.AVCodecType;
 import com.qiniu.pili.droid.streaming.CameraStreamingSetting;
 import com.qiniu.pili.droid.streaming.MediaStreamingManager;
@@ -19,6 +25,8 @@ import com.qiniu.pili.droid.streaming.StreamingState;
 import com.qiniu.pili.droid.streaming.StreamingStateChangedListener;
 import com.qiniu.pili.droid.streaming.WatermarkSetting;
 
+import java.io.IOException;
+import java.net.InetAddress;
 import java.net.URISyntaxException;
 import java.text.DecimalFormat;
 import java.util.HashMap;
@@ -167,6 +175,22 @@ public class QiniucloudPushPlatformView extends PlatformViewFactory implements P
         }
     }
 
+
+    /**
+     * 获得DNS管理器
+     */
+    private DnsManager getDnsManager() {
+        IResolver r0 = new DnspodFree();
+        IResolver r1 = AndroidDnsServer.defaultResolver();
+        IResolver r2 = null;
+        try {
+            r2 = new Resolver(InetAddress.getByName("119.29.29.29"));
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        return new DnsManager(NetworkInfo.normal, new IResolver[]{r0, r1, r2});
+    }
+
     /**
      * 初始化七牛云推流信息
      *
@@ -174,58 +198,54 @@ public class QiniucloudPushPlatformView extends PlatformViewFactory implements P
      * @param methodChannel 方法通道
      */
     private void init(Map<String, Object> params, MethodChannel methodChannel) {
-        // 推流地址
-        String url = (String) params.get("url");
+        // 系统参数
+        String streamingProfileStr = (String) params.get("streamingProfile");
         // 相机参数
         String cameraSettingStr = (String) params.get("cameraStreamingSetting");
         Map<String, Object> cameraSettingMap = JSON.parseObject(cameraSettingStr);
 
         Log.i(TAG, "init: 相机参数:" + cameraSettingStr);
-        Log.d(TAG, "init push,address:`" + url + "`");
-        try {
-            // 初始化视图
-            view = new CameraPreviewFrameView(context);
+        // 初始化视图
+        view = new CameraPreviewFrameView(context);
 
-            // 主要参数设置
-            StreamingProfile mProfile = new StreamingProfile();
-            mProfile.setVideoQuality(StreamingProfile.VIDEO_QUALITY_HIGH1)
-                    .setAudioQuality(StreamingProfile.AUDIO_QUALITY_MEDIUM2)
-                    .setEncodingSizeLevel(StreamingProfile.VIDEO_ENCODING_HEIGHT_480)
-                    .setEncoderRCMode(StreamingProfile.EncoderRCModes.QUALITY_PRIORITY)
-                    .setPublishUrl(url);
-
-            // 预览设置
-            CameraStreamingSetting cameraStreamingSetting = JSON.parseObject(cameraSettingStr, CameraStreamingSetting.class);
-            if (cameraStreamingSetting == null) {
-                Log.e(TAG, "init: 相机信息初始化失败!");
-            } else {
-                // 美颜过滤(设置美颜后，启用美颜过滤，没设置美颜，则自动过滤空)
-                cameraStreamingSetting.setVideoFilter(CameraStreamingSetting.VIDEO_FILTER_TYPE.VIDEO_FILTER_BEAUTY);
-
-                // 美颜设置
-                Map faceBeauty = (Map) cameraSettingMap.get("faceBeauty");
-                if (faceBeauty != null) {
-                    cameraStreamingSetting.setFaceBeautySetting(new CameraStreamingSetting.FaceBeautySetting(Float.valueOf(faceBeauty.get("beautyLevel").toString()), Float.valueOf(faceBeauty.get("whiten").toString()), Float.valueOf(faceBeauty.get("redden").toString())));
-                }
-            }
-
-            // 麦克风设置
-            MicrophoneStreamingSetting microphoneStreamingSetting = new MicrophoneStreamingSetting();
-            microphoneStreamingSetting.setBluetoothSCOEnabled(true);
-
-            // 流管理实现
-            manager = new MediaStreamingManager(context, view, AVCodecType.SW_VIDEO_WITH_SW_AUDIO_CODEC);  // soft codec
-            manager.prepare(cameraStreamingSetting,microphoneStreamingSetting, mProfile);
-
-            // 绑定监听器
-            QiniucloudPushListener listener = new QiniucloudPushListener(context, methodChannel);
-            manager.setStreamingStateListener(listener);
-            manager.setStreamingSessionListener(listener);
-            manager.setStreamStatusCallback(listener);
-            manager.setAudioSourceCallback(listener);
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
+        // 主要参数设置
+        StreamingProfile mProfile = JSON.parseObject(streamingProfileStr, StreamingProfile.class);
+        if (mProfile == null) {
+            Log.e(TAG, "init: 系统参数初始化失败!");
+        } else {
+            // 缺省参数设置
+            mProfile.setDnsManager(this.getDnsManager());
         }
+
+        // 预览设置
+        CameraStreamingSetting cameraStreamingSetting = JSON.parseObject(cameraSettingStr, CameraStreamingSetting.class);
+        if (cameraStreamingSetting == null) {
+            Log.e(TAG, "init: 相机信息初始化失败!");
+        } else {
+            // 美颜过滤(设置美颜后，启用美颜过滤，没设置美颜，则自动过滤空)
+            cameraStreamingSetting.setVideoFilter(CameraStreamingSetting.VIDEO_FILTER_TYPE.VIDEO_FILTER_BEAUTY);
+
+            // 美颜设置
+            Map faceBeauty = (Map) cameraSettingMap.get("faceBeauty");
+            if (faceBeauty != null) {
+                cameraStreamingSetting.setFaceBeautySetting(new CameraStreamingSetting.FaceBeautySetting(Float.valueOf(faceBeauty.get("beautyLevel").toString()), Float.valueOf(faceBeauty.get("whiten").toString()), Float.valueOf(faceBeauty.get("redden").toString())));
+            }
+        }
+
+        // 麦克风设置
+        MicrophoneStreamingSetting microphoneStreamingSetting = new MicrophoneStreamingSetting();
+        microphoneStreamingSetting.setBluetoothSCOEnabled(true);
+
+        // 流管理实现
+        manager = new MediaStreamingManager(context, view, AVCodecType.SW_VIDEO_WITH_SW_AUDIO_CODEC);  // soft codec
+        manager.prepare(cameraStreamingSetting, microphoneStreamingSetting, mProfile);
+
+        // 绑定监听器
+        QiniucloudPushListener listener = new QiniucloudPushListener(context, methodChannel);
+        manager.setStreamingStateListener(listener);
+        manager.setStreamingSessionListener(listener);
+        manager.setStreamStatusCallback(listener);
+        manager.setAudioSourceCallback(listener);
     }
 
     /**

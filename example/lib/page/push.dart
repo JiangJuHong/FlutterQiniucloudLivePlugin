@@ -8,6 +8,7 @@ import 'package:flutter_qiniucloud_live_plugin/enums/qiniucloud_push_listener_ty
 import 'package:flutter_qiniucloud_live_plugin/enums/qiniucloud_push_camera_type_enum.dart';
 import 'package:flutter_qiniucloud_live_plugin/entity/face_beauty_setting_entity.dart';
 import 'package:flutter_qiniucloud_live_plugin/entity/camera_streaming_setting_entity.dart';
+import 'package:flutter_qiniucloud_live_plugin/entity/streaming_profile_entity.dart';
 
 /// 推流界面
 class PushPage extends StatefulWidget {
@@ -218,10 +219,11 @@ class PushPageState extends State<PushPage> {
           Container(
             height: MediaQuery.of(context).size.height / 2,
             child: QiniucloudPushView(
-              url:
-                  "rtmp://pili-publish.tianshitaiyuan.com/zuqulive/1576377182468A?e=1576380782&token=v740N_w0pHblR7KZMSPHhfdqjxrHEv5e_yBaiq0e:SWWOtiXbZXZgrMiW3WaHLfJIkT4=",
               cameraStreamingSetting: CameraStreamingSettingEntity(
-                faceBeauty: faceBeautySettingEntity
+                  faceBeauty: faceBeautySettingEntity),
+              streamingProfile: StreamingProfileEntity(
+                publishUrl:
+                    "rtmp://pili-publish.tianshitaiyuan.com/zuqulive/1576377182468A?e=1576380782&token=v740N_w0pHblR7KZMSPHhfdqjxrHEv5e_yBaiq0e:SWWOtiXbZXZgrMiW3WaHLfJIkT4=",
               ),
               onViewCreated: onViewCreated,
             ),
