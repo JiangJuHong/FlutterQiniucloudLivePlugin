@@ -1,12 +1,8 @@
 package top.huic.flutter_qiniucloud_live_plugin.view;
 
 import android.content.Context;
-import android.hardware.Camera;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 import android.view.View;
-import android.widget.RelativeLayout;
 
 import com.alibaba.fastjson.JSON;
 import com.qiniu.android.dns.DnsManager;
@@ -19,20 +15,13 @@ import com.qiniu.pili.droid.streaming.AVCodecType;
 import com.qiniu.pili.droid.streaming.CameraStreamingSetting;
 import com.qiniu.pili.droid.streaming.MediaStreamingManager;
 import com.qiniu.pili.droid.streaming.MicrophoneStreamingSetting;
-import com.qiniu.pili.droid.streaming.StreamStatusCallback;
 import com.qiniu.pili.droid.streaming.StreamingProfile;
-import com.qiniu.pili.droid.streaming.StreamingState;
-import com.qiniu.pili.droid.streaming.StreamingStateChangedListener;
 import com.qiniu.pili.droid.streaming.WatermarkSetting;
 
 import java.io.IOException;
 import java.net.InetAddress;
-import java.net.URISyntaxException;
-import java.text.DecimalFormat;
-import java.util.HashMap;
 import java.util.Map;
 
-import androidx.annotation.MainThread;
 import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
@@ -40,11 +29,11 @@ import io.flutter.plugin.common.StandardMessageCodec;
 import io.flutter.plugin.platform.PlatformView;
 import io.flutter.plugin.platform.PlatformViewFactory;
 import top.huic.flutter_qiniucloud_live_plugin.listener.QiniucloudPushListener;
-import top.huic.flutter_qiniucloud_live_plugin.ui.CameraPreviewFrameView;
+import top.huic.flutter_qiniucloud_live_plugin.widget.CameraPreviewFrameView;
 import top.huic.flutter_qiniucloud_live_plugin.util.CommonUtil;
 
 /**
- * 七牛云推流视图(主播)
+ * 七牛云推流视图
  */
 public class QiniucloudPushPlatformView extends PlatformViewFactory implements PlatformView, MethodChannel.MethodCallHandler {
     /**
@@ -99,7 +88,6 @@ public class QiniucloudPushPlatformView extends PlatformViewFactory implements P
     @Override
     public PlatformView create(Context context, int viewId, Object args) {
         Map<String, Object> params = (Map<String, Object>) args;
-
         QiniucloudPushPlatformView view = new QiniucloudPushPlatformView(context);
         // 绑定方法监听器
         MethodChannel methodChannel = new MethodChannel(messenger, SIGN + "_" + viewId);
@@ -203,8 +191,6 @@ public class QiniucloudPushPlatformView extends PlatformViewFactory implements P
         // 相机参数
         String cameraSettingStr = (String) params.get("cameraStreamingSetting");
         Map<String, Object> cameraSettingMap = JSON.parseObject(cameraSettingStr);
-
-        Log.i(TAG, "init: 相机参数:" + cameraSettingStr);
         // 初始化视图
         view = new CameraPreviewFrameView(context);
 

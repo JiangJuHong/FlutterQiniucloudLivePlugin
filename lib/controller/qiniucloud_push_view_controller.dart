@@ -19,7 +19,7 @@ class QiniucloudPushViewController {
   QiniucloudPushListener listener;
 
   /// 添加消息监听
-  void addListener(QinniucloudPushListenerValue func) {
+  void addListener(QiniucloudPushListenerValue func) {
     if (listener == null) {
       listener = QiniucloudPushListener(_channel);
     }
@@ -27,7 +27,7 @@ class QiniucloudPushViewController {
   }
 
   /// 移除消息监听
-  void removeListener(QinniucloudPushListenerValue func) {
+  void removeListener(QiniucloudPushListenerValue func) {
     if (listener == null) {
       listener = QiniucloudPushListener(_channel);
     }
@@ -134,7 +134,7 @@ class QiniucloudPushViewController {
 /// 七牛云推流监听器
 class QiniucloudPushListener {
   /// 监听器列表
-  static Set<QinniucloudPushListenerValue> listeners = Set();
+  static Set<QiniucloudPushListenerValue> listeners = Set();
 
   QiniucloudPushListener(MethodChannel channel) {
     // 绑定监听器
@@ -181,16 +181,16 @@ class QiniucloudPushListener {
   }
 
   /// 添加消息监听
-  void addListener(QinniucloudPushListenerValue func) {
+  void addListener(QiniucloudPushListenerValue func) {
     listeners.add(func);
   }
 
   /// 移除消息监听
-  void removeListener(QinniucloudPushListenerValue func) {
+  void removeListener(QiniucloudPushListenerValue func) {
     listeners.remove(func);
   }
 }
 
 /// 推流监听器值模型
-typedef QinniucloudPushListenerValue<P> = void Function(
+typedef QiniucloudPushListenerValue<P> = void Function(
     QiniucloudPushListenerTypeEnum type, P params);

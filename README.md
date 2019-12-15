@@ -35,6 +35,8 @@ Flutter 七牛云直播云插件
 暂不支持
 
 ## 使用
+使用Demo时请是主动更改推流地址和播放地址
 
 ### 组件列表
 QiniucloudPushView: 推流预览窗口，通过该窗口Controller实现推流以及回显功能
+QiniucloudPlayerView: 播放器组件，通过Controller控制播放等内容

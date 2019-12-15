@@ -1,4 +1,4 @@
-package top.huic.flutter_qiniucloud_live_plugin.ui;
+package top.huic.flutter_qiniucloud_live_plugin.widget;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;

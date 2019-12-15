@@ -14,6 +14,7 @@ import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
 import io.flutter.plugin.common.PluginRegistry.Registrar;
 import io.flutter.plugin.platform.PlatformViewRegistry;
+import top.huic.flutter_qiniucloud_live_plugin.view.QiniucloudPlayerPlatformView;
 import top.huic.flutter_qiniucloud_live_plugin.view.QiniucloudPushPlatformView;
 
 /**
@@ -39,6 +40,7 @@ public class FlutterQiniucloudLivePlugin implements FlutterPlugin, MethodCallHan
 
         // 注册View
         registry.registerViewFactory(QiniucloudPushPlatformView.SIGN, new QiniucloudPushPlatformView(context, messenger));
+        registry.registerViewFactory(QiniucloudPlayerPlatformView.SIGN, new QiniucloudPlayerPlatformView(context, messenger));
     }
 
     @Override
