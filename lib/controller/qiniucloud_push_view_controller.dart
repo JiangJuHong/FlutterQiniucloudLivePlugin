@@ -129,6 +129,24 @@ class QiniucloudPushViewController {
   Future<void> updateFaceBeautySetting(FaceBeautySettingEntity data) async {
     return _channel.invokeMethod('updateFaceBeautySetting', data.toJson());
   }
+
+  /// 改变预览镜像
+  Future<bool> setPreviewMirror({
+    @required bool mirror,
+  }) async {
+    return _channel.invokeMethod('setPreviewMirror', {
+      "mirror": mirror,
+    });
+  }
+
+  /// 改变推流镜像
+  Future<bool> setEncodingMirror({
+    @required bool mirror,
+  }) async {
+    return _channel.invokeMethod('setEncodingMirror', {
+      "mirror": mirror,
+    });
+  }
 }
 
 /// 七牛云推流监听器

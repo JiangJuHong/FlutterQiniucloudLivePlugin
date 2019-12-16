@@ -158,6 +158,12 @@ public class QiniucloudPushPlatformView extends PlatformViewFactory implements P
             case "updateFaceBeautySetting":
                 this.updateFaceBeautySetting(call, result);
                 break;
+            case "setPreviewMirror":
+                this.setPreviewMirror(call, result);
+                break;
+            case "setEncodingMirror":
+                this.setEncodingMirror(call, result);
+                break;
             default:
                 result.notImplemented();
         }
@@ -372,5 +378,21 @@ public class QiniucloudPushPlatformView extends PlatformViewFactory implements P
         manager.setVideoFilterType(CameraStreamingSetting.VIDEO_FILTER_TYPE.VIDEO_FILTER_BEAUTY);
         manager.updateFaceBeautySetting(new CameraStreamingSetting.FaceBeautySetting((float) beautyLevel, (float) whiten, (float) redden));
         result.success(null);
+    }
+
+    /**
+     * 设置预览镜像
+     */
+    private void setPreviewMirror(MethodCall call, final MethodChannel.Result result) {
+        boolean mirror = CommonUtil.getParam(call, result, "mirror");
+        result.success(manager.setPreviewMirror(mirror));
+    }
+
+    /**
+     * 设置推流镜像
+     */
+    private void setEncodingMirror(MethodCall call, final MethodChannel.Result result) {
+        boolean mirror = CommonUtil.getParam(call, result, "mirror");
+        result.success(manager.setEncodingMirror(mirror));
     }
 }

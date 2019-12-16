@@ -211,6 +211,20 @@ class PushPageState extends State<PushPage> {
         "更新美颜信息成功:${faceBeautySettingEntity.beautyLevel},${faceBeautySettingEntity.redden},${faceBeautySettingEntity.whiten}");
   }
 
+  /// 设置预览镜像
+  onSetPreviewMirror(mirror) async {
+    bool res = await controller.setPreviewMirror(mirror: mirror);
+    this.setState(
+        () => info = "预览镜像${mirror ? "打开" : "关闭"}${res ? "成功" : "失败"}");
+  }
+
+  /// 设置推流镜像
+  setEncodingMirror(mirror) async {
+    bool res = await controller.setEncodingMirror(mirror: mirror);
+    this.setState(
+        () => info = "推流镜像${mirror ? "打开" : "关闭"}${res ? "成功" : "失败"}");
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -389,6 +403,30 @@ class PushPageState extends State<PushPage> {
                                 ? () => onSetNativeLoggingEnabled(false)
                                 : null,
                             child: Text("启用日志(控制台查看)"),
+                          ),
+                          RaisedButton(
+                            onPressed: this.status != null
+                                ? () => onSetPreviewMirror(true)
+                                : null,
+                            child: Text("打开预览镜像"),
+                          ),
+                          RaisedButton(
+                            onPressed: this.status != null
+                                ? () => onSetPreviewMirror(false)
+                                : null,
+                            child: Text("关闭预览镜像"),
+                          ),
+                          RaisedButton(
+                            onPressed: this.status != null
+                                ? () => onSetEncodingMirror(true)
+                                : null,
+                            child: Text("打开推流镜像"),
+                          ),
+                          RaisedButton(
+                            onPressed: this.status != null
+                                ? () => onSetEncodingMirror(false)
+                                : null,
+                            child: Text("关闭推流镜像"),
                           ),
                         ],
                       ),

@@ -25,6 +25,9 @@ class StreamingProfileEntity {
   /// 自适应码率
   QiniucloudPushBitrateAdjustModeEnum bitrateAdjustMode;
 
+  /// 是否启用 QUIC 推流
+  bool quicEnable;
+
   StreamingProfileEntity({
     @required this.publishUrl,
     this.videoQuality: QiniucloudPushVideoQualityEnum.VIDEO_QUALITY_HIGH3,
@@ -33,6 +36,7 @@ class StreamingProfileEntity {
     this.encodingSizeLevel:
         QiniucloudPushEncodingSizeLevelEnum.VIDEO_ENCODING_HEIGHT_480,
     this.bitrateAdjustMode: QiniucloudPushBitrateAdjustModeEnum.Auto,
+    this.quicEnable: true,
   });
 
   StreamingProfileEntity.fromJson(Map<String, dynamic> json) {
@@ -42,6 +46,7 @@ class StreamingProfileEntity {
     encoderRCMode = json["encoderRCMode"];
     encodingSizeLevel = json["encodingSizeLevel"];
     bitrateAdjustMode = json["bitrateAdjustMode"];
+    quicEnable = json["quicEnable"];
   }
 
   Map<String, dynamic> toJson() {
@@ -64,8 +69,9 @@ class StreamingProfileEntity {
     data["bitrateAdjustMode"] = this.bitrateAdjustMode == null
         ? null
         : bitrateAdjustMode
-        .toString()
-        .replaceAll("QiniucloudPushBitrateAdjustModeEnum.", "");
+            .toString()
+            .replaceAll("QiniucloudPushBitrateAdjustModeEnum.", "");
+    data["quicEnable"] = this.quicEnable;
     return data;
   }
 }
