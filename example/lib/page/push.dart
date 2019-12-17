@@ -219,7 +219,7 @@ class PushPageState extends State<PushPage> {
   }
 
   /// 设置推流镜像
-  setEncodingMirror(mirror) async {
+  onSetEncodingMirror(mirror) async {
     bool res = await controller.setEncodingMirror(mirror: mirror);
     this.setState(
         () => info = "推流镜像${mirror ? "打开" : "关闭"}${res ? "成功" : "失败"}");
