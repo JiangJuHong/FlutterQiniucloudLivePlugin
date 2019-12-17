@@ -23,7 +23,7 @@ class PlayerPageState extends State<PlayerPage> {
   int status;
 
   /// 错误信息
-  int error;
+  String error;
 
   /// 视频宽度
   int width = 0;
@@ -59,7 +59,7 @@ class PlayerPageState extends State<PlayerPage> {
   onListener(type, params) {
     // 错误
     if (type == QiniucloudPlayerListenerTypeEnum.Error) {
-      this.setState(() => error = params);
+      this.setState(() => error = params.toString());
     }
 
     // 状态改变
@@ -133,23 +133,23 @@ class PlayerPageState extends State<PlayerPage> {
   /// 获得状态文本
   getErrorText() {
     switch (error) {
-      case -1:
+      case "-1":
         return "未知错误";
-      case -2:
+      case "-2":
         return "播放器打开失败";
-      case -3:
+      case "-3":
         return "网络异常";
-      case -4:
+      case "-4":
         return "拖动失败";
-      case -5:
+      case "-5":
         return "预加载失败";
-      case -2003:
+      case "-2003":
         return "硬解失败";
-      case -2008:
+      case "-2008":
         return "播放器已被销毁，需要再次 setVideoURL 或 prepareAsync";
-      case -9527:
+      case "-9527":
         return "so 库版本不匹配，需要升级";
-      case -4410:
+      case "-4410":
         return "AudioTrack 初始化失败，可能无法播放音频";
       default:
         return "未知错误";
