@@ -37,7 +37,7 @@ Flutter 七牛云直播云插件
 暂不支持
 
 ## 使用
-使用Demo时请是主动更改推流地址和播放地址
+使用Demo时请是主动更改推流地址和播放地址  
 <img src="https://raw.githubusercontent.com/JiangJuHong/access-images/master/FlutterQiniucloudLivePlugin/start.png" height="300em" style="max-width:100%;">
 <img src="https://raw.githubusercontent.com/JiangJuHong/access-images/master/FlutterQiniucloudLivePlugin/push.png" height="300em" style="max-width:100%;">
 <img src="https://raw.githubusercontent.com/JiangJuHong/access-images/master/FlutterQiniucloudLivePlugin/push_2.png" height="300em" style="max-width:100%;">
