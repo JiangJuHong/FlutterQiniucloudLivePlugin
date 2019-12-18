@@ -75,7 +75,6 @@ public class CameraPreviewFrameView extends GLSurfaceView {
     };
 
     private void initialize(Context context) {
-        Log.i(TAG, "initialize");
         mScaleDetector = new ScaleGestureDetector(context, mScaleListener);
         mGestureDetector = new GestureDetector(context, mGestureListener);
     }

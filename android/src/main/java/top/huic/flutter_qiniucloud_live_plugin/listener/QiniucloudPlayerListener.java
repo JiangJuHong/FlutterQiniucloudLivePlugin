@@ -67,7 +67,6 @@ public class QiniucloudPlayerListener implements PLOnPreparedListener, PLOnInfoL
      * @param params 参数
      */
     private void invokeListener(final PlayerCallBackNoticeEnum type, final Object params) {
-        Log.d(TAG, "invokeListener: 触发监听:" + type + "[" + params + "]");
         Map<String, Object> resultParams = new HashMap<>(2, 1);
         resultParams.put("type", type);
         resultParams.put("params", params == null ? null : JSON.toJSONString(params));
@@ -79,7 +78,6 @@ public class QiniucloudPlayerListener implements PLOnPreparedListener, PLOnInfoL
      */
     @Override
     public void onCompletion() {
-        Log.i(TAG, "onCompletion: ");
         invokeListener(PlayerCallBackNoticeEnum.Completion, null);
     }
 
@@ -88,7 +86,6 @@ public class QiniucloudPlayerListener implements PLOnPreparedListener, PLOnInfoL
      */
     @Override
     public boolean onError(int i) {
-        Log.i(TAG, "onError: ");
         invokeListener(PlayerCallBackNoticeEnum.Error, i);
         return false;
     }
@@ -98,7 +95,6 @@ public class QiniucloudPlayerListener implements PLOnPreparedListener, PLOnInfoL
      */
     @Override
     public void onInfo(int i, int i1) {
-        Log.i(TAG, "onInfo: ");
         Map<String, Object> params = new HashMap<>(2, 1);
         params.put("what", i);
         params.put("extra", i1);
@@ -110,7 +106,6 @@ public class QiniucloudPlayerListener implements PLOnPreparedListener, PLOnInfoL
      */
     @Override
     public void onPrepared(int i) {
-        Log.i(TAG, "onPrepared: ");
         invokeListener(PlayerCallBackNoticeEnum.Prepared, i);
     }
 
@@ -119,7 +114,6 @@ public class QiniucloudPlayerListener implements PLOnPreparedListener, PLOnInfoL
      */
     @Override
     public void onVideoSizeChanged(int i, int i1) {
-        Log.i(TAG, "onVideoSizeChanged: ");
         Map<String, Object> params = new HashMap<>(2, 1);
         params.put("width", i);
         params.put("height", i1);

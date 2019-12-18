@@ -65,7 +65,6 @@ public class FlutterQiniucloudLivePlugin implements FlutterPlugin, MethodCallHan
 
     @Override
     public void onMethodCall(@NonNull MethodCall call, @NonNull Result result) {
-        Log.d(TAG, "onMethodCall: 调用方法:" + call.method + ",参数:" + call.arguments);
 //        if (call.method.equals("init")) {
 //            result.success("Android " + android.os.Build.VERSION.RELEASE);
 //        } else {

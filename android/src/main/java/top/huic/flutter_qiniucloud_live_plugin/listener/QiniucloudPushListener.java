@@ -68,7 +68,6 @@ public class QiniucloudPushListener implements StreamingStateChangedListener, St
         mainHandler.post(new Runnable() {
             @Override
             public void run() {
-                Log.d(TAG, "invokeListener: 触发监听:" + type + "[" + params + "]");
                 Map<String, Object> resultParams = new HashMap<>(2, 1);
                 resultParams.put("type", type);
                 resultParams.put("params", params == null ? null : JSON.toJSONString(params));
@@ -82,7 +81,6 @@ public class QiniucloudPushListener implements StreamingStateChangedListener, St
      */
     @Override
     public void onAudioSourceAvailable(ByteBuffer srcBuffer, int size, long tsInNanoTime, boolean isEof) {
-        Log.i(TAG, "onAudioSourceAvailable: ");
         Map<String, Object> params = new HashMap<>(4, 1);
         params.put("srcBuffer", srcBuffer.array());
         params.put("size", size);
@@ -93,41 +91,35 @@ public class QiniucloudPushListener implements StreamingStateChangedListener, St
 
     @Override
     public void notifyStreamStatusChanged(StreamingProfile.StreamStatus streamStatus) {
-        Log.i(TAG, "notifyStreamStatusChanged: ");
         invokeListener(PushCallBackNoticeEnum.StreamStatusChanged, streamStatus);
     }
 
     @Override
     public boolean onRecordAudioFailedHandled(int i) {
-        Log.i(TAG, "onRecordAudioFailedHandled: ");
         invokeListener(PushCallBackNoticeEnum.RecordAudioFailedHandled, i);
         return false;
     }
 
     @Override
     public boolean onRestartStreamingHandled(int i) {
-        Log.i(TAG, "onRestartStreamingHandled: ");
         invokeListener(PushCallBackNoticeEnum.RestartStreamingHandled, i);
         return false;
     }
 
     @Override
     public Camera.Size onPreviewSizeSelected(List<Camera.Size> list) {
-        Log.i(TAG, "onPreviewSizeSelected: ");
         invokeListener(PushCallBackNoticeEnum.PreviewSizeSelected, list);
         return null;
     }
 
     @Override
     public int onPreviewFpsSelected(List<int[]> list) {
-        Log.i(TAG, "onPreviewFpsSelected: ");
         invokeListener(PushCallBackNoticeEnum.PreviewFpsSelected, list);
         return 0;
     }
 
     @Override
     public void onStateChanged(StreamingState status, Object extra) {
-        Log.i(TAG, "onStateChanged: ");
         Map<String, Object> params = new HashMap<>(2, 1);
         params.put("status", status);
         params.put("extra", extra);

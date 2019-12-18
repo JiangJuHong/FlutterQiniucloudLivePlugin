@@ -108,7 +108,6 @@ public class QiniucloudPushPlatformView extends PlatformViewFactory implements P
 
     @Override
     public void onMethodCall(MethodCall call, MethodChannel.Result result) {
-        Log.d(TAG, "调用方法: " + call.method);
         switch (call.method) {
             case "resume":
                 this.resume(call, result);
