@@ -1,4 +1,4 @@
-import 'package:flutter_qiniucloud_live_plugin/enums/qiniucloud_push_camera_type_enum.dart';
+import 'package:flutter_qiniucloud_live_plugin/enums/qiniucloud_camera_type_enum.dart';
 import 'package:flutter_qiniucloud_live_plugin/enums/qiniucloud_push_focus_mode.dart';
 import 'package:flutter_qiniucloud_live_plugin/enums/qiniucloud_push_preview_size_level_enum.dart';
 import 'package:flutter_qiniucloud_live_plugin/enums/qiniucloud_push_preview_size_ratio_enum.dart';
@@ -14,7 +14,7 @@ class CameraStreamingSettingEntity {
   FaceBeautySettingEntity faceBeauty;
 
   // 摄像头
-  QiniucloudPushCameraTypeEnum cameraFacingId;
+  QiniucloudCameraTypeEnum cameraFacingId;
 
   // 启用镜像翻转(预览)
   bool frontCameraPreviewMirror;
@@ -39,7 +39,7 @@ class CameraStreamingSettingEntity {
 
   CameraStreamingSettingEntity({
     this.builtInFaceBeautyEnabled: true,
-    this.cameraFacingId: QiniucloudPushCameraTypeEnum.CAMERA_FACING_BACK,
+    this.cameraFacingId: QiniucloudCameraTypeEnum.CAMERA_FACING_BACK,
     this.frontCameraPreviewMirror: false,
     this.faceBeauty,
     this.frontCameraMirror: false,
@@ -70,7 +70,7 @@ class CameraStreamingSettingEntity {
         ? this
             .cameraFacingId
             .toString()
-            .replaceAll("QiniucloudPushCameraTypeEnum.", "")
+            .replaceAll("QiniucloudCameraTypeEnum.", "")
         : null;
     data['frontCameraPreviewMirror'] = this.frontCameraPreviewMirror;
     data['faceBeauty'] =

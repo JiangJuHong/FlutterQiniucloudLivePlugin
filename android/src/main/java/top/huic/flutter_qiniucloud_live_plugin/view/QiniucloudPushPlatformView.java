@@ -20,6 +20,7 @@ import com.qiniu.pili.droid.streaming.WatermarkSetting;
 
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.URISyntaxException;
 import java.util.Map;
 
 import io.flutter.plugin.common.BinaryMessenger;
@@ -65,6 +66,11 @@ public class QiniucloudPushPlatformView extends PlatformViewFactory implements P
      * 流管理器
      */
     private MediaStreamingManager manager;
+
+    /**
+     * 系统参数
+     */
+    private StreamingProfile streamingProfile;
 
     /**
      * 初始化视图工厂，注册视图时调用
@@ -200,12 +206,12 @@ public class QiniucloudPushPlatformView extends PlatformViewFactory implements P
         view = new CameraPreviewFrameView(context);
 
         // 主要参数设置
-        StreamingProfile mProfile = JSON.parseObject(streamingProfileStr, StreamingProfile.class);
-        if (mProfile == null) {
+        streamingProfile = JSON.parseObject(streamingProfileStr, StreamingProfile.class);
+        if (streamingProfile == null) {
             Log.e(TAG, "init: 系统参数初始化失败!");
         } else {
             // 缺省参数设置
-            mProfile.setDnsManager(this.getDnsManager());
+            streamingProfile.setDnsManager(this.getDnsManager());
         }
 
         // 预览设置
@@ -229,7 +235,7 @@ public class QiniucloudPushPlatformView extends PlatformViewFactory implements P
 
         // 流管理实现
         manager = new MediaStreamingManager(context, view, AVCodecType.SW_VIDEO_WITH_SW_AUDIO_CODEC);  // soft codec
-        manager.prepare(cameraStreamingSetting, microphoneStreamingSetting, mProfile);
+        manager.prepare(cameraStreamingSetting, microphoneStreamingSetting, streamingProfile);
 
         // 绑定监听器
         QiniucloudPushListener listener = new QiniucloudPushListener(context, methodChannel);
@@ -266,6 +272,17 @@ public class QiniucloudPushPlatformView extends PlatformViewFactory implements P
      * 开始推流
      */
     private void startStreaming(MethodCall call, final MethodChannel.Result result) {
+        String publishUrl = call.argument("publishUrl");
+        if (publishUrl != null) {
+            try {
+                streamingProfile.setPublishUrl(publishUrl);
+            } catch (URISyntaxException e) {
+                Log.e(TAG, "setStreamingProfile: setPublishUrl Error", e);
+                result.error("0", e.toString(), e.getMessage());
+                return;
+            }
+            manager.setStreamingProfile(streamingProfile);
+        }
         result.success(manager.startStreaming());
     }
 

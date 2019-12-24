@@ -7,7 +7,7 @@ import 'package:flutter_qiniucloud_live_plugin/enums/qiniucloud_push_video_quali
 
 /// 系统参数
 class StreamingProfileEntity {
-  /// 推流URL，格式为: rtmp://xxxx
+  /// 推流URL，格式为: rtmp://xxxx，如果在初始化时不设置，则需要在推流时进行设置
   String publishUrl;
 
   /// 视频质量
@@ -29,7 +29,7 @@ class StreamingProfileEntity {
   bool quicEnable;
 
   StreamingProfileEntity({
-    @required this.publishUrl,
+    this.publishUrl,
     this.videoQuality: QiniucloudPushVideoQualityEnum.VIDEO_QUALITY_HIGH3,
     this.audioQuality: QiniucloudPushAudioQualityEnum.AUDIO_QUALITY_MEDIUM2,
     this.encoderRCMode: QiniucloudPushEncoderRCModeEnum.QUALITY_PRIORITY,

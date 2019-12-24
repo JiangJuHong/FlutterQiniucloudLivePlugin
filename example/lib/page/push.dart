@@ -9,6 +9,7 @@ import 'package:flutter_qiniucloud_live_plugin/enums/qiniucloud_push_camera_type
 import 'package:flutter_qiniucloud_live_plugin/entity/face_beauty_setting_entity.dart';
 import 'package:flutter_qiniucloud_live_plugin/entity/camera_streaming_setting_entity.dart';
 import 'package:flutter_qiniucloud_live_plugin/entity/streaming_profile_entity.dart';
+import 'package:flutter_qiniucloud_live_plugin/enums/qiniucloud_camera_type_enum.dart';
 
 /// 推流界面
 class PushPage extends StatefulWidget {
@@ -159,21 +160,21 @@ class PushPageState extends State<PushPage> {
   /// 切换后置摄像头
   onSwitchBackCamera() async {
     bool result = await controller.switchCamera(
-        target: QiniucloudPushCameraTypeEnum.CAMERA_FACING_BACK);
+        target: QiniucloudCameraTypeEnum.CAMERA_FACING_BACK);
     this.setState(() => info = "切换后置摄像头: $result");
   }
 
   /// 切换前置摄像头
   onSwitchFrontCamera() async {
     bool result = await controller.switchCamera(
-        target: QiniucloudPushCameraTypeEnum.CAMERA_FACING_FRONT);
+        target: QiniucloudCameraTypeEnum.CAMERA_FACING_FRONT);
     this.setState(() => info = "切换前置摄像头: $result");
   }
 
   /// 切换3DR摄像头
   onSwitch3DRCamera() async {
     bool result = await controller.switchCamera(
-        target: QiniucloudPushCameraTypeEnum.CAMERA_FACING_3RD);
+        target: QiniucloudCameraTypeEnum.CAMERA_FACING_3RD);
     this.setState(() => info = "切换3DR摄像头: $result");
   }
 
