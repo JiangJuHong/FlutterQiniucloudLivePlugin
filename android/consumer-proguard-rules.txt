@@ -3,3 +3,8 @@
 # 七牛云直播云播放端
 -keep class com.pili.pldroid.player.** { *; }
 -keep class com.qiniu.qplayer.mediaEngine.MediaPlayer{*;}
+# 七牛云连麦SDK v2
+-keep class com.youme.** {*;}
+-keep class org.webrtc.** {*;}
+-keep class com.qiniu.android.dns.** {*;}
+-keep class com.qiniu.pili.droid.streaming.** {*;}
