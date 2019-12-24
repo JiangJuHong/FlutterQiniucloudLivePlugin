@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_qiniucloud_live_plugin/view/qiniucloud_push_view.dart';
 import 'package:flutter_qiniucloud_live_plugin/controller/qiniucloud_push_view_controller.dart';
 import 'package:flutter_qiniucloud_live_plugin/enums/qiniucloud_push_listener_type_enum.dart';
-import 'package:flutter_qiniucloud_live_plugin/enums/qiniucloud_push_camera_type_enum.dart';
 import 'package:flutter_qiniucloud_live_plugin/entity/face_beauty_setting_entity.dart';
 import 'package:flutter_qiniucloud_live_plugin/entity/camera_streaming_setting_entity.dart';
 import 'package:flutter_qiniucloud_live_plugin/entity/streaming_profile_entity.dart';
