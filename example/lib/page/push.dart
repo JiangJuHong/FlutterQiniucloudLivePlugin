@@ -270,6 +270,16 @@ class PushPageState extends State<PushPage> {
 
   /// 连麦视图创建事件
   onPlayerViewCreated(viewId, playerController) {
+
+    // 设置合流参数
+    playerController.setAbsoluteMixOverlayRect(
+      x: 0,
+      y: 0,
+      width: 100,
+      height: 100,
+    );
+
+    // 添加到远程视图
     controller.addRemoteWindow(id: viewId);
   }
 

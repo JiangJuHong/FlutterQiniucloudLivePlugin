@@ -131,14 +131,17 @@ public class QiniucloudConnectedPlayerPlatformView extends PlatformViewFactory i
         // 初始化视图
         view = new RTCSurfaceView(context);
         window = new RTCVideoWindow(view);
-        window.setAbsoluteMixOverlayRect(320, 100, 320, 240);
     }
 
     /**
      * 配置连麦合流的参数（仅主播才配置，连麦观众不用）
      */
     private void setAbsoluteMixOverlayRect(MethodCall call, MethodChannel.Result result) {
-        window.setAbsoluteMixOverlayRect(320, 100, 320, 240);
+        int x = CommonUtil.getParam(call, result, "x");
+        int y = CommonUtil.getParam(call, result, "y");
+        int width = CommonUtil.getParam(call, result, "width");
+        int height = CommonUtil.getParam(call, result, "height");
+        window.setAbsoluteMixOverlayRect(x, y, width, height);
         result.success(null);
     }
 
