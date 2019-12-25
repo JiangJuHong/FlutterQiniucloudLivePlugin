@@ -12,14 +12,14 @@ class QiniucloudConnectedPlayerViewController {
 
   /// 配置合流参数(仅主播端设置，连麦观众不设置)
   Future<void> setAbsoluteMixOverlayRect({
-    @required int x,
-    @required int y,
+    @required int left,
+    @required int top,
     @required int width,
     @required int height,
   }) async {
     return _channel.invokeMethod('setAbsoluteMixOverlayRect', {
-      "x": x,
-      "y": y,
+      "left": left,
+      "top": top,
       "width": width,
       "height": height,
     });

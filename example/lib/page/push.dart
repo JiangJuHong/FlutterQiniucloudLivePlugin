@@ -270,11 +270,10 @@ class PushPageState extends State<PushPage> {
 
   /// 连麦视图创建事件
   onPlayerViewCreated(viewId, playerController) {
-
     // 设置合流参数
     playerController.setAbsoluteMixOverlayRect(
-      x: 0,
-      y: 0,
+      left: 0,
+      top: 0,
       width: 100,
       height: 100,
     );

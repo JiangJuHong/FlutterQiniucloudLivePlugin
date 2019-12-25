@@ -137,11 +137,11 @@ public class QiniucloudConnectedPlayerPlatformView extends PlatformViewFactory i
      * 配置连麦合流的参数（仅主播才配置，连麦观众不用）
      */
     private void setAbsoluteMixOverlayRect(MethodCall call, MethodChannel.Result result) {
-        int x = CommonUtil.getParam(call, result, "x");
-        int y = CommonUtil.getParam(call, result, "y");
+        int left = CommonUtil.getParam(call, result, "left");
+        int top = CommonUtil.getParam(call, result, "top");
         int width = CommonUtil.getParam(call, result, "width");
         int height = CommonUtil.getParam(call, result, "height");
-        window.setAbsoluteMixOverlayRect(x, y, width, height);
+        window.setAbsoluteMixOverlayRect(left, top, width, height);
         result.success(null);
     }
 
