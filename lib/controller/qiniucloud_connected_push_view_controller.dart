@@ -2,17 +2,20 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_qiniucloud_live_plugin/entity/conference_options_entity.dart';
 import 'package:flutter_qiniucloud_live_plugin/entity/face_beauty_setting_entity.dart';
 import 'package:flutter_qiniucloud_live_plugin/entity/watermark_setting_entity.dart';
 import 'package:flutter_qiniucloud_live_plugin/enums/qiniucloud_audio_source_type_enum.dart';
 import 'package:flutter_qiniucloud_live_plugin/enums/qiniucloud_camera_type_enum.dart';
 import 'package:flutter_qiniucloud_live_plugin/enums/qiniucloud_connected_push_listener_type_enum.dart';
+import 'package:flutter_qiniucloud_live_plugin/view/qiniucloud_connected_push_view.dart';
 import 'package:flutter_qiniucloud_live_plugin/view/qiniucloud_push_view.dart';
 
 /// 连麦视图控制器
 class QiniucloudConnectedPushViewController {
   QiniucloudConnectedPushViewController(int id)
-      : _channel = new MethodChannel('${QiniucloudPushViewState.type}_$id');
+      : _channel =
+            new MethodChannel('${QiniucloudConnectPushViewState.type}_$id');
 
   final MethodChannel _channel;
 
@@ -65,10 +68,10 @@ class QiniucloudConnectedPushViewController {
   }
 
   /// 开始连麦
-  Future<bool> startConference({
-    userId, // 用户ID
-    roomName, //房间名
-    roomToken, //房间token
+  Future<void> startConference({
+    @required userId, // 用户ID
+    @required roomName, //房间名
+    @required roomToken, //房间token
   }) async {
     return _channel.invokeMethod('startConference', {
       "userId": userId,
@@ -140,15 +143,6 @@ class QiniucloudConnectedPushViewController {
     });
   }
 
-  /// 关闭/启用日志
-  Future<bool> setNativeLoggingEnabled({
-    @required bool enabled,
-  }) async {
-    return _channel.invokeMethod('setNativeLoggingEnabled', {
-      "enabled": enabled,
-    });
-  }
-
   /// 更新水印信息
   Future<void> updateWatermarkSetting(WatermarkSettingEntity data) async {
     return _channel.invokeMethod('updateWatermarkSetting', data.toJson());
@@ -183,8 +177,43 @@ class QiniucloudConnectedPushViewController {
   }
 
   /// 关闭耳返
-  Future<bool> stopPlayback() async {
+  Future<void> stopPlayback() async {
     return _channel.invokeMethod('stopPlayback');
+  }
+
+  /// 根据用户ID踢出连麦
+  Future<void> kickoutUser({
+    @required String userId,
+  }) async {
+    return _channel.invokeMethod('kickoutUser', {
+      "userId": userId,
+    });
+  }
+
+  /// 设置连麦参数
+  Future<bool> setConferenceOptions({
+    @required ConferenceOptionsEntity conferenceOptions,
+  }) async {
+    return _channel.invokeMethod('setConferenceOptions', {
+      "conferenceOptions": conferenceOptions,
+    });
+  }
+
+  /// 获得参与连麦的人数(不包括自己)
+  Future<int> getParticipantsCount() async {
+    return _channel.invokeMethod('getParticipantsCount');
+  }
+
+  /// 获取参与连麦的用户ID列表，不包括自己
+  Future<List> getParticipants() async {
+    return jsonDecode(await _channel.invokeMethod('getParticipants'));
+  }
+
+  /// 添加远程视图
+  Future<void> addRemoteWindow({
+    id, // 视图ID
+  }) async {
+    return _channel.invokeMethod('addRemoteWindow', {"id": id});
   }
 }
 

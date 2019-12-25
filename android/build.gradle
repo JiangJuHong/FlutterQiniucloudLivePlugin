@@ -38,8 +38,6 @@ dependencies {
     api 'com.android.support:appcompat-v7:28.0.0'
     // json序列化
     api 'com.alibaba:fastjson:1.2.55'
-    // 七牛云推流 SDK
-    api files('libs/pldroid-media-streaming-2.4.0.jar')
     // 七牛云播放SDK
     api files('libs/pldroid-player-2.1.9.jar')
     // 七牛云连麦 SDK

@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_qiniucloud_live_plugin/enums/qiniucloud_encoding_size_level_enum.dart';
 import 'package:flutter_qiniucloud_live_plugin/enums/qiniucloud_push_audio_quality_enum.dart';
 import 'package:flutter_qiniucloud_live_plugin/enums/qiniucloud_push_bitrate_adjust_mode.dart';
 import 'package:flutter_qiniucloud_live_plugin/enums/qiniucloud_push_encoder_rc_mode.dart';
-import 'package:flutter_qiniucloud_live_plugin/enums/qiniucloud_push_encoding_size_level_enum.dart';
 import 'package:flutter_qiniucloud_live_plugin/enums/qiniucloud_push_video_quality_enum.dart';
 
 /// 系统参数
@@ -20,7 +20,7 @@ class StreamingProfileEntity {
   QiniucloudPushEncoderRCModeEnum encoderRCMode;
 
   /// Encoding size 的设定
-  QiniucloudPushEncodingSizeLevelEnum encodingSizeLevel;
+  QiniucloudEncodingSizeLevelEnum encodingSizeLevel;
 
   /// 自适应码率
   QiniucloudPushBitrateAdjustModeEnum bitrateAdjustMode;
@@ -34,7 +34,7 @@ class StreamingProfileEntity {
     this.audioQuality: QiniucloudPushAudioQualityEnum.AUDIO_QUALITY_MEDIUM2,
     this.encoderRCMode: QiniucloudPushEncoderRCModeEnum.QUALITY_PRIORITY,
     this.encodingSizeLevel:
-        QiniucloudPushEncodingSizeLevelEnum.VIDEO_ENCODING_HEIGHT_480,
+        QiniucloudEncodingSizeLevelEnum.VIDEO_ENCODING_HEIGHT_480,
     this.bitrateAdjustMode: QiniucloudPushBitrateAdjustModeEnum.Auto,
     this.quicEnable: true,
   });
@@ -65,7 +65,7 @@ class StreamingProfileEntity {
             .replaceAll("QiniucloudPushEncoderRCModeEnum.", "");
     data["encodingSizeLevel"] = this.encodingSizeLevel == null
         ? null
-        : QiniucloudPushEncodingSizeLevelEnumTool.toInt(this.encodingSizeLevel);
+        : QiniucloudEncodingSizeLevelEnumTool.toInt(this.encodingSizeLevel);
     data["bitrateAdjustMode"] = this.bitrateAdjustMode == null
         ? null
         : bitrateAdjustMode

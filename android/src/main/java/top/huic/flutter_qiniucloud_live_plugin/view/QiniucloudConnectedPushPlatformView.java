@@ -4,6 +4,9 @@ package top.huic.flutter_qiniucloud_live_plugin.view;
 import android.content.Context;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
 import com.qiniu.pili.droid.rtcstreaming.RTCAudioSource;
@@ -11,9 +14,11 @@ import com.qiniu.pili.droid.rtcstreaming.RTCConferenceOptions;
 import com.qiniu.pili.droid.rtcstreaming.RTCMediaStreamingManager;
 import com.qiniu.pili.droid.rtcstreaming.RTCStartConferenceCallback;
 import com.qiniu.pili.droid.rtcstreaming.RTCSurfaceView;
+import com.qiniu.pili.droid.rtcstreaming.RTCVideoWindow;
 import com.qiniu.pili.droid.streaming.AVCodecType;
 import com.qiniu.pili.droid.streaming.CameraStreamingSetting;
 import com.qiniu.pili.droid.streaming.MediaStreamingManager;
+import com.qiniu.pili.droid.streaming.MicrophoneStreamingSetting;
 import com.qiniu.pili.droid.streaming.StreamingProfile;
 import com.qiniu.pili.droid.streaming.WatermarkSetting;
 
@@ -26,9 +31,11 @@ import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.StandardMessageCodec;
 import io.flutter.plugin.platform.PlatformView;
 import io.flutter.plugin.platform.PlatformViewFactory;
+import top.huic.flutter_qiniucloud_live_plugin.R;
 import top.huic.flutter_qiniucloud_live_plugin.listener.QiniucloudPlayerListener;
 import top.huic.flutter_qiniucloud_live_plugin.listener.QiniuicloudConnectedPushListener;
 import top.huic.flutter_qiniucloud_live_plugin.util.CommonUtil;
+import top.huic.flutter_qiniucloud_live_plugin.util.ConnectedUtil;
 import top.huic.flutter_qiniucloud_live_plugin.widget.CameraPreviewFrameView;
 import top.huic.flutter_qiniucloud_live_plugin.widget.MediaController;
 
@@ -171,6 +178,9 @@ public class QiniucloudConnectedPushPlatformView extends PlatformViewFactory imp
             case "updateFaceBeautySetting":
                 this.updateFaceBeautySetting(call, result);
                 break;
+            case "addRemoteWindow":
+                this.addRemoteWindow(call, result);
+                break;
             default:
                 result.notImplemented();
         }
@@ -205,13 +215,12 @@ public class QiniucloudConnectedPushPlatformView extends PlatformViewFactory imp
      * @param methodChannel 方法通道
      */
     private void init(Map<String, Object> params, MethodChannel methodChannel) {
-        // 连麦参数
-        String conferenceOptionsStr = (String) params.get("conferenceOptions");
         // 相机参数
         String cameraSettingStr = (String) params.get("cameraStreamingSetting");
         // 推流参数(仅主播)
         String streamingProfileStr = (String) params.get("streamingProfile");
         Map<String, Object> cameraSettingMap = JSON.parseObject(cameraSettingStr);
+
 
         // 初始化视图
         view = new CameraPreviewFrameView(context);
@@ -224,10 +233,6 @@ public class QiniucloudConnectedPushPlatformView extends PlatformViewFactory imp
         manager.setUserEventListener(listener);
         manager.setStreamStatusCallback(listener);
         manager.setAudioSourceCallback(listener);
-
-        // TODO 添加窗口具体含义待验证
-        // mMediaStreamingManager.addRemoteWindow(windowA);
-        // mMediaStreamingManager.addRemoteWindow(windowB);
 
         // 预览设置
         CameraStreamingSetting cameraStreamingSetting = JSON.parseObject(cameraSettingStr, CameraStreamingSetting.class);
@@ -249,7 +254,12 @@ public class QiniucloudConnectedPushPlatformView extends PlatformViewFactory imp
             streamingProfile = JSON.parseObject(streamingProfileStr, StreamingProfile.class);
         }
 
-        manager.prepare(cameraStreamingSetting, null, null, streamingProfile);
+        // 麦克风设置
+        MicrophoneStreamingSetting microphoneStreamingSetting = new MicrophoneStreamingSetting();
+        microphoneStreamingSetting.setBluetoothSCOEnabled(true);
+
+        manager.setConferenceOptions(new RTCConferenceOptions());
+        manager.prepare(cameraStreamingSetting, microphoneStreamingSetting, null, streamingProfile);
     }
 
     /**
@@ -275,15 +285,20 @@ public class QiniucloudConnectedPushPlatformView extends PlatformViewFactory imp
         String userId = CommonUtil.getParam(call, result, "userId");
         String roomName = CommonUtil.getParam(call, result, "roomName");
         String roomToken = CommonUtil.getParam(call, result, "roomToken");
+
+        final boolean[] executeReturn = {false};
         manager.startConference(userId, roomName, roomToken, new RTCStartConferenceCallback() {
             @Override
             public void onStartConferenceSuccess() {
-                result.success(null);
+                CommonUtil.runMainThreadReturn(result, null);
             }
 
             @Override
             public void onStartConferenceFailed(int i) {
-                result.error(String.valueOf(i), "", "");
+                if (!executeReturn[0]) {
+                    CommonUtil.runMainThreadReturnError(result, String.valueOf(i), "", "");
+                    executeReturn[0] = true;
+                }
             }
         });
     }
@@ -491,6 +506,15 @@ public class QiniucloudConnectedPushPlatformView extends PlatformViewFactory imp
         double whiten = CommonUtil.getParam(call, result, "whiten");
         manager.setVideoFilterType(CameraStreamingSetting.VIDEO_FILTER_TYPE.VIDEO_FILTER_BEAUTY);
         manager.updateFaceBeautySetting(new CameraStreamingSetting.FaceBeautySetting((float) beautyLevel, (float) whiten, (float) redden));
+        result.success(null);
+    }
+
+    /**
+     * 添加远程视图
+     */
+    private void addRemoteWindow(MethodCall call, final MethodChannel.Result result) {
+        int id = CommonUtil.getParam(call, result, "id");
+        manager.addRemoteWindow(ConnectedUtil.get(id).getWindow());
         result.success(null);
     }
 }

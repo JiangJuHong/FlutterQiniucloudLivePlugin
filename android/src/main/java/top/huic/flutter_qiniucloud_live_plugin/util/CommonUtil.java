@@ -45,4 +45,21 @@ public class CommonUtil {
             }
         });
     }
+
+    /**
+     * 运行主线程返回错误结果执行
+     *
+     * @param result       返回结果对象
+     * @param errorCode    错误码
+     * @param errorMessage 错误信息
+     * @param errorDetails 错误内容
+     */
+    public static void runMainThreadReturnError(final MethodChannel.Result result, final String errorCode, final String errorMessage, final Object errorDetails) {
+        MAIN_HANDLER.post(new Runnable() {
+            @Override
+            public void run() {
+                result.error(errorCode, errorMessage, errorDetails);
+            }
+        });
+    }
 }

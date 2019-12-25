@@ -4,6 +4,8 @@ import 'package:flutter_qiniucloud_live_plugin_example/page/player.dart';
 import 'package:flutter_qiniucloud_live_plugin_example/page/push.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import 'connected_push.dart';
+
 class HomePage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => HomePageState();
@@ -34,13 +36,19 @@ class HomePageState extends State<HomePage> {
 
   /// 播放界面
   onPlayer() {
-    // 摄像头和麦克风权限请求
+    // TODO 摄像头和麦克风权限请求
     Navigator.push(
       context,
       new MaterialPageRoute(builder: (context) => new PlayerPage()),
     );
   }
 
+  onConnectedPush() {
+    Navigator.push(
+      context,
+      new MaterialPageRoute(builder: (context) => new ConnectedPushPage()),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,6 +63,10 @@ class HomePageState extends State<HomePage> {
             RaisedButton(
               onPressed: onPush,
               child: Text("开始推流"),
+            ),
+            RaisedButton(
+              onPressed: onConnectedPush,
+              child: Text("开始推流(连麦版本)"),
             ),
             RaisedButton(
               onPressed: onPlayer,

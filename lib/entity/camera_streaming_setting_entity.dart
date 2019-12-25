@@ -1,7 +1,7 @@
 import 'package:flutter_qiniucloud_live_plugin/enums/qiniucloud_camera_type_enum.dart';
+import 'package:flutter_qiniucloud_live_plugin/enums/qiniucloud_preview_size_ratio_enum.dart';
 import 'package:flutter_qiniucloud_live_plugin/enums/qiniucloud_push_focus_mode.dart';
 import 'package:flutter_qiniucloud_live_plugin/enums/qiniucloud_push_preview_size_level_enum.dart';
-import 'package:flutter_qiniucloud_live_plugin/enums/qiniucloud_push_preview_size_ratio_enum.dart';
 
 import 'face_beauty_setting_entity.dart';
 
@@ -29,7 +29,7 @@ class CameraStreamingSettingEntity {
   QiniucloudPushFocusModeEnum focusMode;
 
   // 预览大小比例
-  QiniucloudPushPreviewSizeRatioEnum cameraPrvSizeRatio;
+  QiniucloudPreviewSizeRatioEnum cameraPrvSizeRatio;
 
   // 预览大小级别
   QiniucloudPushPreviewSizeLevelEnum cameraPrvSizeLevel;
@@ -45,7 +45,7 @@ class CameraStreamingSettingEntity {
     this.frontCameraMirror: false,
     this.continuousFocusModeEnabled: true,
     this.focusMode: QiniucloudPushFocusModeEnum.FOCUS_MODE_CONTINUOUS_VIDEO,
-    this.cameraPrvSizeRatio: QiniucloudPushPreviewSizeRatioEnum.RATIO_16_9,
+    this.cameraPrvSizeRatio: QiniucloudPreviewSizeRatioEnum.RATIO_16_9,
     this.cameraPrvSizeLevel: QiniucloudPushPreviewSizeLevelEnum.MEDIUM,
     this.recordingHint,
   });
@@ -87,7 +87,7 @@ class CameraStreamingSettingEntity {
         ? this
             .cameraPrvSizeRatio
             .toString()
-            .replaceAll("QiniucloudPushPreviewSizeRatioEnum.", "")
+            .replaceAll("QiniucloudPreviewSizeRatioEnum.", "")
         : null;
     data['cameraPrvSizeLevel'] = this.cameraPrvSizeLevel != null
         ? this
