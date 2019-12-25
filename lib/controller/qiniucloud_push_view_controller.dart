@@ -2,13 +2,15 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_qiniucloud_live_plugin/entity/conference_options_entity.dart';
 import 'package:flutter_qiniucloud_live_plugin/entity/face_beauty_setting_entity.dart';
 import 'package:flutter_qiniucloud_live_plugin/entity/watermark_setting_entity.dart';
+import 'package:flutter_qiniucloud_live_plugin/enums/qiniucloud_audio_source_type_enum.dart';
 import 'package:flutter_qiniucloud_live_plugin/enums/qiniucloud_camera_type_enum.dart';
 import 'package:flutter_qiniucloud_live_plugin/enums/qiniucloud_push_listener_type_enum.dart';
 import 'package:flutter_qiniucloud_live_plugin/view/qiniucloud_push_view.dart';
 
-/// 视图控制器
+/// 连麦视图控制器
 class QiniucloudPushViewController {
   QiniucloudPushViewController(int id)
       : _channel = new MethodChannel('${QiniucloudPushViewState.type}_$id');
@@ -16,12 +18,12 @@ class QiniucloudPushViewController {
   final MethodChannel _channel;
 
   /// 监听器对象
-  QiniucloudPushListener listener;
+  QiniucloudConnectedPushListener listener;
 
   /// 添加消息监听
   void addListener(QiniucloudPushListenerValue func) {
     if (listener == null) {
-      listener = QiniucloudPushListener(_channel);
+      listener = QiniucloudConnectedPushListener(_channel);
     }
     listener.addListener(func);
   }
@@ -29,17 +31,17 @@ class QiniucloudPushViewController {
   /// 移除消息监听
   void removeListener(QiniucloudPushListenerValue func) {
     if (listener == null) {
-      listener = QiniucloudPushListener(_channel);
+      listener = QiniucloudConnectedPushListener(_channel);
     }
     listener.removeListener(func);
   }
 
-  /// 开启预览
+  /// 打开摄像头和麦克风采集
   Future<bool> resume() async {
     return _channel.invokeMethod('resume');
   }
 
-  /// 退出 MediaStreamingManager，该操作会主动断开当前的流链接，并关闭 Camera 和释放相应的资源。
+  /// 关闭摄像头和麦克风采集s
   Future<void> pause() async {
     return _channel.invokeMethod('pause');
   }
@@ -61,6 +63,24 @@ class QiniucloudPushViewController {
   /// 停止推流
   Future<bool> stopStreaming() async {
     return _channel.invokeMethod('stopStreaming');
+  }
+
+  /// 开始连麦
+  Future<void> startConference({
+    @required userId, // 用户ID
+    @required roomName, //房间名
+    @required roomToken, //房间token
+  }) async {
+    return _channel.invokeMethod('startConference', {
+      "userId": userId,
+      "roomName": roomName,
+      "roomToken": roomToken,
+    });
+  }
+
+  /// 停止连麦
+  Future<bool> stopConference() async {
+    return _channel.invokeMethod('stopConference');
   }
 
   /// 是否支持缩放
@@ -97,7 +117,7 @@ class QiniucloudPushViewController {
 
   /// 切换摄像头
   Future<bool> switchCamera({
-    QiniucloudCameraTypeEnum target, // 目标摄像头，不填代表反向切换,
+    @required QiniucloudCameraTypeEnum target, // 目标摄像头，不填代表反向切换,
   }) async {
     return _channel.invokeMethod('switchCamera', {
       "target": target == null
@@ -109,18 +129,15 @@ class QiniucloudPushViewController {
   /// 静音
   Future<bool> mute({
     @required bool mute,
+    @required QiniucloudAudioSourceTypeEnum audioSource,
   }) async {
     return _channel.invokeMethod('mute', {
       "mute": mute,
-    });
-  }
-
-  /// 关闭/启用日志
-  Future<bool> setNativeLoggingEnabled({
-    @required bool enabled,
-  }) async {
-    return _channel.invokeMethod('setNativeLoggingEnabled', {
-      "enabled": enabled,
+      "audioSource": audioSource == null
+          ? null
+          : audioSource
+              .toString()
+              .replaceAll("QiniucloudAudioSourceTypeEnum.", ""),
     });
   }
 
@@ -151,14 +168,59 @@ class QiniucloudPushViewController {
       "mirror": mirror,
     });
   }
+
+  /// 开启耳返
+  Future<bool> startPlayback() async {
+    return _channel.invokeMethod('startPlayback');
+  }
+
+  /// 关闭耳返
+  Future<void> stopPlayback() async {
+    return _channel.invokeMethod('stopPlayback');
+  }
+
+  /// 根据用户ID踢出连麦
+  Future<void> kickoutUser({
+    @required String userId,
+  }) async {
+    return _channel.invokeMethod('kickoutUser', {
+      "userId": userId,
+    });
+  }
+
+  /// 设置连麦参数
+  Future<bool> setConferenceOptions({
+    @required ConferenceOptionsEntity conferenceOptions,
+  }) async {
+    return _channel.invokeMethod('setConferenceOptions', {
+      "conferenceOptions": conferenceOptions,
+    });
+  }
+
+  /// 获得参与连麦的人数(不包括自己)
+  Future<int> getParticipantsCount() async {
+    return _channel.invokeMethod('getParticipantsCount');
+  }
+
+  /// 获取参与连麦的用户ID列表，不包括自己
+  Future<List> getParticipants() async {
+    return jsonDecode(await _channel.invokeMethod('getParticipants'));
+  }
+
+  /// 添加远程视图
+  Future<void> addRemoteWindow({
+    id, // 视图ID
+  }) async {
+    return _channel.invokeMethod('addRemoteWindow', {"id": id});
+  }
 }
 
-/// 七牛云推流监听器
-class QiniucloudPushListener {
+/// 七牛云连麦监听器
+class QiniucloudConnectedPushListener {
   /// 监听器列表
   static Set<QiniucloudPushListenerValue> listeners = Set();
 
-  QiniucloudPushListener(MethodChannel channel) {
+  QiniucloudConnectedPushListener(MethodChannel channel) {
     // 绑定监听器
     channel.setMethodCallHandler((methodCall) async {
       // 解析参数

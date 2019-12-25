@@ -1,4 +1,4 @@
-/// 七牛云推流监听类型枚举
+/// 七牛云连麦推流监听类型枚举
 enum QiniucloudPushListenerTypeEnum {
   /// 回调音频采集 PCM 数据
   AudioSourceAvailable,
@@ -20,4 +20,13 @@ enum QiniucloudPushListenerTypeEnum {
 
   /// 状态发生改变
   StateChanged,
+
+  /// 连麦状态改变
+  ConferenceStateChanged,
+
+  /// 用户加入连麦
+  UserJoinConference,
+
+  /// 用户离开连麦
+  UserLeaveConference,
 }

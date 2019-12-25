@@ -1,25 +1,21 @@
 package top.huic.flutter_qiniucloud_live_plugin.view;
 
+
 import android.content.Context;
 import android.util.Log;
 import android.view.View;
 
 import com.alibaba.fastjson.JSON;
-import com.qiniu.android.dns.DnsManager;
-import com.qiniu.android.dns.IResolver;
-import com.qiniu.android.dns.NetworkInfo;
-import com.qiniu.android.dns.http.DnspodFree;
-import com.qiniu.android.dns.local.AndroidDnsServer;
-import com.qiniu.android.dns.local.Resolver;
+import com.qiniu.pili.droid.rtcstreaming.RTCAudioSource;
+import com.qiniu.pili.droid.rtcstreaming.RTCConferenceOptions;
+import com.qiniu.pili.droid.rtcstreaming.RTCMediaStreamingManager;
+import com.qiniu.pili.droid.rtcstreaming.RTCStartConferenceCallback;
 import com.qiniu.pili.droid.streaming.AVCodecType;
 import com.qiniu.pili.droid.streaming.CameraStreamingSetting;
-import com.qiniu.pili.droid.streaming.MediaStreamingManager;
 import com.qiniu.pili.droid.streaming.MicrophoneStreamingSetting;
 import com.qiniu.pili.droid.streaming.StreamingProfile;
 import com.qiniu.pili.droid.streaming.WatermarkSetting;
 
-import java.io.IOException;
-import java.net.InetAddress;
 import java.net.URISyntaxException;
 import java.util.Map;
 
@@ -29,14 +25,16 @@ import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.StandardMessageCodec;
 import io.flutter.plugin.platform.PlatformView;
 import io.flutter.plugin.platform.PlatformViewFactory;
-import top.huic.flutter_qiniucloud_live_plugin.listener.QiniucloudPushListener;
-import top.huic.flutter_qiniucloud_live_plugin.widget.CameraPreviewFrameView;
+import top.huic.flutter_qiniucloud_live_plugin.listener.QiniuicloudPushListener;
 import top.huic.flutter_qiniucloud_live_plugin.util.CommonUtil;
+import top.huic.flutter_qiniucloud_live_plugin.util.ConnectedUtil;
+import top.huic.flutter_qiniucloud_live_plugin.widget.CameraPreviewFrameView;
 
 /**
- * 七牛云推流视图
+ * 七牛云连麦推流视图
  */
 public class QiniucloudPushPlatformView extends PlatformViewFactory implements PlatformView, MethodChannel.MethodCallHandler {
+
     /**
      * 日志标签
      */
@@ -58,17 +56,17 @@ public class QiniucloudPushPlatformView extends PlatformViewFactory implements P
     public static final String SIGN = "plugins.huic.top/QiniucloudPush";
 
     /**
-     * 视图对象
+     * 本地预览内容
      */
     private CameraPreviewFrameView view;
 
     /**
      * 流管理器
      */
-    private MediaStreamingManager manager;
+    private RTCMediaStreamingManager manager;
 
     /**
-     * 系统参数
+     * 推流参数
      */
     private StreamingProfile streamingProfile;
 
@@ -90,28 +88,6 @@ public class QiniucloudPushPlatformView extends PlatformViewFactory implements P
         this.context = context;
     }
 
-
-    @Override
-    public PlatformView create(Context context, int viewId, Object args) {
-        Map<String, Object> params = (Map<String, Object>) args;
-        QiniucloudPushPlatformView view = new QiniucloudPushPlatformView(context);
-        // 绑定方法监听器
-        MethodChannel methodChannel = new MethodChannel(messenger, SIGN + "_" + viewId);
-        methodChannel.setMethodCallHandler(view);
-        // 初始化
-        view.init(params, methodChannel);
-        return view;
-    }
-
-    @Override
-    public View getView() {
-        return view;
-    }
-
-    @Override
-    public void dispose() {
-    }
-
     @Override
     public void onMethodCall(MethodCall call, MethodChannel.Result result) {
         switch (call.method) {
@@ -121,14 +97,20 @@ public class QiniucloudPushPlatformView extends PlatformViewFactory implements P
             case "pause":
                 this.pause(call, result);
                 break;
-            case "destroy":
-                this.destroy(call, result);
+            case "startConference":
+                this.startConference(call, result);
+                break;
+            case "stopConference":
+                this.stopConference(call, result);
                 break;
             case "startStreaming":
                 this.startStreaming(call, result);
                 break;
             case "stopStreaming":
                 this.stopStreaming(call, result);
+                break;
+            case "destroy":
+                this.destroy(call, result);
                 break;
             case "isZoomSupported":
                 this.isZoomSupported(call, result);
@@ -154,14 +136,20 @@ public class QiniucloudPushPlatformView extends PlatformViewFactory implements P
             case "mute":
                 this.mute(call, result);
                 break;
-            case "setNativeLoggingEnabled":
-                this.setNativeLoggingEnabled(call, result);
+            case "kickoutUser":
+                this.kickoutUser(call, result);
                 break;
-            case "updateWatermarkSetting":
-                this.updateWatermarkSetting(call, result);
+            case "setConferenceOptions":
+                this.setConferenceOptions(call, result);
                 break;
-            case "updateFaceBeautySetting":
-                this.updateFaceBeautySetting(call, result);
+            case "setStreamingProfile":
+                this.setStreamingProfile(call, result);
+                break;
+            case "getParticipantsCount":
+                this.getParticipantsCount(call, result);
+                break;
+            case "getParticipants":
+                this.getParticipants(call, result);
                 break;
             case "setPreviewMirror":
                 this.setPreviewMirror(call, result);
@@ -169,50 +157,73 @@ public class QiniucloudPushPlatformView extends PlatformViewFactory implements P
             case "setEncodingMirror":
                 this.setEncodingMirror(call, result);
                 break;
+            case "startPlayback":
+                this.startPlayback(call, result);
+                break;
+            case "stopPlayback":
+                this.stopPlayback(call, result);
+                break;
+            case "updateWatermarkSetting":
+                this.updateWatermarkSetting(call, result);
+                break;
+            case "updateFaceBeautySetting":
+                this.updateFaceBeautySetting(call, result);
+                break;
+            case "addRemoteWindow":
+                this.addRemoteWindow(call, result);
+                break;
             default:
                 result.notImplemented();
         }
     }
 
+    @Override
+    public PlatformView create(Context context, int viewId, Object args) {
+        Map<String, Object> params = (Map<String, Object>) args;
+        QiniucloudPushPlatformView view = new QiniucloudPushPlatformView(context);
+        // 绑定方法监听器
+        MethodChannel methodChannel = new MethodChannel(messenger, SIGN + "_" + viewId);
+        methodChannel.setMethodCallHandler(view);
+        // 初始化
+        view.init(params, methodChannel);
+        return view;
+    }
 
-    /**
-     * 获得DNS管理器
-     */
-    private DnsManager getDnsManager() {
-        IResolver r0 = new DnspodFree();
-        IResolver r1 = AndroidDnsServer.defaultResolver();
-        IResolver r2 = null;
-        try {
-            r2 = new Resolver(InetAddress.getByName("119.29.29.29"));
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-        return new DnsManager(NetworkInfo.normal, new IResolver[]{r0, r1, r2});
+    @Override
+    public void dispose() {
+
+    }
+
+    @Override
+    public View getView() {
+        return view;
     }
 
     /**
-     * 初始化七牛云推流信息
+     * 初始化
      *
      * @param params        参数
      * @param methodChannel 方法通道
      */
     private void init(Map<String, Object> params, MethodChannel methodChannel) {
-        // 系统参数
-        String streamingProfileStr = (String) params.get("streamingProfile");
         // 相机参数
         String cameraSettingStr = (String) params.get("cameraStreamingSetting");
+        // 推流参数(仅主播)
+        String streamingProfileStr = (String) params.get("streamingProfile");
         Map<String, Object> cameraSettingMap = JSON.parseObject(cameraSettingStr);
+
+
         // 初始化视图
         view = new CameraPreviewFrameView(context);
+        manager = new RTCMediaStreamingManager(context, view, AVCodecType.SW_VIDEO_WITH_SW_AUDIO_CODEC);
 
-        // 主要参数设置
-        streamingProfile = JSON.parseObject(streamingProfileStr, StreamingProfile.class);
-        if (streamingProfile == null) {
-            Log.e(TAG, "init: 系统参数初始化失败!");
-        } else {
-            // 缺省参数设置
-            streamingProfile.setDnsManager(this.getDnsManager());
-        }
+        QiniuicloudPushListener listener = new QiniuicloudPushListener(context, methodChannel);
+        manager.setConferenceStateListener(listener);
+        manager.setStreamingSessionListener(listener);
+        manager.setStreamingStateListener(listener);
+        manager.setUserEventListener(listener);
+        manager.setStreamStatusCallback(listener);
+        manager.setAudioSourceCallback(listener);
 
         // 预览设置
         CameraStreamingSetting cameraStreamingSetting = JSON.parseObject(cameraSettingStr, CameraStreamingSetting.class);
@@ -229,42 +240,65 @@ public class QiniucloudPushPlatformView extends PlatformViewFactory implements P
             }
         }
 
+        // 推流设置
+        if (streamingProfileStr != null) {
+            streamingProfile = JSON.parseObject(streamingProfileStr, StreamingProfile.class);
+        }
+
         // 麦克风设置
         MicrophoneStreamingSetting microphoneStreamingSetting = new MicrophoneStreamingSetting();
         microphoneStreamingSetting.setBluetoothSCOEnabled(true);
 
-        // 流管理实现
-        manager = new MediaStreamingManager(context, view, AVCodecType.SW_VIDEO_WITH_SW_AUDIO_CODEC);  // soft codec
-        manager.prepare(cameraStreamingSetting, microphoneStreamingSetting, streamingProfile);
-
-        // 绑定监听器
-        QiniucloudPushListener listener = new QiniucloudPushListener(context, methodChannel);
-        manager.setStreamingStateListener(listener);
-        manager.setStreamingSessionListener(listener);
-        manager.setStreamStatusCallback(listener);
-        manager.setAudioSourceCallback(listener);
+        manager.setConferenceOptions(new RTCConferenceOptions());
+        manager.prepare(cameraStreamingSetting, microphoneStreamingSetting, null, streamingProfile);
     }
 
     /**
-     * 开启摄像头预览
+     * 打开摄像头和麦克风采集
      */
     private void resume(MethodCall call, final MethodChannel.Result result) {
-        result.success(manager.resume());
+        result.success(manager.startCapture());
     }
 
+
     /**
-     * 退出 MediaStreamingManager，该操作会主动断开当前的流链接，并关闭 Camera 和释放相应的资源。
+     * 关闭摄像头和麦克风采集
      */
     private void pause(MethodCall call, final MethodChannel.Result result) {
-        manager.pause();
+        manager.stopCapture();
         result.success(null);
     }
 
     /**
-     * 释放不紧要资源。
+     * 开始连麦
      */
-    private void destroy(MethodCall call, final MethodChannel.Result result) {
-        manager.destroy();
+    private void startConference(MethodCall call, final MethodChannel.Result result) {
+        String userId = CommonUtil.getParam(call, result, "userId");
+        String roomName = CommonUtil.getParam(call, result, "roomName");
+        String roomToken = CommonUtil.getParam(call, result, "roomToken");
+
+        final boolean[] executeReturn = {false};
+        manager.startConference(userId, roomName, roomToken, new RTCStartConferenceCallback() {
+            @Override
+            public void onStartConferenceSuccess() {
+                CommonUtil.runMainThreadReturn(result, null);
+            }
+
+            @Override
+            public void onStartConferenceFailed(int i) {
+                if (!executeReturn[0]) {
+                    CommonUtil.runMainThreadReturnError(result, String.valueOf(i), "", "");
+                    executeReturn[0] = true;
+                }
+            }
+        });
+    }
+
+    /**
+     * 停止连麦
+     */
+    private void stopConference(MethodCall call, final MethodChannel.Result result) {
+        manager.stopConference();
         result.success(null);
     }
 
@@ -291,6 +325,14 @@ public class QiniucloudPushPlatformView extends PlatformViewFactory implements P
      */
     private void stopStreaming(MethodCall call, final MethodChannel.Result result) {
         result.success(manager.stopStreaming());
+    }
+
+    /**
+     * 销毁
+     */
+    private void destroy(MethodCall call, final MethodChannel.Result result) {
+        manager.destroy();
+        result.success(null);
     }
 
     /**
@@ -341,16 +383,9 @@ public class QiniucloudPushPlatformView extends PlatformViewFactory implements P
      * 切换摄像头
      */
     private void switchCamera(MethodCall call, final MethodChannel.Result result) {
-        // 指定摄像头
-        String target = call.argument("target");
-        CameraStreamingSetting.CAMERA_FACING_ID id = target == null ? null : CameraStreamingSetting.CAMERA_FACING_ID.valueOf(target);
-        boolean executeResult;
-        if (id == null) {
-            executeResult = manager.switchCamera();
-        } else {
-            executeResult = manager.switchCamera(id);
-        }
-        result.success(executeResult);
+        String target = CommonUtil.getParam(call, result, "target");
+        CameraStreamingSetting.CAMERA_FACING_ID id = CameraStreamingSetting.CAMERA_FACING_ID.valueOf(target);
+        result.success(manager.switchCamera(id));
     }
 
     /**
@@ -358,16 +393,85 @@ public class QiniucloudPushPlatformView extends PlatformViewFactory implements P
      */
     private void mute(MethodCall call, final MethodChannel.Result result) {
         boolean mute = CommonUtil.getParam(call, result, "mute");
-        manager.mute(mute);
+        String audioSource = CommonUtil.getParam(call, result, "audioSource");
+        if (mute) {
+            manager.mute(RTCAudioSource.valueOf(audioSource));
+        } else {
+            manager.unMute(RTCAudioSource.valueOf(audioSource));
+
+        }
+        result.success(null);
+    }
+
+
+    /**
+     * 根据用户ID踢人
+     */
+    private void kickoutUser(MethodCall call, final MethodChannel.Result result) {
+        String userId = CommonUtil.getParam(call, result, "userId");
+        result.success(manager.kickoutUser(userId));
+    }
+
+    /**
+     * 设置连麦参数
+     */
+    private void setConferenceOptions(MethodCall call, final MethodChannel.Result result) {
+        manager.setConferenceOptions(JSON.parseObject(CommonUtil.getParam(call, result, "conferenceOptions").toString(), RTCConferenceOptions.class));
+        result.success(null);
+    }
+
+
+    /**
+     * 更新推流参数
+     */
+    private void setStreamingProfile(MethodCall call, final MethodChannel.Result result) {
+        this.streamingProfile = JSON.parseObject(CommonUtil.getParam(call, result, "streamingProfile").toString(), StreamingProfile.class);
+        manager.setStreamingProfile(streamingProfile);
         result.success(null);
     }
 
     /**
-     * 启用/关闭日志
+     * 获取参与连麦的人数，不包括自己
      */
-    private void setNativeLoggingEnabled(MethodCall call, final MethodChannel.Result result) {
-        boolean enabled = CommonUtil.getParam(call, result, "enabled");
-        manager.setNativeLoggingEnabled(enabled);
+    private void getParticipantsCount(MethodCall call, final MethodChannel.Result result) {
+        result.success(manager.getParticipantsCount());
+    }
+
+    /**
+     * 获取参与连麦的用户ID列表，不包括自己
+     */
+    private void getParticipants(MethodCall call, final MethodChannel.Result result) {
+        result.success(JSON.toJSONString(manager.getParticipants()));
+    }
+
+    /**
+     * 设置预览镜像
+     */
+    private void setPreviewMirror(MethodCall call, final MethodChannel.Result result) {
+        boolean mirror = CommonUtil.getParam(call, result, "mirror");
+        result.success(manager.setPreviewMirror(mirror));
+    }
+
+    /**
+     * 设置推流镜像
+     */
+    private void setEncodingMirror(MethodCall call, final MethodChannel.Result result) {
+        boolean mirror = CommonUtil.getParam(call, result, "mirror");
+        result.success(manager.setEncodingMirror(mirror));
+    }
+
+    /**
+     * 开启耳返
+     */
+    private void startPlayback(MethodCall call, final MethodChannel.Result result) {
+        result.success(manager.startPlayback());
+    }
+
+    /**
+     * 关闭耳返
+     */
+    private void stopPlayback(MethodCall call, final MethodChannel.Result result) {
+        manager.stopPlayback();
         result.success(null);
     }
 
@@ -397,18 +501,11 @@ public class QiniucloudPushPlatformView extends PlatformViewFactory implements P
     }
 
     /**
-     * 设置预览镜像
+     * 添加远程视图
      */
-    private void setPreviewMirror(MethodCall call, final MethodChannel.Result result) {
-        boolean mirror = CommonUtil.getParam(call, result, "mirror");
-        result.success(manager.setPreviewMirror(mirror));
-    }
-
-    /**
-     * 设置推流镜像
-     */
-    private void setEncodingMirror(MethodCall call, final MethodChannel.Result result) {
-        boolean mirror = CommonUtil.getParam(call, result, "mirror");
-        result.success(manager.setEncodingMirror(mirror));
+    private void addRemoteWindow(MethodCall call, final MethodChannel.Result result) {
+        int id = CommonUtil.getParam(call, result, "id");
+        manager.addRemoteWindow(ConnectedUtil.get(id).getWindow());
+        result.success(null);
     }
 }

@@ -1,13 +1,14 @@
 package top.huic.flutter_qiniucloud_live_plugin.listener;
 
-
 import android.content.Context;
 import android.hardware.Camera;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
+import com.qiniu.pili.droid.rtcstreaming.RTCConferenceState;
+import com.qiniu.pili.droid.rtcstreaming.RTCConferenceStateChangedListener;
+import com.qiniu.pili.droid.rtcstreaming.RTCUserEventListener;
 import com.qiniu.pili.droid.streaming.AudioSourceCallback;
 import com.qiniu.pili.droid.streaming.StreamStatusCallback;
 import com.qiniu.pili.droid.streaming.StreamingProfile;
@@ -20,20 +21,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import androidx.annotation.UiThread;
 import io.flutter.plugin.common.MethodChannel;
 import top.huic.flutter_qiniucloud_live_plugin.enums.PushCallBackNoticeEnum;
 
 /**
- * 七牛云推流监听器
+ * 七牛云连麦推流监听器
  *
  * @author 蒋具宏
  */
-public class QiniucloudPushListener implements StreamingStateChangedListener, StreamStatusCallback, AudioSourceCallback, StreamingSessionListener {
+public class QiniuicloudPushListener implements RTCConferenceStateChangedListener, StreamingSessionListener, StreamingStateChangedListener, RTCUserEventListener, StreamStatusCallback, AudioSourceCallback {
+
     /**
      * 日志标签
      */
-    private static final String TAG = QiniucloudPushListener.class.getName();
+    private static final String TAG = QiniuicloudPushListener.class.getName();
 
     /**
      * 监听器回调的方法名
@@ -50,7 +51,7 @@ public class QiniucloudPushListener implements StreamingStateChangedListener, St
      */
     private MethodChannel channel;
 
-    public QiniucloudPushListener(Context context, MethodChannel channel) {
+    public QiniuicloudPushListener(Context context, MethodChannel channel) {
         this.context = context;
         this.channel = channel;
     }
@@ -62,7 +63,6 @@ public class QiniucloudPushListener implements StreamingStateChangedListener, St
      * @param params 参数
      */
     private void invokeListener(final PushCallBackNoticeEnum type, final Object params) {
-
         // 切换到主线程
         Handler mainHandler = new Handler(Looper.getMainLooper());
         mainHandler.post(new Runnable() {
@@ -76,22 +76,22 @@ public class QiniucloudPushListener implements StreamingStateChangedListener, St
         });
     }
 
-    /**
-     * 回调音频采集 PCM 数据
-     */
     @Override
-    public void onAudioSourceAvailable(ByteBuffer srcBuffer, int size, long tsInNanoTime, boolean isEof) {
-        Map<String, Object> params = new HashMap<>(4, 1);
-        params.put("srcBuffer", srcBuffer.array());
-        params.put("size", size);
-        params.put("tsInNanoTime", tsInNanoTime);
-        params.put("isEof", isEof);
-        invokeListener(PushCallBackNoticeEnum.AudioSourceAvailable, params);
+    public void onConferenceStateChanged(RTCConferenceState rtcConferenceState, int i) {
+        Map<String, Object> params = new HashMap<>(2, 1);
+        params.put("status", rtcConferenceState);
+        params.put("extra", i);
+        invokeListener(PushCallBackNoticeEnum.ConferenceStateChanged, params);
     }
 
     @Override
-    public void notifyStreamStatusChanged(StreamingProfile.StreamStatus streamStatus) {
-        invokeListener(PushCallBackNoticeEnum.StreamStatusChanged, streamStatus);
+    public void onUserJoinConference(String s) {
+        invokeListener(PushCallBackNoticeEnum.UserJoinConference, s);
+    }
+
+    @Override
+    public void onUserLeaveConference(String s) {
+        invokeListener(PushCallBackNoticeEnum.UserLeaveConference, s);
     }
 
     @Override
@@ -124,5 +124,20 @@ public class QiniucloudPushListener implements StreamingStateChangedListener, St
         params.put("status", status);
         params.put("extra", extra);
         invokeListener(PushCallBackNoticeEnum.StateChanged, params);
+    }
+
+    @Override
+    public void onAudioSourceAvailable(ByteBuffer srcBuffer, int size, long tsInNanoTime, boolean isEof) {
+        Map<String, Object> params = new HashMap<>(4, 1);
+        params.put("srcBuffer", srcBuffer.array());
+        params.put("size", size);
+        params.put("tsInNanoTime", tsInNanoTime);
+        params.put("isEof", isEof);
+        invokeListener(PushCallBackNoticeEnum.AudioSourceAvailable, params);
+    }
+
+    @Override
+    public void notifyStreamStatusChanged(StreamingProfile.StreamStatus streamStatus) {
+        invokeListener(PushCallBackNoticeEnum.StreamStatusChanged, streamStatus);
     }
 }

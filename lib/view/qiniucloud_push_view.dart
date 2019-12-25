@@ -7,7 +7,7 @@ import 'package:flutter_qiniucloud_live_plugin/controller/qiniucloud_push_view_c
 import 'package:flutter_qiniucloud_live_plugin/entity/camera_streaming_setting_entity.dart';
 import 'package:flutter_qiniucloud_live_plugin/entity/streaming_profile_entity.dart';
 
-/// 七牛云推流预览窗口
+/// 七牛云连麦推流预览窗口
 class QiniucloudPushView extends StatefulWidget {
   /// 系统参数
   final StreamingProfileEntity streamingProfile;
@@ -22,7 +22,7 @@ class QiniucloudPushView extends StatefulWidget {
     Key key,
     this.onViewCreated,
     this.cameraStreamingSetting,
-    @required this.streamingProfile,
+    this.streamingProfile,
   }) : super(key: key);
 
   @override
@@ -37,7 +37,9 @@ class QiniucloudPushViewState extends State<QiniucloudPushView> {
   Widget build(BuildContext context) {
     // 请求参数
     Map<String, dynamic> params = {
-      "streamingProfile": jsonEncode(widget.streamingProfile),
+      "streamingProfile": widget.streamingProfile != null
+          ? jsonEncode(widget.streamingProfile)
+          : null,
       "cameraStreamingSetting": widget.cameraStreamingSetting != null
           ? jsonEncode(widget.cameraStreamingSetting)
           : null,

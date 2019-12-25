@@ -4,9 +4,6 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_qiniucloud_live_plugin/controller/qiniucloud_player_view_controller.dart';
-import 'package:flutter_qiniucloud_live_plugin/controller/qiniucloud_push_view_controller.dart';
-import 'package:flutter_qiniucloud_live_plugin/entity/camera_streaming_setting_entity.dart';
-import 'package:flutter_qiniucloud_live_plugin/entity/streaming_profile_entity.dart';
 
 /// 七牛云播放器窗口
 class QiniucloudPlayerView extends StatefulWidget {

@@ -4,8 +4,6 @@ import 'package:flutter_qiniucloud_live_plugin_example/page/player.dart';
 import 'package:flutter_qiniucloud_live_plugin_example/page/push.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-import 'connected_push.dart';
-
 class HomePage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => HomePageState();
@@ -19,21 +17,6 @@ class HomePageState extends State<HomePage> {
     super.initState();
   }
 
-  /// 推流界面
-  onPush() {
-    // 摄像头和麦克风权限请求
-    PermissionHandler().requestPermissions(
-        [PermissionGroup.camera, PermissionGroup.microphone]).then((res) {
-      if (res[PermissionGroup.camera] != PermissionStatus.disabled &&
-          res[PermissionGroup.microphone] != PermissionStatus.disabled) {
-        Navigator.push(
-          context,
-          new MaterialPageRoute(builder: (context) => new PushPage()),
-        );
-      }
-    });
-  }
-
   /// 播放界面
   onPlayer() {
     // TODO 摄像头和麦克风权限请求
@@ -43,11 +26,19 @@ class HomePageState extends State<HomePage> {
     );
   }
 
+  /// 连麦推流界面
   onConnectedPush() {
-    Navigator.push(
-      context,
-      new MaterialPageRoute(builder: (context) => new ConnectedPushPage()),
-    );
+    // 摄像头和麦克风权限请求
+    PermissionHandler().requestPermissions(
+        [PermissionGroup.camera, PermissionGroup.microphone]).then((res) {
+      if (res[PermissionGroup.camera] != PermissionStatus.disabled &&
+          res[PermissionGroup.microphone] != PermissionStatus.disabled) {
+        Navigator.push(
+          context,
+          new MaterialPageRoute(builder: (context) => PushPage()),
+        );
+      }
+    });
   }
 
   @override
@@ -61,12 +52,8 @@ class HomePageState extends State<HomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             RaisedButton(
-              onPressed: onPush,
-              child: Text("开始推流"),
-            ),
-            RaisedButton(
               onPressed: onConnectedPush,
-              child: Text("开始推流(连麦版本)"),
+              child: Text("开始推流"),
             ),
             RaisedButton(
               onPressed: onPlayer,

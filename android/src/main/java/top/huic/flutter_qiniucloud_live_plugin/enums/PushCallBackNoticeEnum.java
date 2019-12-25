@@ -1,7 +1,7 @@
 package top.huic.flutter_qiniucloud_live_plugin.enums;
 
 /**
- * 推流回调通知枚举
+ * 连麦推流回调通知枚举
  *
  * @author 蒋具宏
  */
@@ -34,4 +34,16 @@ public enum PushCallBackNoticeEnum {
      * 状态发生改变
      */
     StateChanged,
+    /**
+     * 连麦状态改变
+     */
+    ConferenceStateChanged,
+    /**
+     * 用户加入连麦
+     */
+    UserJoinConference,
+    /**
+     * 用户离开连麦
+     */
+    UserLeaveConference,
 }

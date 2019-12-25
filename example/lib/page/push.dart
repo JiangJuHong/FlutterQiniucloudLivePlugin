@@ -4,13 +4,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_qiniucloud_live_plugin/view/qiniucloud_push_view.dart';
 import 'package:flutter_qiniucloud_live_plugin/controller/qiniucloud_push_view_controller.dart';
+import 'package:flutter_qiniucloud_live_plugin/view/qiniucloud_connected_player_view.dart';
 import 'package:flutter_qiniucloud_live_plugin/enums/qiniucloud_push_listener_type_enum.dart';
 import 'package:flutter_qiniucloud_live_plugin/entity/face_beauty_setting_entity.dart';
 import 'package:flutter_qiniucloud_live_plugin/entity/camera_streaming_setting_entity.dart';
 import 'package:flutter_qiniucloud_live_plugin/entity/streaming_profile_entity.dart';
 import 'package:flutter_qiniucloud_live_plugin/enums/qiniucloud_camera_type_enum.dart';
+import 'package:flutter_qiniucloud_live_plugin/enums/qiniucloud_audio_source_type_enum.dart';
 
-/// 推流界面
+/// 连麦界面
 class PushPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => PushPageState();
@@ -26,6 +28,9 @@ class PushPageState extends State<PushPage> {
   /// 描述信息
   String info;
 
+  /// 连麦状态
+  String connectedStatus;
+
   /// 美颜对象
   FaceBeautySettingEntity faceBeautySettingEntity =
       FaceBeautySettingEntity(beautyLevel: 0, redden: 0, whiten: 0);
@@ -38,6 +43,8 @@ class PushPageState extends State<PushPage> {
   @override
   void dispose() {
     super.dispose();
+    controller.pause();
+    controller.destroy();
     if (controller != null) {
       controller.removeListener(onListener);
     }
@@ -56,11 +63,23 @@ class PushPageState extends State<PushPage> {
       Map<String, dynamic> paramObj = jsonDecode(params);
       stateChanged(paramObj["status"], paramObj["extra"]);
     }
+
+    // 连麦状态改变监听
+    if (type == QiniucloudPushListenerTypeEnum.ConferenceStateChanged) {
+      Map<String, dynamic> paramObj = jsonDecode(params);
+      print("连麦状态改变:${paramObj["status"]},${paramObj["extra"]}");
+      connectedStateChanged(paramObj["status"], paramObj["extra"]);
+    }
   }
 
   /// 状态改变事件
   stateChanged(status, extra) async {
     this.setState(() => this.status = status);
+  }
+
+  /// 设置连麦状态
+  connectedStateChanged(status, extra) async {
+    this.setState(() => this.connectedStatus = status);
   }
 
   /// 获得状态文本描述
@@ -150,12 +169,6 @@ class PushPageState extends State<PushPage> {
     this.setState(() => info = "关闭闪光灯结果: $result");
   }
 
-  /// 切换摄像头
-  onSwitchCamera() async {
-    bool result = await controller.switchCamera();
-    this.setState(() => info = "切换摄像头: $result");
-  }
-
   /// 切换后置摄像头
   onSwitchBackCamera() async {
     bool result = await controller.switchCamera(
@@ -179,14 +192,11 @@ class PushPageState extends State<PushPage> {
 
   /// 静音
   onMute(mute) async {
-    await controller.mute(mute: mute);
+    await controller.mute(
+      mute: mute,
+      audioSource: QiniucloudAudioSourceTypeEnum.MIC,
+    );
     this.setState(() => info = "已成功执行静音/恢复静音步骤");
-  }
-
-  /// 关闭/启用日志
-  onSetNativeLoggingEnabled(enabled) async {
-    await controller.setNativeLoggingEnabled(enabled: enabled);
-    this.setState(() => info = "已成功执行关闭/启用日志步骤");
   }
 
   /// 暂停
@@ -225,6 +235,44 @@ class PushPageState extends State<PushPage> {
         () => info = "推流镜像${mirror ? "打开" : "关闭"}${res ? "成功" : "失败"}");
   }
 
+  /// 开启耳返
+  onStartPlayback() async {
+    bool res = await controller.startPlayback();
+    this.setState(() => info = "开启耳返${res ? "成功" : "失败"}");
+  }
+
+  /// 关闭耳返
+  onStopPlayback() async {
+    await controller.stopPlayback();
+    this.setState(() => info = "关闭执行成功");
+  }
+
+  /// 开始连麦
+  onStartConference() async {
+    try {
+      await controller.startConference(
+        roomName: "15764969071808",
+        userId: "2ef92e08177c46b19cc97999fae296b8",
+        roomToken:
+            "v740N_w0pHblR7KZMSPHhfdqjxrHEv5e_yBaiq0e:MHo7mCd7Y_6w9E1348lkfkmm9Ps=:eyJyb29tX25hbWUiOiIxNTc2NDk2OTA3MTgwOCIsImV4cGlyZV9hdCI6MTU3NzU3MjEzOCwicGVybSI6ImFkbWluIiwidmVyc2lvbiI6IjIuMCIsInVzZXJfaWQiOiIyZWY5MmUwODE3N2M0NmIxOWNjOTc5OTlmYWUyOTZiOCJ9",
+      );
+      this.setState(() => info = "连麦执行成功");
+    } catch (e) {
+      this.setState(() => info = "连麦执行失败:$e");
+    }
+  }
+
+  /// 开始连麦
+  onStopConference() async {
+    await controller.stopConference();
+    this.setState(() => info = "关闭连麦执行成功");
+  }
+
+  /// 连麦视图创建事件
+  onPlayerViewCreated(viewId, playerController) {
+    controller.addRemoteWindow(id: viewId);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -232,14 +280,30 @@ class PushPageState extends State<PushPage> {
         children: <Widget>[
           Container(
             height: MediaQuery.of(context).size.height / 2,
-            child: QiniucloudPushView(
-              cameraStreamingSetting: CameraStreamingSettingEntity(
-                  faceBeauty: faceBeautySettingEntity),
-              streamingProfile: StreamingProfileEntity(
-                publishUrl:
-                    "rtmp://pili-publish.tianshitaiyuan.com/zuqulive/1576400046230A?e=1581756846&token=v740N_w0pHblR7KZMSPHhfdqjxrHEv5e_yBaiq0e:nlza8l7AsBDNkp47AD09ItfZSKA=",
-              ),
-              onViewCreated: onViewCreated,
+            child: Stack(
+              children: <Widget>[
+                QiniucloudPushView(
+                  cameraStreamingSetting: CameraStreamingSettingEntity(
+                      faceBeauty: faceBeautySettingEntity),
+                  streamingProfile: StreamingProfileEntity(
+                    publishUrl:
+                        "rtmp://pili-publish.tianshitaiyuan.com/zuqulive/1576400046230A?e=1581756846&token=v740N_w0pHblR7KZMSPHhfdqjxrHEv5e_yBaiq0e:nlza8l7AsBDNkp47AD09ItfZSKA=",
+                  ),
+                  onViewCreated: onViewCreated,
+                ),
+                Positioned(
+                  top: 0,
+                  right: 0,
+                  bottom: 0,
+                  child: Container(
+                    width: MediaQuery.of(context).size.width / 2,
+                    color: Colors.red,
+                    child: QiniucloudConnectPlayerView(
+                      onViewCreated: onPlayerViewCreated,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
           Container(
@@ -247,6 +311,7 @@ class PushPageState extends State<PushPage> {
             child: Column(
               children: <Widget>[
                 Text("当前状态:${getStatusText(this.status)}"),
+                Text("连麦状态:${this.connectedStatus ?? ""}"),
                 Text(info ?? ""),
                 Expanded(
                   child: ListView(
@@ -361,11 +426,6 @@ class PushPageState extends State<PushPage> {
                             child: Text("关闭闪光灯"),
                           ),
                           RaisedButton(
-                            onPressed:
-                                this.status != null ? onSwitchCamera : null,
-                            child: Text("切换摄像头"),
-                          ),
-                          RaisedButton(
                             onPressed: this.status != null
                                 ? onSwitchFrontCamera
                                 : null,
@@ -394,18 +454,6 @@ class PushPageState extends State<PushPage> {
                           ),
                           RaisedButton(
                             onPressed: this.status != null
-                                ? () => onSetNativeLoggingEnabled(false)
-                                : null,
-                            child: Text("关闭日志"),
-                          ),
-                          RaisedButton(
-                            onPressed: this.status != null
-                                ? () => onSetNativeLoggingEnabled(false)
-                                : null,
-                            child: Text("启用日志(控制台查看)"),
-                          ),
-                          RaisedButton(
-                            onPressed: this.status != null
                                 ? () => onSetPreviewMirror(true)
                                 : null,
                             child: Text("打开预览镜像"),
@@ -427,6 +475,26 @@ class PushPageState extends State<PushPage> {
                                 ? () => onSetEncodingMirror(false)
                                 : null,
                             child: Text("关闭推流镜像"),
+                          ),
+                          RaisedButton(
+                            onPressed:
+                                this.status != null ? onStartPlayback : null,
+                            child: Text("开启耳返"),
+                          ),
+                          RaisedButton(
+                            onPressed:
+                                this.status != null ? onStopPlayback : null,
+                            child: Text("关闭耳返"),
+                          ),
+                          RaisedButton(
+                            onPressed:
+                                this.status != null ? onStartConference : null,
+                            child: Text("开始连麦"),
+                          ),
+                          RaisedButton(
+                            onPressed:
+                                this.status != null ? onStopConference : null,
+                            child: Text("关闭连麦"),
                           ),
                         ],
                       ),

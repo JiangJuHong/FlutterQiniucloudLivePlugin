@@ -16,9 +16,8 @@ import io.flutter.plugin.common.MethodChannel.Result;
 import io.flutter.plugin.common.PluginRegistry.Registrar;
 import io.flutter.plugin.platform.PlatformViewRegistry;
 import top.huic.flutter_qiniucloud_live_plugin.view.QiniucloudConnectedPlayerPlatformView;
-import top.huic.flutter_qiniucloud_live_plugin.view.QiniucloudConnectedPushPlatformView;
-import top.huic.flutter_qiniucloud_live_plugin.view.QiniucloudPlayerPlatformView;
 import top.huic.flutter_qiniucloud_live_plugin.view.QiniucloudPushPlatformView;
+import top.huic.flutter_qiniucloud_live_plugin.view.QiniucloudPlayerPlatformView;
 
 /**
  * FlutterQiniucloudLivePlugin
@@ -45,10 +44,9 @@ public class FlutterQiniucloudLivePlugin implements FlutterPlugin, MethodCallHan
         RTCMediaStreamingManager.init(context, RTCServerRegion.RTC_CN_SERVER);
 
         // 注册View
-        registry.registerViewFactory(QiniucloudPushPlatformView.SIGN, new QiniucloudPushPlatformView(context, messenger));
         registry.registerViewFactory(QiniucloudPlayerPlatformView.SIGN, new QiniucloudPlayerPlatformView(context, messenger));
         registry.registerViewFactory(QiniucloudConnectedPlayerPlatformView.SIGN, new QiniucloudConnectedPlayerPlatformView(context, messenger));
-        registry.registerViewFactory(QiniucloudConnectedPushPlatformView.SIGN, new QiniucloudConnectedPushPlatformView(context, messenger));
+        registry.registerViewFactory(QiniucloudPushPlatformView.SIGN, new QiniucloudPushPlatformView(context, messenger));
     }
 
     @Override
