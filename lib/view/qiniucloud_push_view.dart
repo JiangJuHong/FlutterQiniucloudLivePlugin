@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_qiniucloud_live_plugin/controller/qiniucloud_push_view_controller.dart';
 import 'package:flutter_qiniucloud_live_plugin/entity/camera_streaming_setting_entity.dart';
+import 'package:flutter_qiniucloud_live_plugin/entity/conference_options_entity.dart';
 import 'package:flutter_qiniucloud_live_plugin/entity/streaming_profile_entity.dart';
 
 /// 七牛云连麦推流预览窗口
@@ -15,6 +16,9 @@ class QiniucloudPushView extends StatefulWidget {
   /// 相机设置
   final CameraStreamingSettingEntity cameraStreamingSetting;
 
+  /// 连麦参数
+  final ConferenceOptionsEntity connectOptions;
+
   /// 创建事件
   final ValueChanged<QiniucloudPushViewController> onViewCreated;
 
@@ -23,6 +27,7 @@ class QiniucloudPushView extends StatefulWidget {
     this.onViewCreated,
     this.cameraStreamingSetting,
     this.streamingProfile,
+    this.connectOptions,
   }) : super(key: key);
 
   @override
@@ -42,6 +47,9 @@ class QiniucloudPushViewState extends State<QiniucloudPushView> {
           : null,
       "cameraStreamingSetting": widget.cameraStreamingSetting != null
           ? jsonEncode(widget.cameraStreamingSetting)
+          : null,
+      "connectOptions": widget.connectOptions != null
+          ? jsonEncode(widget.connectOptions)
           : null,
     };
     // 请求参数解码器

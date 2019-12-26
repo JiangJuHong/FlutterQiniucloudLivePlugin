@@ -148,7 +148,8 @@ class QiniucloudPushViewController {
 
   /// 更新美颜信息
   Future<void> updateFaceBeautySetting(FaceBeautySettingEntity data) async {
-    return await _channel.invokeMethod('updateFaceBeautySetting', data.toJson());
+    return await _channel.invokeMethod(
+        'updateFaceBeautySetting', data.toJson());
   }
 
   /// 改变预览镜像
@@ -212,6 +213,11 @@ class QiniucloudPushViewController {
     id, // 视图ID
   }) async {
     return await _channel.invokeMethod('addRemoteWindow', {"id": id});
+  }
+
+  /// 获取编码器输出的画面的高宽
+  Future<Map> getVideoEncodingSize() async {
+    return jsonDecode(await _channel.invokeMethod('getVideoEncodingSize'));
   }
 }
 

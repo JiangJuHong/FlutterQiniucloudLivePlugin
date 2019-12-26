@@ -91,6 +91,9 @@ public class QiniucloudConnectedPlayerPlatformView extends PlatformViewFactory i
             case "setAbsoluteMixOverlayRect":
                 this.setAbsoluteMixOverlayRect(call, result);
                 break;
+            case "setRelativeMixOverlayRect":
+                this.setRelativeMixOverlayRect(call, result);
+                break;
             default:
                 result.notImplemented();
         }
@@ -135,13 +138,27 @@ public class QiniucloudConnectedPlayerPlatformView extends PlatformViewFactory i
 
     /**
      * 配置连麦合流的参数（仅主播才配置，连麦观众不用）
+     * 使用绝对值来配置该窗口在合流画面中的位置和大小
      */
     private void setAbsoluteMixOverlayRect(MethodCall call, MethodChannel.Result result) {
-        int left = CommonUtil.getParam(call, result, "left");
-        int top = CommonUtil.getParam(call, result, "top");
-        int width = CommonUtil.getParam(call, result, "width");
-        int height = CommonUtil.getParam(call, result, "height");
-        window.setAbsoluteMixOverlayRect(left, top, width, height);
+        int x = CommonUtil.getParam(call, result, "x");
+        int y = CommonUtil.getParam(call, result, "y");
+        int w = CommonUtil.getParam(call, result, "w");
+        int h = CommonUtil.getParam(call, result, "h");
+        window.setAbsoluteMixOverlayRect(x, y, w, h);
+        result.success(null);
+    }
+
+    /**
+     * 配置连麦合流的参数（仅主播才配置，连麦观众不用）
+     * 使用相对值来配置该窗口在合流画面中的位置和大小
+     */
+    private void setRelativeMixOverlayRect(MethodCall call, MethodChannel.Result result) {
+        int x = CommonUtil.getParam(call, result, "x");
+        int y = CommonUtil.getParam(call, result, "y");
+        int w = CommonUtil.getParam(call, result, "w");
+        int h = CommonUtil.getParam(call, result, "h");
+        window.setRelativeMixOverlayRect(x, y, w, h);
         result.success(null);
     }
 

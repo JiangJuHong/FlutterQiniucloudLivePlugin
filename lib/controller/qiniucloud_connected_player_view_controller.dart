@@ -11,17 +11,34 @@ class QiniucloudConnectedPlayerViewController {
   final MethodChannel _channel;
 
   /// 配置合流参数(仅主播端设置，连麦观众不设置)
+  /// 使用绝对值来配置该窗口在合流画面中的位置和大小
   Future<void> setAbsoluteMixOverlayRect({
-    @required int left,
-    @required int top,
-    @required int width,
-    @required int height,
+    @required int x,
+    @required int y,
+    @required int w,
+    @required int h,
   }) async {
     return await _channel.invokeMethod('setAbsoluteMixOverlayRect', {
-      "left": left,
-      "top": top,
-      "width": width,
-      "height": height,
+      "x": w,
+      "y": h,
+      "w": w,
+      "h": h,
+    });
+  }
+
+  /// 配置合流参数(仅主播端设置，连麦观众不设置)
+  /// 使用相对值来配置该窗口在合流画面中的位置和大小
+  Future<void> setRelativeMixOverlayRect({
+    @required int x,
+    @required int y,
+    @required int w,
+    @required int h,
+  }) async {
+    return await _channel.invokeMethod('setRelativeMixOverlayRect', {
+      "x": w,
+      "y": h,
+      "w": w,
+      "h": h,
     });
   }
 }

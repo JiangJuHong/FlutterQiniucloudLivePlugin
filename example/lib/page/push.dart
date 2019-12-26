@@ -268,14 +268,20 @@ class PushPageState extends State<PushPage> {
     this.setState(() => info = "关闭连麦执行成功");
   }
 
+  /// 获取编码器输出的画面的高宽
+  getVideoEncodingSize() async {
+    Map<String, dynamic> data = await controller.getVideoEncodingSize();
+    this.setState(() => info = "编码器高宽为:${data['height']},${data['width']}");
+  }
+
   /// 连麦视图创建事件
   onPlayerViewCreated(viewId, playerController) {
     // 设置合流参数
     playerController.setAbsoluteMixOverlayRect(
-      left: 0,
-      top: 0,
-      width: 100,
-      height: 100,
+      x: 0,
+      y: 0,
+      w: 100,
+      h: 100,
     );
 
     // 添加到远程视图
@@ -504,6 +510,12 @@ class PushPageState extends State<PushPage> {
                             onPressed:
                                 this.status != null ? onStopConference : null,
                             child: Text("关闭连麦"),
+                          ),
+                          RaisedButton(
+                            onPressed: this.status == "STREAMING"
+                                ? getVideoEncodingSize
+                                : null,
+                            child: Text("获得编码器输出画面高宽"),
                           ),
                         ],
                       ),
