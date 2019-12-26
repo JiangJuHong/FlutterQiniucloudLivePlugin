@@ -127,7 +127,7 @@ class QiniucloudPushViewController {
   }
 
   /// 静音
-  Future<bool> mute({
+  Future<void> mute({
     @required bool mute,
     @required QiniucloudAudioSourceTypeEnum audioSource,
   }) async {

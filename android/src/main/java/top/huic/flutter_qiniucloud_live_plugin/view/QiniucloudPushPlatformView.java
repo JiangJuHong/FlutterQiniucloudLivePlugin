@@ -243,6 +243,8 @@ public class QiniucloudPushPlatformView extends PlatformViewFactory implements P
         // 推流设置
         if (streamingProfileStr != null) {
             streamingProfile = JSON.parseObject(streamingProfileStr, StreamingProfile.class);
+        } else {
+            streamingProfile = new StreamingProfile();
         }
 
         // 麦克风设置
