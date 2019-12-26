@@ -17,7 +17,7 @@ class QiniucloudConnectedPlayerViewController {
     @required int width,
     @required int height,
   }) async {
-    return _channel.invokeMethod('setAbsoluteMixOverlayRect', {
+    return await _channel.invokeMethod('setAbsoluteMixOverlayRect', {
       "left": left,
       "top": top,
       "width": width,

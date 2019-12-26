@@ -38,31 +38,31 @@ class QiniucloudPushViewController {
 
   /// 打开摄像头和麦克风采集
   Future<bool> resume() async {
-    return _channel.invokeMethod('resume');
+    return await _channel.invokeMethod('resume');
   }
 
   /// 关闭摄像头和麦克风采集s
   Future<void> pause() async {
-    return _channel.invokeMethod('pause');
+    return await _channel.invokeMethod('pause');
   }
 
   /// 释放不紧要资源。
   Future<void> destroy() async {
-    return _channel.invokeMethod('destroy');
+    return await _channel.invokeMethod('destroy');
   }
 
   /// 开始推流
   Future<bool> startStreaming({
     publishUrl, // 推流地址，为null时使用全局配置上的推流地址
   }) async {
-    return _channel.invokeMethod('startStreaming', {
+    return await _channel.invokeMethod('startStreaming', {
       "publishUrl": publishUrl,
     });
   }
 
   /// 停止推流
   Future<bool> stopStreaming() async {
-    return _channel.invokeMethod('stopStreaming');
+    return await _channel.invokeMethod('stopStreaming');
   }
 
   /// 开始连麦
@@ -71,7 +71,7 @@ class QiniucloudPushViewController {
     @required roomName, //房间名
     @required roomToken, //房间token
   }) async {
-    return _channel.invokeMethod('startConference', {
+    return await _channel.invokeMethod('startConference', {
       "userId": userId,
       "roomName": roomName,
       "roomToken": roomToken,
@@ -80,46 +80,46 @@ class QiniucloudPushViewController {
 
   /// 停止连麦
   Future<bool> stopConference() async {
-    return _channel.invokeMethod('stopConference');
+    return await _channel.invokeMethod('stopConference');
   }
 
   /// 是否支持缩放
   Future<bool> isZoomSupported() async {
-    return _channel.invokeMethod('isZoomSupported');
+    return await _channel.invokeMethod('isZoomSupported');
   }
 
   /// 设置缩放比例
   Future<void> setZoomValue({
     @required int value,
   }) async {
-    return _channel.invokeMethod('setZoomValue', {"value": value});
+    return await _channel.invokeMethod('setZoomValue', {"value": value});
   }
 
   /// 获得最大缩放比例
   Future<int> getMaxZoom() async {
-    return _channel.invokeMethod('getMaxZoom');
+    return await _channel.invokeMethod('getMaxZoom');
   }
 
   /// 获得当前缩放比例
   Future<int> getZoom() async {
-    return _channel.invokeMethod('getZoom');
+    return await _channel.invokeMethod('getZoom');
   }
 
   /// 开启闪光灯
   Future<bool> turnLightOn() async {
-    return _channel.invokeMethod('turnLightOn');
+    return await _channel.invokeMethod('turnLightOn');
   }
 
   /// 关闭闪光灯
   Future<bool> turnLightOff() async {
-    return _channel.invokeMethod('turnLightOff');
+    return await _channel.invokeMethod('turnLightOff');
   }
 
   /// 切换摄像头
   Future<bool> switchCamera({
     @required QiniucloudCameraTypeEnum target, // 目标摄像头，不填代表反向切换,
   }) async {
-    return _channel.invokeMethod('switchCamera', {
+    return await _channel.invokeMethod('switchCamera', {
       "target": target == null
           ? null
           : target.toString().replaceAll("QiniucloudCameraTypeEnum.", ""),
@@ -131,7 +131,7 @@ class QiniucloudPushViewController {
     @required bool mute,
     @required QiniucloudAudioSourceTypeEnum audioSource,
   }) async {
-    return _channel.invokeMethod('mute', {
+    return await _channel.invokeMethod('mute', {
       "mute": mute,
       "audioSource": audioSource == null
           ? null
@@ -143,19 +143,19 @@ class QiniucloudPushViewController {
 
   /// 更新水印信息
   Future<void> updateWatermarkSetting(WatermarkSettingEntity data) async {
-    return _channel.invokeMethod('updateWatermarkSetting', data.toJson());
+    return await _channel.invokeMethod('updateWatermarkSetting', data.toJson());
   }
 
   /// 更新美颜信息
   Future<void> updateFaceBeautySetting(FaceBeautySettingEntity data) async {
-    return _channel.invokeMethod('updateFaceBeautySetting', data.toJson());
+    return await _channel.invokeMethod('updateFaceBeautySetting', data.toJson());
   }
 
   /// 改变预览镜像
   Future<bool> setPreviewMirror({
     @required bool mirror,
   }) async {
-    return _channel.invokeMethod('setPreviewMirror', {
+    return await _channel.invokeMethod('setPreviewMirror', {
       "mirror": mirror,
     });
   }
@@ -164,26 +164,26 @@ class QiniucloudPushViewController {
   Future<bool> setEncodingMirror({
     @required bool mirror,
   }) async {
-    return _channel.invokeMethod('setEncodingMirror', {
+    return await _channel.invokeMethod('setEncodingMirror', {
       "mirror": mirror,
     });
   }
 
   /// 开启耳返
   Future<bool> startPlayback() async {
-    return _channel.invokeMethod('startPlayback');
+    return await _channel.invokeMethod('startPlayback');
   }
 
   /// 关闭耳返
   Future<void> stopPlayback() async {
-    return _channel.invokeMethod('stopPlayback');
+    return await _channel.invokeMethod('stopPlayback');
   }
 
   /// 根据用户ID踢出连麦
   Future<void> kickoutUser({
     @required String userId,
   }) async {
-    return _channel.invokeMethod('kickoutUser', {
+    return await _channel.invokeMethod('kickoutUser', {
       "userId": userId,
     });
   }
@@ -192,14 +192,14 @@ class QiniucloudPushViewController {
   Future<bool> setConferenceOptions({
     @required ConferenceOptionsEntity conferenceOptions,
   }) async {
-    return _channel.invokeMethod('setConferenceOptions', {
+    return await _channel.invokeMethod('setConferenceOptions', {
       "conferenceOptions": conferenceOptions,
     });
   }
 
   /// 获得参与连麦的人数(不包括自己)
   Future<int> getParticipantsCount() async {
-    return _channel.invokeMethod('getParticipantsCount');
+    return await _channel.invokeMethod('getParticipantsCount');
   }
 
   /// 获取参与连麦的用户ID列表，不包括自己
@@ -211,7 +211,7 @@ class QiniucloudPushViewController {
   Future<void> addRemoteWindow({
     id, // 视图ID
   }) async {
-    return _channel.invokeMethod('addRemoteWindow', {"id": id});
+    return await _channel.invokeMethod('addRemoteWindow', {"id": id});
   }
 }
 

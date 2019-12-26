@@ -36,7 +36,7 @@ class QiniucloudPlayerViewController {
   Future<void> setVideoPath({
     @required String url,
   }) async {
-    return _channel.invokeMethod('setVideoPath', {"url": url});
+    return await _channel.invokeMethod('setVideoPath', {"url": url});
   }
 
   /// 设置画面预览模式
@@ -50,39 +50,39 @@ class QiniucloudPlayerViewController {
 
   /// 开始播放
   Future<void> start() async {
-    return _channel.invokeMethod('start');
+    return await _channel.invokeMethod('start');
   }
 
   /// 暂停
   Future<void> pause() async {
-    return _channel.invokeMethod('pause');
+    return await _channel.invokeMethod('pause');
   }
 
   /// 停止
   Future<void> stopPlayback() async {
-    return _channel.invokeMethod('stopPlayback');
+    return await _channel.invokeMethod('stopPlayback');
   }
 
   /// 获得视频时间戳
   Future<int> getRtmpVideoTimestamp() async {
-    return _channel.invokeMethod('getRtmpVideoTimestamp');
+    return await _channel.invokeMethod('getRtmpVideoTimestamp');
   }
 
   /// 获得音频时间戳
   Future<int> getRtmpAudioTimestamp() async {
-    return _channel.invokeMethod('getRtmpAudioTimestamp');
+    return await _channel.invokeMethod('getRtmpAudioTimestamp');
   }
 
   /// 暂停/恢复播放器的预缓冲
   Future<void> setBufferingEnabled({
     @required bool enabled,
   }) async {
-    return _channel.invokeMethod('setBufferingEnabled', {"enabled": enabled});
+    return await _channel.invokeMethod('setBufferingEnabled', {"enabled": enabled});
   }
 
   /// 获取已经缓冲的长度
   Future<String> getHttpBufferSize() async {
-    return _channel.invokeMethod('getHttpBufferSize');
+    return await _channel.invokeMethod('getHttpBufferSize');
   }
 }
 
