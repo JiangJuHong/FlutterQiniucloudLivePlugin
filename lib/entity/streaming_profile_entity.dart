@@ -51,7 +51,9 @@ class StreamingProfileEntity {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data["publishUrl"] = this.publishUrl;
+    if(this.publishUrl != null){
+      data["publishUrl"] = this.publishUrl;
+    }
     data["videoQuality"] = this.videoQuality == null
         ? null
         : QiniucloudPushVideoQualityEnumTool.toInt(this.videoQuality);
