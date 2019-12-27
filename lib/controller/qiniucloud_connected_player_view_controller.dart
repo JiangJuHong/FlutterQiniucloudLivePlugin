@@ -19,8 +19,8 @@ class QiniucloudConnectedPlayerViewController {
     @required int h,
   }) async {
     return await _channel.invokeMethod('setAbsoluteMixOverlayRect', {
-      "x": w,
-      "y": h,
+      "x": x,
+      "y": y,
       "w": w,
       "h": h,
     });
@@ -35,8 +35,8 @@ class QiniucloudConnectedPlayerViewController {
     @required int h,
   }) async {
     return await _channel.invokeMethod('setRelativeMixOverlayRect', {
-      "x": w,
-      "y": h,
+      "x": x,
+      "y": y,
       "w": w,
       "h": h,
     });
