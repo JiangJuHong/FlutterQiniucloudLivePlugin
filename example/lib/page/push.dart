@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_qiniucloud_live_plugin/view/qiniucloud_push_view.dart';
 import 'package:flutter_qiniucloud_live_plugin/controller/qiniucloud_push_view_controller.dart';
+import 'package:flutter_qiniucloud_live_plugin/controller/qiniucloud_connected_player_view_controller.dart';
 import 'package:flutter_qiniucloud_live_plugin/view/qiniucloud_connected_player_view.dart';
 import 'package:flutter_qiniucloud_live_plugin/enums/qiniucloud_push_listener_type_enum.dart';
 import 'package:flutter_qiniucloud_live_plugin/entity/face_beauty_setting_entity.dart';
@@ -21,6 +22,9 @@ class PushPage extends StatefulWidget {
 class PushPageState extends State<PushPage> {
   /// 推流控制器
   QiniucloudPushViewController controller;
+
+  /// 连麦控制器
+  QiniucloudConnectedPlayerViewController playerController;
 
   /// 当前状态
   String status;
@@ -276,6 +280,12 @@ class PushPageState extends State<PushPage> {
 
   /// 连麦视图创建事件
   onPlayerViewCreated(viewId, playerController) {
+    // 添加到远程视图
+    this.playerController = playerController;
+    controller.addRemoteWindow(id: viewId);
+  }
+
+  onSetAbsoluteMixOverlayRect() {
     // 设置合流参数
     playerController.setAbsoluteMixOverlayRect(
       x: 0,
@@ -283,18 +293,15 @@ class PushPageState extends State<PushPage> {
       w: 100,
       h: 100,
     );
-
-    // 添加到远程视图
-    controller.addRemoteWindow(id: viewId);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
+      body: Stack(
         children: <Widget>[
           Container(
-            height: MediaQuery.of(context).size.height / 2,
+            height: MediaQuery.of(context).size.height,
             child: Stack(
               children: <Widget>[
                 QiniucloudPushView(
@@ -302,19 +309,34 @@ class PushPageState extends State<PushPage> {
                       faceBeauty: faceBeautySettingEntity),
                   streamingProfile: StreamingProfileEntity(
                     publishUrl:
-                        "rtmp://pili-publish.tianshitaiyuan.com/zuqulive/1576400046230A?e=1581756846&token=v740N_w0pHblR7KZMSPHhfdqjxrHEv5e_yBaiq0e:nlza8l7AsBDNkp47AD09ItfZSKA=",
+                        "rtmp://pili-publish.tianshitaiyuan.com/zuqulive/98a6f9541f1b455480bf460aa52084971577257987207?e=1577600738&token=v740N_w0pHblR7KZMSPHhfdqjxrHEv5e_yBaiq0e:1aT4bzN1T5e-nexVgGA2YWZWOv0=",
                   ),
                   onViewCreated: onViewCreated,
                 ),
-                Positioned(
-                  top: 0,
-                  right: 0,
-                  bottom: 0,
+                // TODO 连麦功能需要手动解除注释改行代码
+                //                  Positioned(
+                //                    right: 0,
+                //                    height: 200,
+                //                    width: 200,
+                //                    top: 0,
+                //                    child: Container(
+                //                      width: MediaQuery.of(context).size.width / 2,
+                //                      child: QiniucloudConnectPlayerView(
+                //                        onViewCreated: onPlayerViewCreated,
+                //                      ),
+                //                    ),
+                //                  ),
+                Align(
+                  alignment: new FractionalOffset(0.5, 0.95),
                   child: Container(
-                    width: MediaQuery.of(context).size.width / 2,
-                    color: Colors.red,
-                    child: QiniucloudConnectPlayerView(
-                      onViewCreated: onPlayerViewCreated,
+                    padding: EdgeInsets.all(5),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                      border: Border.all(width: 1, color: Colors.white),
+                    ),
+                    child: Text(
+                      "上滑查看功能栏",
+                      style: TextStyle(color: Colors.white, fontSize: 10),
                     ),
                   ),
                 ),
@@ -322,15 +344,19 @@ class PushPageState extends State<PushPage> {
             ),
           ),
           Container(
-            height: MediaQuery.of(context).size.height / 2,
-            child: Column(
+            child: ListView(
+              padding: EdgeInsets.all(0),
               children: <Widget>[
-                Text("当前状态:${getStatusText(this.status)}"),
-                Text("连麦状态:${this.connectedStatus ?? ""}"),
-                Text(info ?? ""),
-                Expanded(
-                  child: ListView(
+                Container(
+                  height: MediaQuery.of(context).size.height,
+                ),
+                Container(
+                  color: Colors.white,
+                  child: Column(
                     children: <Widget>[
+                      Text("当前状态:${getStatusText(this.status)}"),
+                      Text("连麦状态:${this.connectedStatus ?? ""}"),
+                      Text(info ?? ""),
                       Wrap(
                         children: <Widget>[
                           Row(
@@ -516,6 +542,12 @@ class PushPageState extends State<PushPage> {
                                 ? getVideoEncodingSize
                                 : null,
                             child: Text("获得编码器输出画面高宽"),
+                          ),
+                          RaisedButton(
+                            onPressed: this.status != null
+                                ? onSetAbsoluteMixOverlayRect
+                                : null,
+                            child: Text("设置合流"),
                           ),
                         ],
                       ),

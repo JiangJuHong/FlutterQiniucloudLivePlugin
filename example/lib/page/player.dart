@@ -52,7 +52,7 @@ class PlayerPageState extends State<PlayerPage> {
     // 设置视频路径
     controller.setVideoPath(
         url:
-            "rtmp://pili-live-rtmp.tianshitaiyuan.com/zuqulive/1576400046230A");
+            "rtmp://pili-live-rtmp.tianshitaiyuan.com/zuqulive/98a6f9541f1b455480bf460aa52084971577257987207");
   }
 
   /// 监听器
