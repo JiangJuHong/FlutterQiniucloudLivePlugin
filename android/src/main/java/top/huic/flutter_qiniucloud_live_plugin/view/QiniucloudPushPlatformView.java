@@ -283,8 +283,6 @@ public class QiniucloudPushPlatformView extends PlatformViewFactory implements P
             connectOptions = new RTCConferenceOptions();
         }
 
-        manager.setLocalWindowPosition(100, 100, 100, 100);
-
         // 麦克风设置
         microphoneStreamingSetting = new MicrophoneStreamingSetting();
         microphoneStreamingSetting.setBluetoothSCOEnabled(true);
@@ -573,5 +571,6 @@ public class QiniucloudPushPlatformView extends PlatformViewFactory implements P
         int h = CommonUtil.getParam(call, result, "h");
         manager.setLocalWindowPosition(x, y, w, h);
         manager.prepare(cameraStreamingSetting, microphoneStreamingSetting, watermarkSetting, streamingProfile);
+        result.success(null);
     }
 }

@@ -260,7 +260,7 @@ class PushPageState extends State<PushPage> {
         roomName: "194f98358c934071a20c33431fd71423",
         userId: "af182f7402d74c7d82ea38f5482621b4",
         roomToken:
-            "v740N_w0pHblR7KZMSPHhfdqjxrHEv5e_yBaiq0e:6l4HnleNoIwZcqLLw0lupcI5NzM=:eyJyb29tX25hbWUiOiIxOTRmOTgzNThjOTM0MDcxYTIwYzMzNDMxZmQ3MTQyMyIsImV4cGlyZV9hdCI6MTU3NzYwNDU5NSwicGVybSI6ImFkbWluIiwidmVyc2lvbiI6IjIuMCIsInVzZXJfaWQiOiJhZjE4MmY3NDAyZDc0YzdkODJlYTM4ZjU0ODI2MjFiNCJ9",
+            "v740N_w0pHblR7KZMSPHhfdqjxrHEv5e_yBaiq0e:rSIkdWuf_h6vUbY46C59XbKkzdo=:eyJyb29tX25hbWUiOiIxOTRmOTgzNThjOTM0MDcxYTIwYzMzNDMxZmQ3MTQyMyIsImV4cGlyZV9hdCI6MTU4MTIwNzQ2NSwicGVybSI6ImFkbWluIiwidmVyc2lvbiI6IjIuMCIsInVzZXJfaWQiOiJhZjE4MmY3NDAyZDc0YzdkODJlYTM4ZjU0ODI2MjFiNCJ9",
       );
       this.setState(() => info = "连麦执行成功");
     } catch (e) {
@@ -268,7 +268,7 @@ class PushPageState extends State<PushPage> {
     }
   }
 
-  /// 开始连麦
+  /// 关闭连麦
   onStopConference() async {
     await controller.stopConference();
     this.setState(() => info = "关闭连麦执行成功");
@@ -300,7 +300,7 @@ class PushPageState extends State<PushPage> {
   /// 自定义推流窗口地址(连麦下有效)
   onSetLocalWindowPosition() {
     controller.setLocalWindowPosition(
-      x: 250,
+      x: 0,
       y: 10,
       w: 50,
       h: 50,
