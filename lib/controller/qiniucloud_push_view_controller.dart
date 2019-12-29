@@ -219,6 +219,21 @@ class QiniucloudPushViewController {
   Future<Map> getVideoEncodingSize() async {
     return jsonDecode(await _channel.invokeMethod('getVideoEncodingSize'));
   }
+
+  /// 自定义视频窗口位置(连麦推流模式下有效)
+  Future<void> setLocalWindowPosition({
+    @required int x,
+    @required int y,
+    @required int w,
+    @required int h,
+  }) async {
+    return await _channel.invokeMethod('setLocalWindowPosition', {
+      "x": x,
+      "y": y,
+      "w": w,
+      "h": h,
+    });
+  }
 }
 
 /// 七牛云连麦监听器

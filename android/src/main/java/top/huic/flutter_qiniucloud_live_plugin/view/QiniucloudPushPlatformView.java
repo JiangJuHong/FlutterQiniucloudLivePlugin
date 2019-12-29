@@ -77,6 +77,21 @@ public class QiniucloudPushPlatformView extends PlatformViewFactory implements P
     private RTCConferenceOptions connectOptions;
 
     /**
+     * 预览参数
+     */
+    private CameraStreamingSetting cameraStreamingSetting;
+
+    /**
+     * 麦克风参数
+     */
+    private MicrophoneStreamingSetting microphoneStreamingSetting;
+
+    /**
+     * 水印参数
+     */
+    private WatermarkSetting watermarkSetting;
+
+    /**
      * 初始化视图工厂，注册视图时调用
      */
     public QiniucloudPushPlatformView(Context context, BinaryMessenger messenger) {
@@ -181,6 +196,9 @@ public class QiniucloudPushPlatformView extends PlatformViewFactory implements P
             case "getVideoEncodingSize":
                 this.getVideoEncodingSize(call, result);
                 break;
+            case "setLocalWindowPosition":
+                this.setLocalWindowPosition(call, result);
+                break;
             default:
                 result.notImplemented();
         }
@@ -237,7 +255,7 @@ public class QiniucloudPushPlatformView extends PlatformViewFactory implements P
         manager.setAudioSourceCallback(listener);
 
         // 预览设置
-        CameraStreamingSetting cameraStreamingSetting = JSON.parseObject(cameraSettingStr, CameraStreamingSetting.class);
+        cameraStreamingSetting = JSON.parseObject(cameraSettingStr, CameraStreamingSetting.class);
         if (cameraStreamingSetting == null) {
             Log.e(TAG, "init: 相机信息初始化失败!");
         } else {
@@ -265,12 +283,13 @@ public class QiniucloudPushPlatformView extends PlatformViewFactory implements P
             connectOptions = new RTCConferenceOptions();
         }
 
-        // 麦克风设置
-        MicrophoneStreamingSetting microphoneStreamingSetting = new MicrophoneStreamingSetting();
-        microphoneStreamingSetting.setBluetoothSCOEnabled(true);
+        manager.setLocalWindowPosition(100, 100, 100, 100);
 
+        // 麦克风设置
+        microphoneStreamingSetting = new MicrophoneStreamingSetting();
+        microphoneStreamingSetting.setBluetoothSCOEnabled(true);
         manager.setConferenceOptions(connectOptions);
-        manager.prepare(cameraStreamingSetting, microphoneStreamingSetting, null, streamingProfile);
+        manager.prepare(cameraStreamingSetting, microphoneStreamingSetting, watermarkSetting, streamingProfile);
     }
 
     /**
@@ -405,6 +424,7 @@ public class QiniucloudPushPlatformView extends PlatformViewFactory implements P
     private void switchCamera(MethodCall call, final MethodChannel.Result result) {
         String target = CommonUtil.getParam(call, result, "target");
         CameraStreamingSetting.CAMERA_FACING_ID id = CameraStreamingSetting.CAMERA_FACING_ID.valueOf(target);
+        cameraStreamingSetting.setCameraFacingId(id);
         result.success(manager.switchCamera(id));
     }
 
@@ -500,7 +520,7 @@ public class QiniucloudPushPlatformView extends PlatformViewFactory implements P
      * 更新动态水印
      */
     private void updateWatermarkSetting(MethodCall call, final MethodChannel.Result result) {
-        WatermarkSetting watermarkSetting = new WatermarkSetting(context);
+        watermarkSetting = new WatermarkSetting(context);
         watermarkSetting.setResourcePath(CommonUtil.getParam(call, result, "resourcePath").toString());
         watermarkSetting.setSize(WatermarkSetting.WATERMARK_SIZE.valueOf(CommonUtil.getParam(call, result, "size").toString()));
         watermarkSetting.setLocation(WatermarkSetting.WATERMARK_LOCATION.valueOf(CommonUtil.getParam(call, result, "location").toString()));
@@ -517,7 +537,10 @@ public class QiniucloudPushPlatformView extends PlatformViewFactory implements P
         double redden = CommonUtil.getParam(call, result, "redden");
         double whiten = CommonUtil.getParam(call, result, "whiten");
         manager.setVideoFilterType(CameraStreamingSetting.VIDEO_FILTER_TYPE.VIDEO_FILTER_BEAUTY);
-        manager.updateFaceBeautySetting(new CameraStreamingSetting.FaceBeautySetting((float) beautyLevel, (float) whiten, (float) redden));
+
+        CameraStreamingSetting.FaceBeautySetting faceBeautySetting = new CameraStreamingSetting.FaceBeautySetting((float) beautyLevel, (float) whiten, (float) redden);
+        cameraStreamingSetting.setFaceBeautySetting(faceBeautySetting);
+        manager.updateFaceBeautySetting(faceBeautySetting);
         result.success(null);
     }
 
@@ -538,5 +561,17 @@ public class QiniucloudPushPlatformView extends PlatformViewFactory implements P
         res.put("width", connectOptions.getVideoEncodingWidth());
         res.put("height", connectOptions.getVideoEncodingHeight());
         result.success(JSON.toJSONString(res));
+    }
+
+    /**
+     * 自定义视频窗口位置(连麦推流模式下有效)
+     */
+    private void setLocalWindowPosition(MethodCall call, final MethodChannel.Result result) {
+        int x = CommonUtil.getParam(call, result, "x");
+        int y = CommonUtil.getParam(call, result, "y");
+        int w = CommonUtil.getParam(call, result, "w");
+        int h = CommonUtil.getParam(call, result, "h");
+        manager.setLocalWindowPosition(x, y, w, h);
+        manager.prepare(cameraStreamingSetting, microphoneStreamingSetting, watermarkSetting, streamingProfile);
     }
 }

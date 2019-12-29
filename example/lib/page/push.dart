@@ -55,9 +55,11 @@ class PushPageState extends State<PushPage> {
   }
 
   /// 控制器初始化
-  onViewCreated(QiniucloudPushViewController controller) {
+  onViewCreated(QiniucloudPushViewController controller) async {
     this.controller = controller;
     controller.addListener(onListener);
+    bool result = await controller.resume();
+    this.setState(() => info = "预览执行结果: $result");
   }
 
   /// 监听器
@@ -255,10 +257,10 @@ class PushPageState extends State<PushPage> {
   onStartConference() async {
     try {
       await controller.startConference(
-        roomName: "15764969071808",
-        userId: "2ef92e08177c46b19cc97999fae296b8",
+        roomName: "194f98358c934071a20c33431fd71423",
+        userId: "af182f7402d74c7d82ea38f5482621b4",
         roomToken:
-            "v740N_w0pHblR7KZMSPHhfdqjxrHEv5e_yBaiq0e:MHo7mCd7Y_6w9E1348lkfkmm9Ps=:eyJyb29tX25hbWUiOiIxNTc2NDk2OTA3MTgwOCIsImV4cGlyZV9hdCI6MTU3NzU3MjEzOCwicGVybSI6ImFkbWluIiwidmVyc2lvbiI6IjIuMCIsInVzZXJfaWQiOiIyZWY5MmUwODE3N2M0NmIxOWNjOTc5OTlmYWUyOTZiOCJ9",
+            "v740N_w0pHblR7KZMSPHhfdqjxrHEv5e_yBaiq0e:6l4HnleNoIwZcqLLw0lupcI5NzM=:eyJyb29tX25hbWUiOiIxOTRmOTgzNThjOTM0MDcxYTIwYzMzNDMxZmQ3MTQyMyIsImV4cGlyZV9hdCI6MTU3NzYwNDU5NSwicGVybSI6ImFkbWluIiwidmVyc2lvbiI6IjIuMCIsInVzZXJfaWQiOiJhZjE4MmY3NDAyZDc0YzdkODJlYTM4ZjU0ODI2MjFiNCJ9",
       );
       this.setState(() => info = "连麦执行成功");
     } catch (e) {
@@ -285,13 +287,23 @@ class PushPageState extends State<PushPage> {
     controller.addRemoteWindow(id: viewId);
   }
 
+  /// 设置合流参数
   onSetAbsoluteMixOverlayRect() {
-    // 设置合流参数
     playerController.setAbsoluteMixOverlayRect(
       x: 0,
       y: 0,
       w: 100,
       h: 100,
+    );
+  }
+
+  /// 自定义推流窗口地址(连麦下有效)
+  onSetLocalWindowPosition() {
+    controller.setLocalWindowPosition(
+      x: 250,
+      y: 10,
+      w: 50,
+      h: 50,
     );
   }
 
@@ -309,23 +321,22 @@ class PushPageState extends State<PushPage> {
                       faceBeauty: faceBeautySettingEntity),
                   streamingProfile: StreamingProfileEntity(
                     publishUrl:
-                        "rtmp://pili-publish.tianshitaiyuan.com/zuqulive/98a6f9541f1b455480bf460aa52084971577257987207?e=1577600738&token=v740N_w0pHblR7KZMSPHhfdqjxrHEv5e_yBaiq0e:1aT4bzN1T5e-nexVgGA2YWZWOv0=",
+                        "rtmp://pili-publish.tianshitaiyuan.com/zuqulive/1576400046230A?e=1581756846&token=v740N_w0pHblR7KZMSPHhfdqjxrHEv5e_yBaiq0e:nlza8l7AsBDNkp47AD09ItfZSKA=",
                   ),
                   onViewCreated: onViewCreated,
                 ),
-                // TODO 连麦功能需要手动解除注释改行代码
-                //                  Positioned(
-                //                    right: 0,
-                //                    height: 200,
-                //                    width: 200,
-                //                    top: 0,
-                //                    child: Container(
-                //                      width: MediaQuery.of(context).size.width / 2,
-                //                      child: QiniucloudConnectPlayerView(
-                //                        onViewCreated: onPlayerViewCreated,
-                //                      ),
-                //                    ),
-                //                  ),
+                Positioned(
+                  right: 0,
+                  height: 100,
+                  width: 100,
+                  top: 0,
+                  child: Container(
+                    width: MediaQuery.of(context).size.width / 2,
+                    child: QiniucloudConnectPlayerView(
+                      onViewCreated: onPlayerViewCreated,
+                    ),
+                  ),
+                ),
                 Align(
                   alignment: new FractionalOffset(0.5, 0.95),
                   child: Container(
@@ -548,6 +559,12 @@ class PushPageState extends State<PushPage> {
                                 ? onSetAbsoluteMixOverlayRect
                                 : null,
                             child: Text("设置合流"),
+                          ),
+                          RaisedButton(
+                            onPressed: this.status != null
+                                ? onSetLocalWindowPosition
+                                : null,
+                            child: Text("自定义推流窗口位置(连麦下有效)"),
                           ),
                         ],
                       ),

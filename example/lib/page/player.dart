@@ -52,7 +52,7 @@ class PlayerPageState extends State<PlayerPage> {
     // 设置视频路径
     controller.setVideoPath(
         url:
-            "rtmp://pili-live-rtmp.tianshitaiyuan.com/zuqulive/98a6f9541f1b455480bf460aa52084971577257987207");
+            "rtmp://pili-live-rtmp.tianshitaiyuan.com/zuqulive/1576400046230A");
   }
 
   /// 监听器
@@ -64,13 +64,13 @@ class PlayerPageState extends State<PlayerPage> {
 
     // 状态改变
     if (type == QiniucloudPlayerListenerTypeEnum.Info) {
-      Map<String,dynamic> paramsObj = jsonDecode(params);
+      Map<String, dynamic> paramsObj = jsonDecode(params);
       this.setState(() => status = paramsObj["what"]);
     }
 
     // 大小改变
     if (type == QiniucloudPlayerListenerTypeEnum.VideoSizeChanged) {
-      Map<String,dynamic> paramsObj = jsonDecode(params);
+      Map<String, dynamic> paramsObj = jsonDecode(params);
       this.setState(() {
         width = paramsObj["width"];
         height = paramsObj["height"];
@@ -192,28 +192,49 @@ class PlayerPageState extends State<PlayerPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
+      body: Stack(
         children: <Widget>[
           Container(
-            color: Colors.grey,
-            height: MediaQuery.of(context).size.height / 2,
-            child: QiniucloudPlayerView(
-              onViewCreated: onViewCreated,
+            height: MediaQuery.of(context).size.height,
+            child: Stack(
+              children: <Widget>[
+                QiniucloudPlayerView(
+                  onViewCreated: onViewCreated,
+                ),
+                Align(
+                  alignment: new FractionalOffset(0.5, 0.95),
+                  child: Container(
+                    padding: EdgeInsets.all(5),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                      border: Border.all(width: 1, color: Colors.white),
+                    ),
+                    child: Text(
+                      "上滑查看功能栏",
+                      style: TextStyle(color: Colors.white, fontSize: 10),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
           Container(
-            height: MediaQuery.of(context).size.height / 2,
-            child: Column(
+            child: ListView(
+              padding: EdgeInsets.all(0),
               children: <Widget>[
-                Text(
-                  error != null ? "发生错误，错误信息为:${getErrorText()}" : "",
-                  style: TextStyle(color: Colors.red),
+                Container(
+                  height: MediaQuery.of(context).size.height,
                 ),
-                Text(hint ?? ""),
-                Text("当前状态:${getStatusText()},视频高宽:$height,$width"),
-                Expanded(
-                  child: ListView(
+                Container(
+                  color: Colors.white,
+                  child: Column(
                     children: <Widget>[
+                      Text(
+                        error != null ? "发生错误，错误信息为:${getErrorText()}" : "",
+                        style: TextStyle(color: Colors.red),
+                      ),
+                      Text(hint ?? ""),
+                      Text("当前状态:${getStatusText()},视频高宽:$height,$width"),
                       Wrap(
                         children: <Widget>[
                           RaisedButton(
