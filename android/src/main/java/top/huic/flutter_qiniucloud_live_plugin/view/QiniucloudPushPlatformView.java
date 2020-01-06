@@ -286,7 +286,11 @@ public class QiniucloudPushPlatformView extends PlatformViewFactory implements P
         // 麦克风设置
         microphoneStreamingSetting = new MicrophoneStreamingSetting();
         microphoneStreamingSetting.setBluetoothSCOEnabled(true);
+
+        // 连麦设置
         manager.setConferenceOptions(connectOptions);
+
+        // 加载
         manager.prepare(cameraStreamingSetting, microphoneStreamingSetting, watermarkSetting, streamingProfile);
     }
 
