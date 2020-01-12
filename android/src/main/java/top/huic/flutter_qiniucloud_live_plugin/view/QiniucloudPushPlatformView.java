@@ -318,15 +318,18 @@ public class QiniucloudPushPlatformView extends PlatformViewFactory implements P
         String roomName = CommonUtil.getParam(call, result, "roomName");
         String roomToken = CommonUtil.getParam(call, result, "roomToken");
 
+        Log.d(TAG, "startConference: 开始连麦");
         final boolean[] executeReturn = {false};
         manager.startConference(userId, roomName, roomToken, new RTCStartConferenceCallback() {
             @Override
             public void onStartConferenceSuccess() {
+                Log.d(TAG, "startConference: 成功连麦");
                 CommonUtil.runMainThreadReturn(result, null);
             }
 
             @Override
             public void onStartConferenceFailed(int i) {
+                Log.d(TAG, "startConference: 连麦失败");
                 if (!executeReturn[0]) {
                     CommonUtil.runMainThreadReturnError(result, String.valueOf(i), "", "");
                     executeReturn[0] = true;

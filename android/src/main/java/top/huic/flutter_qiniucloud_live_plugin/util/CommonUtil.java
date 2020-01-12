@@ -2,9 +2,11 @@ package top.huic.flutter_qiniucloud_live_plugin.util;
 
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
+import top.huic.flutter_qiniucloud_live_plugin.view.QiniucloudPushPlatformView;
 
 /**
  * 工具类
@@ -38,9 +40,11 @@ public class CommonUtil {
      * @param param  返回参数
      */
     public static void runMainThreadReturn(final MethodChannel.Result result, final Object param) {
+        Log.d(QiniucloudPushPlatformView.class.getName(), "run: 准备进入连麦线程");
         MAIN_HANDLER.post(new Runnable() {
             @Override
             public void run() {
+                Log.d(QiniucloudPushPlatformView.class.getName(), "run: 进入连麦线程");
                 result.success(param);
             }
         });
