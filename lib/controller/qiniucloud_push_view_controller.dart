@@ -18,22 +18,22 @@ class QiniucloudPushViewController {
   final MethodChannel _channel;
 
   /// 监听器对象
-  QiniucloudConnectedPushListener listener;
+  QiniucloudConnectedPushListener _listener;
 
   /// 添加消息监听
   void addListener(QiniucloudPushListenerValue func) {
-    if (listener == null) {
-      listener = QiniucloudConnectedPushListener(_channel);
+    if (_listener == null) {
+      _listener = QiniucloudConnectedPushListener(_channel);
     }
-    listener.addListener(func);
+    _listener.addListener(func);
   }
 
   /// 移除消息监听
   void removeListener(QiniucloudPushListenerValue func) {
-    if (listener == null) {
-      listener = QiniucloudConnectedPushListener(_channel);
+    if (_listener == null) {
+      return;
     }
-    listener.removeListener(func);
+    _listener.removeListener(func);
   }
 
   /// 打开摄像头和麦克风采集
@@ -239,7 +239,7 @@ class QiniucloudPushViewController {
 /// 七牛云连麦监听器
 class QiniucloudConnectedPushListener {
   /// 监听器列表
-  static Set<QiniucloudPushListenerValue> listeners = Set();
+  Set<QiniucloudPushListenerValue> _listeners = Set();
 
   QiniucloudConnectedPushListener(MethodChannel channel) {
     // 绑定监听器
@@ -274,7 +274,7 @@ class QiniucloudConnectedPushListener {
           }
 
           // 回调触发
-          for (var item in listeners) {
+          for (var item in _listeners) {
             item(type, params ?? paramsStr);
           }
 
@@ -287,12 +287,12 @@ class QiniucloudConnectedPushListener {
 
   /// 添加消息监听
   void addListener(QiniucloudPushListenerValue func) {
-    listeners.add(func);
+    _listeners.add(func);
   }
 
   /// 移除消息监听
   void removeListener(QiniucloudPushListenerValue func) {
-    listeners.remove(func);
+    _listeners.remove(func);
   }
 }
 
