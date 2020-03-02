@@ -9,9 +9,9 @@ Pod::Spec.new do |s|
   s.description      = <<-DESC
 Flutter 七牛云直播云插件
                        DESC
-  s.homepage         = 'http://example.com'
+  s.homepage         = 'https://github.com/JiangJuHong/FlutterQiniucloudLivePlugin'
   s.license          = { :file => '../LICENSE' }
-  s.author           = { 'Your Company' => 'email@example.com' }
+  s.author           = { 'JiangJuHong' => '690717394@qq.com' }
   s.source           = { :path => '.' }
   s.source_files = 'Classes/**/*'
   s.dependency 'Flutter'
@@ -20,4 +20,13 @@ Flutter 七牛云直播云插件
   # Flutter.framework does not contain a i386 slice. Only x86_64 simulators are supported.
   s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES', 'VALID_ARCHS[sdk=iphonesimulator*]' => 'x86_64' }
   s.swift_version = '5.0'
+
+  # 资源导入
+  s.vendored_frameworks = '**/*.framework'
+
+  # 七牛云直播云播放端依赖(https://developer.qiniu.com/pili/sdk/1211/ios-playback-end-the-sdk)
+  s.dependency 'PLPlayerKit'
+  # 七牛云直播云连麦端依赖(https://developer.qiniu.com/pili/sdk/4311/PLRTCStreamingKit)
+  s.dependency 'PLRTCStreamingKit'
+
 end
