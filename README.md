@@ -39,7 +39,17 @@ Flutter 七牛云直播云插件
 不需要额外集成，已内部打入混淆
 
 ### IOS
-暂不支持
+配置权限信息，在Info.plist中增加
+```
+    <key>io.flutter.embedded_views_preview</key>
+    <true/>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>App需要您的同意,才能访问相册</string>
+    <key>NSCameraUsageDescription</key>
+    <string>App需要您的同意,才能访问相机</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>App需要您的同意,才能访问麦克风</string>
+```
 
 ## 使用
 使用Demo时请是主动更改推流地址和播放地址  
