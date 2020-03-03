@@ -54,30 +54,6 @@ QiniucloudPlayerView: 播放器组件，通过Controller控制播放等内容
 QiniucloudConnectPlayerView：连麦推流预览组件
 
 ## 功能清单
-### 播放视图组件(QiniucloudPlayerView)
-#### 例子
-```
-QiniucloudPlayerView(
-  onViewCreated: (QiniucloudPlayerViewController controller){
-    controller.setVideoPath(url:"rtmp://pili-live-rtmp.tianshitaiyuan.com/zuqulive/1576400046230A")
-  },
-),
-```
-#### 相关接口:(QiniucloudPlayerViewController调用方法)  
-|  接口   | 说明  | 参数  | Android | IOS |
-|  ----  | ----  | ----  | ----  | ----  |
-| setVideoPath  | 设置视频路径 | - | √ | 
-| setDisplayAspectRatio  | 设置画面预览模式 | - | √ | 
-| start  | 开始播放 | - | √ | 
-| pause  | 暂停播放 | - | √ | 
-| stopPlayback  | 停止播放 | - | √ | 
-| getRtmpVideoTimestamp  | 在RTMP消息中获取视频时间戳 | - | √ | 
-| getRtmpAudioTimestamp  | 在RTMP消息中获取音频时间戳 | - | √ | 
-| setBufferingEnabled  | 暂停/恢复播放器的预缓冲 | - | √ | 
-| getHttpBufferSize  | 获取已经缓冲的长度 | - | √ | 
-
-***
-
 ### 连麦推流视图组件(QiniucloudPushView)
 #### 例子
 ```
@@ -124,6 +100,30 @@ QiniucloudPushView(
 | addRemoteWindow  | 添加远程视图 | - | √ | 
 | getVideoEncodingSize  | 获取编码器输出的画面的高宽 | - | √ | 
 | setLocalWindowPosition  | 自定义视频窗口位置(连麦推流模式下有效) | - | √ | 
+
+***
+
+### 播放视图组件(QiniucloudPlayerView)
+#### 例子
+```
+QiniucloudPlayerView(
+  onViewCreated: (QiniucloudPlayerViewController controller){
+    controller.setVideoPath(url:"rtmp://pili-live-rtmp.tianshitaiyuan.com/zuqulive/1576400046230A")
+  },
+),
+```
+#### 相关接口:(QiniucloudPlayerViewController调用方法)  
+|  接口   | 说明  | 参数  | Android | IOS |
+|  ----  | ----  | ----  | ----  | ----  |
+| setVideoPath  | 设置视频路径 | - | √ | 
+| setDisplayAspectRatio  | 设置画面预览模式 | - | √ | 
+| start  | 开始播放 | - | √ | 
+| pause  | 暂停播放 | - | √ | 
+| stopPlayback  | 停止播放 | - | √ | 
+| getRtmpVideoTimestamp  | 在RTMP消息中获取视频时间戳 | - | √ | 
+| getRtmpAudioTimestamp  | 在RTMP消息中获取音频时间戳 | - | √ | 
+| setBufferingEnabled  | 暂停/恢复播放器的预缓冲 | - | √ | 
+| getHttpBufferSize  | 获取已经缓冲的长度 | - | √ | 
 
 ***
 
