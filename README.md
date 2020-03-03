@@ -66,7 +66,7 @@ QiniucloudConnectPlayerView：连麦推流预览组件
 ## 功能清单
 ### 连麦推流视图组件(QiniucloudPushView)
 #### 例子
-```flutter
+```dart
 QiniucloudPushView(
   cameraStreamingSetting: CameraStreamingSettingEntity(
     faceBeauty: faceBeautySettingEntity,
