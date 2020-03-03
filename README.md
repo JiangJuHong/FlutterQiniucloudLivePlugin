@@ -115,7 +115,7 @@ QiniucloudPushView(
 
 ### 播放视图组件(QiniucloudPlayerView)
 #### 例子
-```
+```dart
 QiniucloudPlayerView(
   onViewCreated: (QiniucloudPlayerViewController controller){
     controller.setVideoPath(url:"rtmp://pili-live-rtmp.tianshitaiyuan.com/zuqulive/1576400046230A")
@@ -139,7 +139,7 @@ QiniucloudPlayerView(
 
 ### 连麦推流预览组件(QiniucloudConnectPlayerView)
 #### 例子
-```
+```dart
 QiniucloudConnectPlayerView(
   onViewCreated: (viewId, playerController) {
     this.playerController = playerController;
