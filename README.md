@@ -49,5 +49,96 @@ Flutter 七牛云直播云插件
 <img src="https://raw.githubusercontent.com/JiangJuHong/access-images/master/FlutterQiniucloudLivePlugin/player.png" height="300em" style="max-width:100%;">
 
 ### 组件列表
-QiniucloudPushView: 推流预览窗口，通过该窗口Controller实现推流以及回显功能  
+QiniucloudPushView: 推流组件，通过该窗口Controller实现推流以及回显功能  
 QiniucloudPlayerView: 播放器组件，通过Controller控制播放等内容  
+QiniucloudConnectPlayerView：连麦推流预览组件
+
+## 功能清单
+### 播放视图组件(QiniucloudPlayerView)
+#### 例子
+```
+QiniucloudPlayerView(
+  onViewCreated: (QiniucloudPlayerViewController controller){
+    controller.setVideoPath(url:"rtmp://pili-live-rtmp.tianshitaiyuan.com/zuqulive/1576400046230A")
+  },
+),
+```
+#### 相关接口:(QiniucloudPlayerViewController调用方法)  
+|  接口   | 说明  | 参数  | Android | IOS |
+|  ----  | ----  | ----  | ----  | ----  |
+| setVideoPath  | 设置视频路径 | - | √ | 
+| setDisplayAspectRatio  | 设置画面预览模式 | - | √ | 
+| start  | 开始播放 | - | √ | 
+| pause  | 暂停播放 | - | √ | 
+| stopPlayback  | 停止播放 | - | √ | 
+| getRtmpVideoTimestamp  | 在RTMP消息中获取视频时间戳 | - | √ | 
+| getRtmpAudioTimestamp  | 在RTMP消息中获取音频时间戳 | - | √ | 
+| setBufferingEnabled  | 暂停/恢复播放器的预缓冲 | - | √ | 
+| getHttpBufferSize  | 获取已经缓冲的长度 | - | √ | 
+
+***
+
+### 连麦推流视图组件(QiniucloudPushView)
+#### 例子
+```
+QiniucloudPushView(
+  cameraStreamingSetting: CameraStreamingSettingEntity(
+    faceBeauty: faceBeautySettingEntity,
+  ),
+  streamingProfile: StreamingProfileEntity(
+    publishUrl: "rtmp://pili-publish.tianshitaiyuan.com/zuqulive/1576400046230A?e=1581756846&token=v740N_w0pHblR7KZMSPHhfdqjxrHEv5e_yBaiq0e:nlza8l7AsBDNkp47AD09ItfZSKA=",
+  ),
+  onViewCreated: (QiniucloudPushViewController controller) {
+    controller.resume();
+  },
+)
+```
+#### 相关接口:(QiniucloudPushViewController调用方法)  
+|  接口   | 说明  | 参数  | Android | IOS |
+|  ----  | ----  | ----  | ----  | ----  |
+| resume  | 打开摄像头和麦克风采集 | - | √ | 
+| pause  | 关闭摄像头和麦克风采集 | - | √ | 
+| stopConference  | 停止连麦 | - | √ | 
+| startStreaming  | 开始推流 | - | √ | 
+| stopStreaming  | 停止推流 | - | √ | 
+| destroy  | 销毁 | - | √ | 
+| isZoomSupported  | 查询是否支持缩放 | - | √ | 
+| setZoomValue  | 设置缩放比例 | - | √ | 
+| getMaxZoom  | 获得最大缩放比例 | - | √ | 
+| getZoom  | 获得缩放比例 | - | √ | 
+| turnLightOn  | 开启闪光灯 | - | √ | 
+| turnLightOff  | 关闭闪光灯 | - | √ | 
+| switchCamera  | 切换摄像头 | - | √ | 
+| mute  | 切换静音 | - | √ | 
+| kickoutUser  | 根据用户ID踢人 | - | √ | 
+| setConferenceOptions  | 设置连麦参数 | - | √ | 
+| setStreamingProfile  | 更新推流参数 | - | √ | 
+| getParticipantsCount  | 获取参与连麦的人数，不包括自己 | - | √ | 
+| getParticipants  | 获取参与连麦的用户ID列表，不包括自己 | - | √ | 
+| setPreviewMirror  | 设置预览镜像 | - | √ | 
+| setEncodingMirror  | 设置推流镜像 | - | √ | 
+| startPlayback  | 开启耳返 | - | √ | 
+| stopPlayback  | 关闭耳返 | - | √ | 
+| updateWatermarkSetting  | 更新动态水印 | - | √ | 
+| updateFaceBeautySetting  | 更新美颜设置 | - | √ | 
+| addRemoteWindow  | 添加远程视图 | - | √ | 
+| getVideoEncodingSize  | 获取编码器输出的画面的高宽 | - | √ | 
+| setLocalWindowPosition  | 自定义视频窗口位置(连麦推流模式下有效) | - | √ | 
+
+***
+
+### 连麦推流预览组件(QiniucloudConnectPlayerView)
+#### 例子
+```
+QiniucloudConnectPlayerView(
+  onViewCreated: (viewId, playerController) {
+    this.playerController = playerController;
+    controller.addRemoteWindow(id: viewId);
+  },
+)
+```
+#### 相关接口:(QiniucloudPlayerViewController调用方法)  
+|  接口   | 说明  | 参数  | Android | IOS |
+|  ----  | ----  | ----  | ----  | ----  |
+| setAbsoluteMixOverlayRect  | 配置连麦合流的参数（仅主播才配置，连麦观众不用）使用绝对值来配置该窗口在合流画面中的位置和大小 | - | √ | 
+| setRelativeMixOverlayRect  | 配置连麦合流的参数（仅主播才配置，连麦观众不用）使用相对值来配置该窗口在合流画面中的位置和大小 | - | √ | 

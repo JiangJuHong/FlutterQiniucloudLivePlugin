@@ -31,8 +31,8 @@ class HomePageState extends State<HomePage> {
     // 摄像头和麦克风权限请求
     PermissionHandler().requestPermissions(
         [PermissionGroup.camera, PermissionGroup.microphone]).then((res) {
-      if (res[PermissionGroup.camera] != PermissionStatus.disabled &&
-          res[PermissionGroup.microphone] != PermissionStatus.disabled) {
+      if (res[PermissionGroup.camera] == PermissionStatus.granted &&
+          res[PermissionGroup.microphone] == PermissionStatus.granted) {
         Navigator.push(
           context,
           new MaterialPageRoute(builder: (context) => PushPage()),
