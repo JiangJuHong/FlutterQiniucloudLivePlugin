@@ -1,5 +1,6 @@
 import Flutter
 import UIKit
+import PLPlayerKit
 
 public class SwiftFlutterQiniucloudLivePlugin: NSObject, FlutterPlugin {
   public static func register(with registrar: FlutterPluginRegistrar) {
