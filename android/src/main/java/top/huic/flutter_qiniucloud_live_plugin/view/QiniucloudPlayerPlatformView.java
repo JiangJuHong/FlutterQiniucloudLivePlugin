@@ -10,6 +10,7 @@ import com.pili.pldroid.player.widget.PLVideoTextureView;
 import com.pili.pldroid.player.widget.PLVideoView;
 
 import java.util.Map;
+import java.util.Objects;
 
 import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.MethodCall;
@@ -72,9 +73,6 @@ public class QiniucloudPlayerPlatformView extends PlatformViewFactory implements
     @Override
     public void onMethodCall(MethodCall call, MethodChannel.Result result) {
         switch (call.method) {
-            case "setVideoPath":
-                this.setVideoPath(call, result);
-                break;
             case "setDisplayAspectRatio":
                 this.setDisplayAspectRatio(call, result);
                 break;
@@ -136,6 +134,9 @@ public class QiniucloudPlayerPlatformView extends PlatformViewFactory implements
         // 初始化视图
         view = new PLVideoView(context);
         view.setMediaController(new MediaController(context));
+        if (params.get("url") != null) {
+            view.setVideoPath(params.get("url").toString());
+        }
 
         // 监听器
         QiniucloudPlayerListener listener = new QiniucloudPlayerListener(context, methodChannel);
@@ -144,15 +145,6 @@ public class QiniucloudPlayerPlatformView extends PlatformViewFactory implements
         view.setOnCompletionListener(listener);
         view.setOnVideoSizeChangedListener(listener);
         view.setOnErrorListener(listener);
-    }
-
-    /**
-     * 设置视频路径
-     */
-    private void setVideoPath(MethodCall call, MethodChannel.Result result) {
-        String url = CommonUtil.getParam(call, result, "url");
-        view.setVideoPath(url);
-        result.success(null);
     }
 
     /**
@@ -168,6 +160,10 @@ public class QiniucloudPlayerPlatformView extends PlatformViewFactory implements
      * 播放
      */
     private void start(MethodCall call, MethodChannel.Result result) {
+        String url = call.argument("url");
+        if (url != null) {
+            view.setVideoPath(url);
+        }
         view.start();
         result.success(null);
     }
@@ -215,6 +211,6 @@ public class QiniucloudPlayerPlatformView extends PlatformViewFactory implements
      * 获取已经缓冲的长度
      */
     private void getHttpBufferSize(MethodCall call, MethodChannel.Result result) {
-        result.success(view.getHttpBufferSize());
+        result.success(view.getHttpBufferSize().longValue());
     }
 }

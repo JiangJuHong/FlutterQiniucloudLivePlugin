@@ -28,7 +28,7 @@ import top.huic.flutter_qiniucloud_live_plugin.util.ConnectedUtil;
 import top.huic.flutter_qiniucloud_live_plugin.widget.CameraPreviewFrameView;
 
 /**
- * 七牛云连麦推流视图
+ * 七牛云连麦播放视图
  */
 public class QiniucloudConnectedPlayerPlatformView extends PlatformViewFactory implements PlatformView, MethodChannel.MethodCallHandler {
 

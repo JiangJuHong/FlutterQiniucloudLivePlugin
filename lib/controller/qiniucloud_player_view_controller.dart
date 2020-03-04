@@ -32,13 +32,6 @@ class QiniucloudPlayerViewController {
     listener.removeListener(func);
   }
 
-  /// 设置视频路径
-  Future<void> setVideoPath({
-    @required String url,
-  }) async {
-    return await _channel.invokeMethod('setVideoPath', {"url": url});
-  }
-
   /// 设置画面预览模式
   Future<void> setDisplayAspectRatio({
     @required QiniucloudPlayerDisplayAspectRatioEnum mode,
@@ -49,8 +42,15 @@ class QiniucloudPlayerViewController {
   }
 
   /// 开始播放
-  Future<void> start() async {
-    return await _channel.invokeMethod('start');
+  Future<void> start({
+    String url, // URL，如果该属性不为null，则会执行切换操作
+    bool
+        sameSource : false, // 是否是同种格式播放，同格式切换打开更快 @waring 当sameSource 为 YES 时，视频格式与切换前视频格式不同时，会导致视频打开失败【该属性仅IOS有效】
+  }) async {
+    return await _channel.invokeMethod('start', {
+      "url": url,
+      "sameSource": sameSource,
+    });
   }
 
   /// 暂停
@@ -77,11 +77,12 @@ class QiniucloudPlayerViewController {
   Future<void> setBufferingEnabled({
     @required bool enabled,
   }) async {
-    return await _channel.invokeMethod('setBufferingEnabled', {"enabled": enabled});
+    return await _channel
+        .invokeMethod('setBufferingEnabled', {"enabled": enabled});
   }
 
   /// 获取已经缓冲的长度
-  Future<String> getHttpBufferSize() async {
+  Future<int> getHttpBufferSize() async {
     return await _channel.invokeMethod('getHttpBufferSize');
   }
 }

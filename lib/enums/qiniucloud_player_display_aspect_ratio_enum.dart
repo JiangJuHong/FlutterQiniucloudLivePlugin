@@ -1,6 +1,7 @@
 /// 七牛云播放 画面预览模式
 enum QiniucloudPlayerDisplayAspectRatioEnum {
   ASPECT_RATIO_ORIGIN,
+  // 适应屏幕(IOS不支持该属性)
   ASPECT_RATIO_FIT_PARENT,
   ASPECT_RATIO_PAVED_PARENT,
   ASPECT_RATIO_16_9,

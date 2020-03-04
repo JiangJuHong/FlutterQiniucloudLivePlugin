@@ -82,10 +82,7 @@ public class QiniucloudPlayerListener implements PLOnPreparedListener, PLOnInfoL
      */
     @Override
     public void onInfo(int i, int i1) {
-        Map<String, Object> params = new HashMap<>(2, 1);
-        params.put("what", i);
-        params.put("extra", i1);
-        invokeListener(PlayerCallBackNoticeEnum.Info, params);
+        invokeListener(PlayerCallBackNoticeEnum.Info, i);
     }
 
     /**

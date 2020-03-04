@@ -43,13 +43,33 @@ Flutter 七牛云直播云插件
 ```
     <key>io.flutter.embedded_views_preview</key>
     <true/>
-    <key>NSPhotoLibraryUsageDescription</key>
-    <string>App需要您的同意,才能访问相册</string>
-    <key>NSCameraUsageDescription</key>
-    <string>App需要您的同意,才能访问相机</string>
-    <key>NSMicrophoneUsageDescription</key>
-    <string>App需要您的同意,才能访问麦克风</string>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
+	<key>NSCameraUsageDescription</key>
+	<string>App需要您的同意,才能访问相机</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>App需要您的同意,才能访问麦克风</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>App需要您的同意,才能访问相册</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>audio</string>
+	</array>
 ```
+
+## 注意事项
+由于Android、IOS底层兼容不一致，导致以下内容会受影响：
+* QiniucloudPlayerView 监听器
+    0. Completion 回调参数:`Android:null` or `IOS:bool 是否已完成`
+    0. Error 回调参数:`Android:int 错误码` or `IOS:String 错误描述`
+    0. Info 状态码: `IOS` or `Android` 不一致
+    0. Prepared 回调：`仅支持Android`
+    0. VideoSizeChanged 回调：`仅支持Android`
+* QiniucloudPlayerDisplayAspectRatioEnum
+    0. IOS不支持 `ASPECT_RATIO_FIT_PARENT` 属性
 
 ## 使用
 使用Demo时请是主动更改推流地址和播放地址  
@@ -117,6 +137,7 @@ QiniucloudPushView(
 #### 例子
 ```dart
 QiniucloudPlayerView(
+  url: "rtmp://pili-live-rtmp.tianshitaiyuan.com/zuqulive/test",
   onViewCreated: (QiniucloudPlayerViewController controller){
     controller.setVideoPath(url:"rtmp://pili-live-rtmp.tianshitaiyuan.com/zuqulive/1576400046230A")
   },
@@ -125,15 +146,14 @@ QiniucloudPlayerView(
 #### 相关接口:(QiniucloudPlayerViewController调用方法)  
 |  接口   | 说明  | 参数  | Android | IOS |
 |  ----  | ----  | ----  | ----  | ----  |
-| setVideoPath  | 设置视频路径 | - | √ | 
-| setDisplayAspectRatio  | 设置画面预览模式 | - | √ | 
-| start  | 开始播放 | - | √ | 
-| pause  | 暂停播放 | - | √ | 
-| stopPlayback  | 停止播放 | - | √ | 
-| getRtmpVideoTimestamp  | 在RTMP消息中获取视频时间戳 | - | √ | 
-| getRtmpAudioTimestamp  | 在RTMP消息中获取音频时间戳 | - | √ | 
-| setBufferingEnabled  | 暂停/恢复播放器的预缓冲 | - | √ | 
-| getHttpBufferSize  | 获取已经缓冲的长度 | - | √ | 
+| setDisplayAspectRatio  | 设置画面预览模式 | {mode:'模式，枚举'} | √ | √
+| start  | 开始播放 | {url:"播放的URL，通过该参数可以做到切换视频",sameSource:"是否是同种格式播放，同格式切换打开更快 @waring 当sameSource 为 YES 时，视频格式与切换前视频格式不同时，会导致视频打开失败【该属性仅IOS有效】"} | √ | √
+| pause  | 暂停播放 | - | √ | √
+| stopPlayback  | 停止播放 | - | √ | √
+| getRtmpVideoTimestamp  | 在RTMP消息中获取视频时间戳 | - | √ | √
+| getRtmpAudioTimestamp  | 在RTMP消息中获取音频时间戳 | - | √ | √
+| setBufferingEnabled  | 启用/关闭 播放器的预缓冲 | {enabled:'是否启用'} | √ | 
+| getHttpBufferSize  | 获取已经缓冲的长度 | - | √ | √
 
 ***
 

@@ -10,7 +10,14 @@ class QiniucloudPlayerView extends StatefulWidget {
   /// 创建事件
   final ValueChanged<QiniucloudPlayerViewController> onViewCreated;
 
-  const QiniucloudPlayerView({Key key, this.onViewCreated}) : super(key: key);
+  /// 播放地址
+  final String url;
+
+  const QiniucloudPlayerView({
+    Key key,
+    this.onViewCreated,
+    this.url,
+  }) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => QiniucloudPlayerViewState();
@@ -23,7 +30,9 @@ class QiniucloudPlayerViewState extends State<QiniucloudPlayerView> {
   @override
   Widget build(BuildContext context) {
     // 请求参数
-    Map<String, dynamic> params = {};
+    Map<String, dynamic> params = {
+      "url": widget.url,
+    };
     // 请求参数解码器
     var paramsCodec = StandardMessageCodec();
 

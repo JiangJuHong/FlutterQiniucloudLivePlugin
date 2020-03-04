@@ -321,7 +321,7 @@ class PushPageState extends State<PushPage> {
                       faceBeauty: faceBeautySettingEntity),
                   streamingProfile: StreamingProfileEntity(
                     publishUrl:
-                        "rtmp://pili-publish.tianshitaiyuan.com/zuqulive/1576400046230A?e=1581756846&token=v740N_w0pHblR7KZMSPHhfdqjxrHEv5e_yBaiq0e:nlza8l7AsBDNkp47AD09ItfZSKA=",
+                        "rtmp://pili-publish.tianshitaiyuan.com/zuqulive/test?e=1583323070&token=v740N_w0pHblR7KZMSPHhfdqjxrHEv5e_yBaiq0e:UuP5vHeAIsEQqsSdwJ9b33HZ90k=",
                   ),
                   onViewCreated: onViewCreated,
                 ),
@@ -343,11 +343,11 @@ class PushPageState extends State<PushPage> {
                     padding: EdgeInsets.all(5),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.all(Radius.circular(20)),
-                      border: Border.all(width: 1, color: Colors.white),
+                      border: Border.all(width: 1, color: Colors.red),
                     ),
                     child: Text(
                       "上滑查看功能栏",
-                      style: TextStyle(color: Colors.white, fontSize: 10),
+                      style: TextStyle(color: Colors.red, fontSize: 10),
                     ),
                   ),
                 ),

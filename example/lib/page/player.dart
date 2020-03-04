@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_qiniucloud_live_plugin/view/qiniucloud_player_view.dart';
 import 'package:flutter_qiniucloud_live_plugin/controller/qiniucloud_player_view_controller.dart';
 import 'package:flutter_qiniucloud_live_plugin/enums/qiniucloud_player_listener_type_enum.dart';
+import 'package:flutter_qiniucloud_live_plugin/enums/qiniucloud_player_display_aspect_ratio_enum.dart';
 
 /// 播放界面
 class PlayerPage extends StatefulWidget {
@@ -31,6 +32,9 @@ class PlayerPageState extends State<PlayerPage> {
   /// 视频高度
   int height = 0;
 
+  /// 是否启用预缓存
+  bool bufferingEnabled = false;
+
   @override
   void initState() {
     super.initState();
@@ -47,12 +51,8 @@ class PlayerPageState extends State<PlayerPage> {
   /// 控制器初始化
   onViewCreated(QiniucloudPlayerViewController controller) {
     this.controller = controller;
+    controller.setDisplayAspectRatio(mode: QiniucloudPlayerDisplayAspectRatioEnum.ASPECT_RATIO_PAVED_PARENT);
     controller.addListener(onListener);
-
-    // 设置视频路径
-    controller.setVideoPath(
-        url:
-            "rtmp://pili-live-rtmp.tianshitaiyuan.com/zuqulive/1576400046230A");
   }
 
   /// 监听器
@@ -64,8 +64,7 @@ class PlayerPageState extends State<PlayerPage> {
 
     // 状态改变
     if (type == QiniucloudPlayerListenerTypeEnum.Info) {
-      Map<String, dynamic> paramsObj = jsonDecode(params);
-      this.setState(() => status = paramsObj["what"]);
+      this.setState(() => status = params);
     }
 
     // 大小改变
@@ -152,13 +151,15 @@ class PlayerPageState extends State<PlayerPage> {
       case "-4410":
         return "AudioTrack 初始化失败，可能无法播放音频";
       default:
-        return "未知错误";
+        return error;
     }
   }
 
   /// 开始播放
   onStart() async {
-    await controller.start();
+    await controller.start(
+      url: "rtmp://pili-live-rtmp.tianshitaiyuan.com/zuqulive/test",
+    );
   }
 
   /// 暂停播放
@@ -183,9 +184,16 @@ class PlayerPageState extends State<PlayerPage> {
     this.setState(() => hint = "音频时间戳为:$time");
   }
 
+  /// 启用 / 关闭预缓存
+  onSetBufferingEnabled() async {
+    bufferingEnabled = !bufferingEnabled;
+    await controller.setBufferingEnabled(enabled: bufferingEnabled);
+    this.setState(() => hint = "已${bufferingEnabled ? "启用" : "关闭"}播放器预缓存");
+  }
+
   /// 获取已经缓冲的长度
   onGetHttpBufferSize() async {
-    String size = await controller.getHttpBufferSize();
+    int size = await controller.getHttpBufferSize();
     this.setState(() => hint = "已经缓冲的长度:$size");
   }
 
@@ -207,11 +215,11 @@ class PlayerPageState extends State<PlayerPage> {
                     padding: EdgeInsets.all(5),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.all(Radius.circular(20)),
-                      border: Border.all(width: 1, color: Colors.white),
+                      border: Border.all(width: 1, color: Colors.red),
                     ),
                     child: Text(
                       "上滑查看功能栏",
-                      style: TextStyle(color: Colors.white, fontSize: 10),
+                      style: TextStyle(color: Colors.red, fontSize: 10),
                     ),
                   ),
                 ),
@@ -256,6 +264,10 @@ class PlayerPageState extends State<PlayerPage> {
                           RaisedButton(
                             onPressed: onGetRtmpVideoTimestamp,
                             child: Text("获得音频时间戳"),
+                          ),
+                          RaisedButton(
+                            onPressed: onSetBufferingEnabled,
+                            child: Text("启用/关闭 播放器预缓存"),
                           ),
                           RaisedButton(
                             onPressed: onGetHttpBufferSize,
