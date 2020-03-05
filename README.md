@@ -1,6 +1,6 @@
 # flutter_qiniucloud_live_plugin
 
-Flutter 七牛云直播云插件
+Flutter 七牛云直播云插件，支持IOS、Android客户端
 
 ## Getting Started
 
@@ -28,7 +28,6 @@ Flutter 七牛云直播云插件
 ## 集成
 
 ### Flutter
-目前暂不支持通过 flutter packages 仓库集成，仅能通过如下方式:
 ```
  flutter_qiniucloud_live_plugin:
     git:
@@ -65,42 +64,64 @@ Flutter 七牛云直播云插件
 ### QiniucloudPlayerView 监听器  
 0. Error 回调参数:`Android:int 错误码` or `IOS:String 错误描述`  
 0. Info 状态码: `IOS` or `Android` 不一致  
-    * Android:Int 状态码，参考:`https://developer.qiniu.com/pili/sdk/1210/the-android-client-sdk`  
+    * Android:Int 状态码  
+        ```
+      	1	未知消息
+      	3	第一帧视频已成功渲染
+      	200	连接成功
+      	340	读取到 metadata 信息
+      	701	开始缓冲
+      	702	停止缓冲
+      	802	硬解失败，自动切换软解
+      	901	预加载完成
+      	8088	loop 中的一次播放完成
+      	10001	获取到视频的播放角度
+      	10002	第一帧音频已成功播放
+      	10003	获取视频的I帧间隔
+      	20001	视频的码率统计结果
+      	20002	视频的帧率统计结果
+      	20003	音频的帧率统计结果
+      	20004	音频的帧率统计结果
+      	10004	视频帧的时间戳
+      	10005	音频帧的时间戳
+      	1345	离线缓存的部分播放完成
+      	565	上一次 seekTo 操作尚未完成
+        ```
     * IOS:Int 状态码，对应下标:  
         ```
            /// PLPlayer 未知状态，只会作为 init 后的初始状态，开始播放之后任何情况下都不会再回到此状态。
-           PLPlayerStatusUnknow = 0,
+           0 PLPlayerStatusUnknow
            
            /// PLPlayer 正在准备播放所需组件，在调用 -play 方法时出现。
-           PLPlayerStatusPreparing,
+           1 PLPlayerStatusPreparing,
            
            /// PLPlayer 播放组件准备完成，准备开始播放，在调用 -play 方法时出现。
-           PLPlayerStatusReady,
+           2 PLPlayerStatusReady,
            
            /// PLPlayer 播放组件准备完成，准备开始连接
-           PLPlayerStatusOpen,
+           3 PLPlayerStatusOpen,
            
            /// 缓存数据为空状态。
            /// 特别需要注意的是当推流端停止推流之后，PLPlayer 将出现 caching 状态直到 timeout 后抛出 timeout 的 error 而不是出现 PLPlayerStatusStopped 状态，因此在直播场景中，当流停止之后一般做法是使用 IM 服务告知播放器停止播放，以达到即时响应主播断流的目的。
-           PLPlayerStatusCaching,
+           4 PLPlayerStatusCaching,
            
            /// 正在播放状态。
-           PLPlayerStatusPlaying,
+           5 PLPlayerStatusPlaying,
            
            /// 暂停状态。
-           PLPlayerStatusPaused,
+           6 PLPlayerStatusPaused,
         
            /// PLPlayer 停止状态 (该状态仅会在回放时播放结束出现，RTMP 直播结束并不会出现此状态)
-           PLPlayerStatusStopped,
+           7 PLPlayerStatusStopped,
            
            /// 错误状态，播放出现错误时会出现此状态。
-           PLPlayerStatusError,
+           8 PLPlayerStatusError,
            
            /// 自动重连的状态
-           PLPlayerStateAutoReconnecting,
+           9 PLPlayerStateAutoReconnecting,
            
            /// PLPlayer 播放完成（该状态只针对点播有效）
-           PLPlayerStatusCompleted,
+           10 PLPlayerStatusCompleted,
         ```
 0. VideoSizeChanged 回调：`仅支持Android`  
 
