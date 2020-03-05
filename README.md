@@ -63,10 +63,10 @@ Flutter 七牛云直播云插件
 ## 注意事项
 由于Android、IOS底层兼容不一致，导致以下内容会受影响：
 * QiniucloudPlayerView 监听器
-    0. Error 回调参数:`Android:int 错误码` or `IOS:String 错误描述`
-    0. Info 状态码: `IOS` or `Android` 不一致
-        0. Android:Int 状态码，参考:`https://developer.qiniu.com/pili/sdk/1210/the-android-client-sdk`
-        0. IOS:Int 状态码，对应下标:
+    0. Error 回调参数:`Android:int 错误码` or `IOS:String 错误描述`  
+    0. Info 状态码: `IOS` or `Android` 不一致  
+        0. Android:Int 状态码，参考:`https://developer.qiniu.com/pili/sdk/1210/the-android-client-sdk`  
+        0. IOS:Int 状态码，对应下标:  
         ```
            /// PLPlayer 未知状态，只会作为 init 后的初始状态，开始播放之后任何情况下都不会再回到此状态。
            PLPlayerStatusUnknow = 0,
@@ -102,9 +102,9 @@ Flutter 七牛云直播云插件
            /// PLPlayer 播放完成（该状态只针对点播有效）
            PLPlayerStatusCompleted,
        ```
-    0. VideoSizeChanged 回调：`仅支持Android`
-* QiniucloudPlayerDisplayAspectRatioEnum
-    0. IOS不支持 `ASPECT_RATIO_FIT_PARENT` 属性
+    0. VideoSizeChanged 回调：`仅支持Android`  
+* QiniucloudPlayerDisplayAspectRatioEnum  
+    0. IOS不支持 `ASPECT_RATIO_FIT_PARENT` 属性  
 
 ## 使用
 使用Demo时请主动更改推流地址和播放地址  
