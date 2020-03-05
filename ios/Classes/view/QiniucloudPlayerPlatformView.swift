@@ -1,5 +1,6 @@
 import PLPlayerKit
 import UIKit
+import SwiftyJSON
 
 //  Created by 蒋具宏 on 2020/3/3.
 //  七牛云播放器视图工厂
@@ -252,15 +253,11 @@ public class QiniucloudPlayerPlatformView : NSObject,FlutterPlatformView,PLPlaye
         if let p = params{
             resultParams["params"] = JsonUtil.toJson(p);
         }
-        self.channel!.invokeMethod(QiniucloudPlayerPlatformView.LISTENER_FUNC_NAME, arguments: JsonUtil.toJson(resultParams));
+        
+        self.channel!.invokeMethod(QiniucloudPlayerPlatformView.LISTENER_FUNC_NAME, arguments:JsonUtil.toJson(resultParams));
     }
     
-    /**
-     *  播放结束
-     */
-    public func player(_ player: PLPlayer, seekToCompleted isCompleted: Bool) {
-        self.invokeListener(type: PlayerCallBackNoticeEnum.Completion, params:isCompleted);
-    }
+    
     
     /**
      *  错误事件
@@ -273,6 +270,17 @@ public class QiniucloudPlayerPlatformView : NSObject,FlutterPlatformView,PLPlaye
      *  播放状态改变事件
      */
     public func player(_ player: PLPlayer, statusDidChange state: PLPlayerStatus) {
+        // 准备好
+        if state == PLPlayerStatus.statusReady{
+            self.invokeListener(type: PlayerCallBackNoticeEnum.Prepared, params:nil);
+        }
+        
+        // 准备结束
+        if state == PLPlayerStatus.statusCompleted{
+            self.invokeListener(type: PlayerCallBackNoticeEnum.Completion, params:nil);
+        }
+        
+        
         self.invokeListener(type: PlayerCallBackNoticeEnum.Info, params: state.rawValue);
     }
     

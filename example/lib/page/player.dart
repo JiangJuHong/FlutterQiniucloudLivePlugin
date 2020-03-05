@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -51,7 +52,8 @@ class PlayerPageState extends State<PlayerPage> {
   /// 控制器初始化
   onViewCreated(QiniucloudPlayerViewController controller) {
     this.controller = controller;
-    controller.setDisplayAspectRatio(mode: QiniucloudPlayerDisplayAspectRatioEnum.ASPECT_RATIO_PAVED_PARENT);
+    controller.setDisplayAspectRatio(
+        mode: QiniucloudPlayerDisplayAspectRatioEnum.ASPECT_RATIO_PAVED_PARENT);
     controller.addListener(onListener);
   }
 
@@ -81,6 +83,35 @@ class PlayerPageState extends State<PlayerPage> {
   getStatusText() {
     if (status == null) {
       return "等待中";
+    }
+
+    if (Platform.isIOS) {
+      switch (status) {
+        case 0:
+          return "未知状态";
+        case 1:
+          return "准备中";
+        case 2:
+          return "准备完成";
+        case 3:
+          return "开始连接";
+        case 4:
+          return "正在缓存";
+        case 5:
+          return "正在播放";
+        case 6:
+          return "暂停";
+        case 7:
+          return "播放结束或手动停止";
+        case 8:
+          return "出现错误";
+        case 9:
+          return "播放器开始自动重连";
+        case 10:
+          return "点播播放完成";
+        default:
+          return "未知状态";
+      }
     }
 
     switch (status) {
@@ -131,6 +162,10 @@ class PlayerPageState extends State<PlayerPage> {
 
   /// 获得状态文本
   getErrorText() {
+    if (Platform.isIOS) {
+      return error;
+    }
+
     switch (error) {
       case "-1":
         return "未知错误";
@@ -158,7 +193,8 @@ class PlayerPageState extends State<PlayerPage> {
   /// 开始播放
   onStart() async {
     await controller.start(
-      url: "rtmp://pili-live-rtmp.tianshitaiyuan.com/zuqulive/test",
+      url:
+          "https://videopull.10jqka.com.cn:8188/caijingmianmianguantengxunxia_1512454183.mp4",
     );
   }
 

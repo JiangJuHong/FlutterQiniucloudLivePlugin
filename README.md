@@ -63,16 +63,94 @@ Flutter 七牛云直播云插件
 ## 注意事项
 由于Android、IOS底层兼容不一致，导致以下内容会受影响：
 * QiniucloudPlayerView 监听器
-    0. Completion 回调参数:`Android:null` or `IOS:bool 是否已完成`
     0. Error 回调参数:`Android:int 错误码` or `IOS:String 错误描述`
     0. Info 状态码: `IOS` or `Android` 不一致
-    0. Prepared 回调：`仅支持Android`
+        0. Android:Int 状态码，参考:`https://developer.qiniu.com/pili/sdk/1210/the-android-client-sdk`
+        0. IOS:Int 状态码，对应下标:
+            ```
+               /**
+                PLPlayer 未知状态，只会作为 init 后的初始状态，开始播放之后任何情况下都不会再回到此状态。
+                @since v1.0.0
+                */
+               PLPlayerStatusUnknow = 0,
+               
+               /**
+                PLPlayer 正在准备播放所需组件，在调用 -play 方法时出现。
+                
+                @since v1.0.0
+                */
+               PLPlayerStatusPreparing,
+               
+               /**
+                PLPlayer 播放组件准备完成，准备开始播放，在调用 -play 方法时出现。
+                
+                @since v1.0.0
+                */
+               PLPlayerStatusReady,
+               
+               /**
+                PLPlayer 播放组件准备完成，准备开始连接
+                
+                @warning 请勿在此状态时，调用 playWithURL 切换 URL 操作
+                
+                @since v3.2.1
+                */
+               PLPlayerStatusOpen,
+               
+               /**
+                @abstract PLPlayer 缓存数据为空状态。
+                
+                @discussion 特别需要注意的是当推流端停止推流之后，PLPlayer 将出现 caching 状态直到 timeout 后抛出 timeout 的 error 而不是出现 PLPlayerStatusStopped 状态，因此在直播场景中，当流停止之后一般做法是使用 IM 服务告知播放器停止播放，以达到即时响应主播断流的目的。
+                
+                @since v1.0.0
+                */
+               PLPlayerStatusCaching,
+               
+               /**
+                PLPlayer 正在播放状态。
+                
+                @since v1.0.0
+                */
+               PLPlayerStatusPlaying,
+               
+               /**
+                PLPlayer 暂停状态。
+                
+                @since v1.0.0
+                */
+               PLPlayerStatusPaused,
+               
+               /**
+                @abstract PLPlayer 停止状态
+                @discussion 该状态仅会在回放时播放结束出现，RTMP 直播结束并不会出现此状态
+                
+                @since v1.0.0
+                */
+               PLPlayerStatusStopped,
+               
+               /**
+                PLPlayer 错误状态，播放出现错误时会出现此状态。
+                
+                @since v1.0.0
+                */
+               PLPlayerStatusError,
+               
+               /**
+                *  PLPlayer 自动重连的状态
+                */
+               PLPlayerStateAutoReconnecting,
+               
+               /**
+                *  PLPlayer 播放完成（该状态只针对点播有效）
+                */
+               PLPlayerStatusCompleted,
+           ```
     0. VideoSizeChanged 回调：`仅支持Android`
 * QiniucloudPlayerDisplayAspectRatioEnum
     0. IOS不支持 `ASPECT_RATIO_FIT_PARENT` 属性
 
 ## 使用
-使用Demo时请是主动更改推流地址和播放地址  
+使用Demo时请主动更改推流地址和播放地址  
 <img src="https://raw.githubusercontent.com/JiangJuHong/access-images/master/FlutterQiniucloudLivePlugin/start.png" height="300em" style="max-width:100%;">
 <img src="https://raw.githubusercontent.com/JiangJuHong/access-images/master/FlutterQiniucloudLivePlugin/push.png" height="300em" style="max-width:100%;">
 <img src="https://raw.githubusercontent.com/JiangJuHong/access-images/master/FlutterQiniucloudLivePlugin/push_2.png" height="300em" style="max-width:100%;">

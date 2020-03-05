@@ -102,11 +102,10 @@ class QiniucloudPlayerListener {
         case 'onPlayerListener':
           // 获得原始类型和参数
           String typeStr = arguments['type'];
-          String paramsStr = arguments['params'];
+          var params = arguments['params'];
 
           // 封装回调类型和参数
           QiniucloudPlayerListenerTypeEnum type;
-          Object params;
 
           // 初始化类型
           for (var item in QiniucloudPlayerListenerTypeEnum.values) {
@@ -126,7 +125,7 @@ class QiniucloudPlayerListener {
 
           // 回调触发
           for (var item in listeners) {
-            item(type, params ?? paramsStr);
+            item(type, params);
           }
 
           break;

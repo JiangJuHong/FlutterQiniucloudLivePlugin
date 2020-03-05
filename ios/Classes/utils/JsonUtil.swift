@@ -39,7 +39,7 @@ public class JsonUtil {
     /**
      * 将对象转换为JSON字符串(数组/对象)
      */
-    public static func toJson(_ object: Any) -> String {
+    public static func toJson(_ object: Any) -> Any {
         // 解析数组
         if let array = object as? [Any] {
             var result = "[";
@@ -60,7 +60,7 @@ public class JsonUtil {
     /**
      * 将对象转换为JSON字符串(单个对象)
      */
-    private static func toJsonByObj(_ object: Any) -> String{
+    private static func toJsonByObj(_ object: Any) -> Any{
         
         if object is String{
             return "\(object)";
@@ -131,16 +131,16 @@ public class JsonUtil {
     /**
      *  值处理，根据不同类型的值，返回不同的结果
      */
-    private static func vHandler(_ v : Any)->String{
+    private static func vHandler(_ v : Any)->Any{
         // 根据类型赋值不同的值
         // 如果是字符串，将会进行转移 " to \"
         // 如果是Data，将会解析为字符串并且进行转移
         if v is String{
             return "\"\(stringReplace(source: "\(v)"))\"";
         }else if v is Int32 || v is Int || v is UInt32 || v is UInt64 || v is Bool || v is Double || v is time_t{
-            return "\(v)";
+            return v;
         }else if v is Date{
-            return "\(Int((v as! Date).timeIntervalSince1970))";
+            return Int((v as! Date).timeIntervalSince1970);
         }else if v is Data{
             return "\"\(stringReplace(source: String(data: v as! Data, encoding: String.Encoding.utf8)!))\"";
         }else if v is Dictionary<AnyHashable, Any>{
