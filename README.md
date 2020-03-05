@@ -40,23 +40,23 @@ Flutter 七牛云直播云插件，支持IOS、Android客户端
 ### IOS
 配置权限信息，在Info.plist中增加
 ```
-    <key>io.flutter.embedded_views_preview</key>
+<key>io.flutter.embedded_views_preview</key>
+<true/>
+<key>NSAppTransportSecurity</key>
+<dict>
+    <key>NSAllowsArbitraryLoads</key>
     <true/>
-	<key>NSAppTransportSecurity</key>
-	<dict>
-		<key>NSAllowsArbitraryLoads</key>
-		<true/>
-	</dict>
-	<key>NSCameraUsageDescription</key>
-	<string>App需要您的同意,才能访问相机</string>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>App需要您的同意,才能访问麦克风</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>App需要您的同意,才能访问相册</string>
-	<key>UIBackgroundModes</key>
-	<array>
-		<string>audio</string>
-	</array>
+</dict>
+<key>NSCameraUsageDescription</key>
+<string>App需要您的同意,才能访问相机</string>
+<key>NSMicrophoneUsageDescription</key>
+<string>App需要您的同意,才能访问麦克风</string>
+<key>NSPhotoLibraryUsageDescription</key>
+<string>App需要您的同意,才能访问相册</string>
+<key>UIBackgroundModes</key>
+<array>
+    <string>audio</string>
+</array>
 ```
 
 ## 注意事项
