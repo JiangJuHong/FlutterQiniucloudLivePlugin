@@ -124,12 +124,12 @@ Flutter 七牛云直播云插件，支持IOS、Android客户端
     | READY  | 相机准备就绪 | √ | √
     | CONNECTING  | 连接中 | √ | √
     | STREAMING  | 推流中 | √ | √
-    | SHUTDOWN  | 直播中断 | √ | ×
+    | SHUTDOWN  | 直播中断 | √ | 
     | IOERROR  | 网络连接失败(连接rtmp推流失败) | √ | √
-    | OPEN_CAMERA_FAIL  | 摄像头打开失败 | √ | ×
-    | AUDIO_RECORDING_FAIL  | 麦克风打开失败 | √ | ×
+    | OPEN_CAMERA_FAIL  | 摄像头打开失败 | √ | 
+    | AUDIO_RECORDING_FAIL  | 麦克风打开失败 | √ |
     | DISCONNECTED  | 已经断开连接(直播断开) | √ | √
-    | TORCH_INFO  | 开启闪光灯 | √ | ×
+    | TORCH_INFO  | 开启闪光灯 | √ |
         
 ## 使用
 使用Demo时请主动更改推流地址和播放地址  
