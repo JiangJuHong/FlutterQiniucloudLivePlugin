@@ -58,33 +58,30 @@ class PushPageState extends State<PushPage> {
   onViewCreated(QiniucloudPushViewController controller) async {
     this.controller = controller;
     controller.addListener(onListener);
-    bool result = await controller.resume();
-    this.setState(() => info = "预览执行结果: $result");
+//    bool result = await controller.resume();
+//    this.setState(() => info = "预览执行结果: $result");
   }
 
   /// 监听器
   onListener(type, params) {
     // 状态改变监听
     if (type == QiniucloudPushListenerTypeEnum.StateChanged) {
-      Map<String, dynamic> paramObj = jsonDecode(params);
-      stateChanged(paramObj["status"], paramObj["extra"]);
+      stateChanged(params.toString());
     }
 
     // 连麦状态改变监听
     if (type == QiniucloudPushListenerTypeEnum.ConferenceStateChanged) {
-      Map<String, dynamic> paramObj = jsonDecode(params);
-      print("连麦状态改变:${paramObj["status"]},${paramObj["extra"]}");
-      connectedStateChanged(paramObj["status"], paramObj["extra"]);
+      connectedStateChanged(params);
     }
   }
 
   /// 状态改变事件
-  stateChanged(status, extra) async {
+  stateChanged(status) async {
     this.setState(() => this.status = status);
   }
 
   /// 设置连麦状态
-  connectedStateChanged(status, extra) async {
+  connectedStateChanged(status) async {
     this.setState(() => this.connectedStatus = status);
   }
 
@@ -306,7 +303,7 @@ class PushPageState extends State<PushPage> {
                       faceBeauty: faceBeautySettingEntity),
                   streamingProfile: StreamingProfileEntity(
                     publishUrl:
-                        "rtmp://pili-publish.tianshitaiyuan.com/zuqulive/test?e=1583490926&token=v740N_w0pHblR7KZMSPHhfdqjxrHEv5e_yBaiq0e:-bmGIYGoYjSO7yV68ty1PqUD7AI=",
+                        "rtmp://pili-publish.tianshitaiyuan.com/zuqulive/test?e=1583495173&token=v740N_w0pHblR7KZMSPHhfdqjxrHEv5e_yBaiq0e:B0gtMgQHqUABNL_jiqa5SmSX-Dg=1",
                   ),
                   onViewCreated: onViewCreated,
                 ),
@@ -417,7 +414,7 @@ class PushPageState extends State<PushPage> {
                             ],
                           ),
                           RaisedButton(
-                            onPressed: onResume,
+                            onPressed: this.status == null ? onResume : null,
                             child: Text("开始预览"),
                           ),
                           RaisedButton(

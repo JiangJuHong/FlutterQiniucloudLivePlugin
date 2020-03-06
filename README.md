@@ -106,15 +106,31 @@ Flutter 七牛云直播云插件，支持IOS、Android客户端
         | 10 | 播放完成（该状态只针对点播有效）
         
 0. VideoSizeChanged 回调：`仅支持Android`  
-0. CameraStreamingSettingEntity
+### CameraStreamingSettingEntity
     * `focusMode` 对焦模式 仅 `Android` 可用
     * `recordingHint` Recording hint 仅 `Android` 可用
-0. QiniucloudAudioSourceTypeEnum
+### QiniucloudAudioSourceTypeEnum
     * `MIXAUDIO` 合流数据，仅 `Android` 可用
 
 ### QiniucloudPlayerDisplayAspectRatioEnum  
 0. IOS不支持 `ASPECT_RATIO_FIT_PARENT` 属性  
 
+### QiniucloudPushView 监听器  
+0. StateChanged 状态码: `IOS` or `Android` 不一致  
+    
+    |  状态码   | 描述 | Android | Ios
+    |  ----  | ---- | ---- | ---- |
+    | PREPARING  | - | √ | √
+    | READY  | 相机准备就绪 | √ | √
+    | CONNECTING  | 连接中 | √ | √
+    | STREAMING  | 推流中 | √ | √
+    | SHUTDOWN  | 直播中断 | √ | 
+    | IOERROR  | 网络连接失败(连接rtmp推流失败) | √ | √
+    | OPEN_CAMERA_FAIL  | 摄像头打开失败 | √ | 
+    | AUDIO_RECORDING_FAIL  | 麦克风打开失败 | √ 
+    | DISCONNECTED  | 已经断开连接(直播断开) | √ | √
+    | TORCH_INFO  | 开启闪光灯 | √ 
+        
 ## 使用
 使用Demo时请主动更改推流地址和播放地址  
 <img src="https://raw.githubusercontent.com/JiangJuHong/access-images/master/FlutterQiniucloudLivePlugin/start.png" height="300em" style="max-width:100%;">

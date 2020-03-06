@@ -317,9 +317,10 @@ public class QiniucloudPushPlatformView : NSObject,FlutterPlatformView,PLMediaSt
      * 打开摄像头和麦克风采集
      */
     private func resume(call: FlutterMethodCall, result: @escaping FlutterResult) {
+        self.invokeListener(type: PushCallBackNoticeEnum.StateChanged, params:"PREPARING");
         session?.startCapture();
         result(true);
-        self.invokeListener(type: PushCallBackNoticeEnum.StateChanged, params:"{\"status\":\"READY\"}");
+        self.invokeListener(type: PushCallBackNoticeEnum.StateChanged, params:"READY");
     }
     
     
@@ -565,15 +566,36 @@ public class QiniucloudPushPlatformView : NSObject,FlutterPlatformView,PLMediaSt
     }
     
     
+    /**
+    *  RTC状态发生改变
+    */
     public func mediaStreamingSession(_ session: PLMediaStreamingSession!, rtcStateDidChange state: PLRTCState) {
         print(1);
     }
     
+    /**
+     *  媒体流状态发生改变
+     */
     public func mediaStreamingSession(_ session: PLMediaStreamingSession!, streamStateDidChange state: PLStreamState) {
-        print(2);
+        if state == PLStreamState.connected{
+            self.invokeListener(type: PushCallBackNoticeEnum.StateChanged, params:"CONNECTING");
+        }
+        if state == PLStreamState.disconnected{
+            self.invokeListener(type: PushCallBackNoticeEnum.StateChanged, params:"DISCONNECTED");
+        }
     }
     
+    /**
+    *  媒体流实时状态发生改变
+    */
     public func mediaStreamingSession(_ session: PLMediaStreamingSession!, streamStatusDidUpdate status: PLStreamStatus!) {
-        print(3);
+        self.invokeListener(type: PushCallBackNoticeEnum.StateChanged, params:"STREAMING");
+    }
+    
+    /**
+     *  连接错误
+     */
+    public func mediaStreamingSession(_ session: PLMediaStreamingSession!, didDisconnectWithError error: Error!) {
+        self.invokeListener(type: PushCallBackNoticeEnum.StateChanged, params:"IOERROR");
     }
 }

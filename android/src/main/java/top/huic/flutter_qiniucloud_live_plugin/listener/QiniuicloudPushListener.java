@@ -120,10 +120,7 @@ public class QiniuicloudPushListener implements RTCConferenceStateChangedListene
 
     @Override
     public void onStateChanged(StreamingState status, Object extra) {
-        Map<String, Object> params = new HashMap<>(2, 1);
-        params.put("status", status);
-        params.put("extra", extra);
-        invokeListener(PushCallBackNoticeEnum.StateChanged, params);
+        invokeListener(PushCallBackNoticeEnum.StateChanged, status);
     }
 
     @Override
