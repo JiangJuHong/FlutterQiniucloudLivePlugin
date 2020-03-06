@@ -116,14 +116,8 @@ class QiniucloudPushViewController {
   }
 
   /// 切换摄像头
-  Future<bool> switchCamera({
-    @required QiniucloudCameraTypeEnum target, // 目标摄像头，不填代表反向切换,
-  }) async {
-    return await _channel.invokeMethod('switchCamera', {
-      "target": target == null
-          ? null
-          : target.toString().replaceAll("QiniucloudCameraTypeEnum.", ""),
-    });
+  Future<bool> switchCamera() async {
+    return await _channel.invokeMethod('switchCamera');
   }
 
   /// 静音

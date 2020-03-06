@@ -1,6 +1,6 @@
 /// 美颜设置实体
 class FaceBeautySettingEntity {
-  // 磨皮程度
+  // 美颜等级
   double beautyLevel;
   // 红润
   double redden;

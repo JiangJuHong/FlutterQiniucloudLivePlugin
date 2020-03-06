@@ -194,7 +194,7 @@ class PlayerPageState extends State<PlayerPage> {
   onStart() async {
     await controller.start(
       url:
-          "https://videopull.10jqka.com.cn:8188/caijingmianmianguantengxunxia_1512454183.mp4",
+          "rtmp://pili-live-rtmp.tianshitaiyuan.com/zuqulive/test",
     );
   }
 

@@ -235,9 +235,9 @@ public class QiniucloudPushPlatformView extends PlatformViewFactory implements P
     private void init(Map<String, Object> params, MethodChannel methodChannel) {
         // 相机参数
         String cameraSettingStr = (String) params.get("cameraStreamingSetting");
+        Map<String, Object> cameraSettingMap = JSON.parseObject(cameraSettingStr);
         // 推流参数(仅主播)
         String streamingProfileStr = (String) params.get("streamingProfile");
-        Map<String, Object> cameraSettingMap = JSON.parseObject(cameraSettingStr);
         // 连麦参数
         String connectOptionsStr = (String) params.get("connectOptions");
 
@@ -424,8 +424,12 @@ public class QiniucloudPushPlatformView extends PlatformViewFactory implements P
      * 切换摄像头
      */
     private void switchCamera(MethodCall call, final MethodChannel.Result result) {
-        String target = CommonUtil.getParam(call, result, "target");
-        CameraStreamingSetting.CAMERA_FACING_ID id = CameraStreamingSetting.CAMERA_FACING_ID.valueOf(target);
+        CameraStreamingSetting.CAMERA_FACING_ID id;
+        if(cameraStreamingSetting.getCameraFacingId() == CameraStreamingSetting.CAMERA_FACING_ID.CAMERA_FACING_FRONT){
+            id = CameraStreamingSetting.CAMERA_FACING_ID.CAMERA_FACING_BACK;
+        }else{
+            id = CameraStreamingSetting.CAMERA_FACING_ID.CAMERA_FACING_FRONT;
+        }
         cameraStreamingSetting.setCameraFacingId(id);
         result.success(manager.switchCamera(id));
     }

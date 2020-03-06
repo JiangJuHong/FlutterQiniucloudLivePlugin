@@ -1,6 +1,5 @@
 import PLPlayerKit
 import UIKit
-import SwiftyJSON
 
 //  Created by 蒋具宏 on 2020/3/3.
 //  七牛云播放器视图工厂

@@ -64,7 +64,7 @@ Flutter 七牛云直播云插件，支持IOS、Android客户端
 ### QiniucloudPlayerView 监听器  
 0. Error 回调参数:`Android:int 错误码` or `IOS:String 错误描述`  
 0. Info 状态码: `IOS` or `Android` 不一致  
-    * Android:Int 状态码  
+    * Android
     
         |  状态码   | 描述 |
         |  ----  | ---- |
@@ -89,7 +89,7 @@ Flutter 七牛云直播云插件，支持IOS、Android客户端
         | 1345	| 离线缓存的部分播放完成
         | 565	| 上一次 seekTo 操作尚未完成
         
-    * IOS:Int 状态码，对应下标:  
+    * IOS
     
         |  状态码   | 描述 |
         |  ----  | ---- |
@@ -106,6 +106,11 @@ Flutter 七牛云直播云插件，支持IOS、Android客户端
         | 10 | 播放完成（该状态只针对点播有效）
         
 0. VideoSizeChanged 回调：`仅支持Android`  
+0. CameraStreamingSettingEntity
+    * `focusMode` 对焦模式 仅 `Android` 可用
+    * `recordingHint` Recording hint 仅 `Android` 可用
+0. QiniucloudAudioSourceTypeEnum
+    * `MIXAUDIO` 合流数据，仅 `Android` 可用
 
 ### QiniucloudPlayerDisplayAspectRatioEnum  
 0. IOS不支持 `ASPECT_RATIO_FIT_PARENT` 属性  
@@ -141,20 +146,21 @@ QiniucloudPushView(
 #### 相关接口:(QiniucloudPushViewController调用方法)  
 |  接口   | 说明  | 参数  | Android | IOS |
 |  ----  | ----  | ----  | ----  | ----  |
-| resume  | 打开摄像头和麦克风采集 | - | √ | 
-| pause  | 关闭摄像头和麦克风采集 | - | √ | 
-| stopConference  | 停止连麦 | - | √ | 
-| startStreaming  | 开始推流 | - | √ | 
-| stopStreaming  | 停止推流 | - | √ | 
-| destroy  | 销毁 | - | √ | 
-| isZoomSupported  | 查询是否支持缩放 | - | √ | 
-| setZoomValue  | 设置缩放比例 | - | √ | 
-| getMaxZoom  | 获得最大缩放比例 | - | √ | 
-| getZoom  | 获得缩放比例 | - | √ | 
-| turnLightOn  | 开启闪光灯 | - | √ | 
-| turnLightOff  | 关闭闪光灯 | - | √ | 
-| switchCamera  | 切换摄像头 | - | √ | 
-| mute  | 切换静音 | - | √ | 
+| resume  | 打开摄像头和麦克风采集 | - | √ | √
+| pause  | 关闭摄像头和麦克风采集 | - | √ | √
+| startConference  | 开始连麦 | - | √ | 
+| stopConference  | 停止连麦 | - | √ | √
+| startStreaming  | 开始推流 | {publishUrl:'推流地址'} | √ | √
+| stopStreaming  | 停止推流 | - | √ | √
+| destroy  | 销毁 | - | √ | √
+| isZoomSupported  | 查询是否支持缩放(IOS始终返回true) | - | √ | √
+| setZoomValue  | 设置缩放比例 | {value:'比例值'} | √ | √
+| getMaxZoom  | 获得最大缩放比例 | - | √ | √
+| getZoom  | 获得缩放比例 | - | √ | √
+| turnLightOn  | 开启闪光灯 | - | √ | √
+| turnLightOff  | 关闭闪光灯 | - | √ | √
+| switchCamera  | 切换摄像头 | - | √ | √
+| mute  | 切换静音 | {mute:'是否静音',audioSource:'音频源'} | √ | √
 | kickoutUser  | 根据用户ID踢人 | - | √ | 
 | setConferenceOptions  | 设置连麦参数 | - | √ | 
 | setStreamingProfile  | 更新推流参数 | - | √ | 
