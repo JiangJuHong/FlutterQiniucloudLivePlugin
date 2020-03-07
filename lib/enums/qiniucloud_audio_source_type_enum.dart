@@ -4,6 +4,4 @@ enum QiniucloudAudioSourceTypeEnum {
   MIC,
   // 扬声器
   SPEAKER,
-  // 合流数据
-  MIXAUDIO
 }

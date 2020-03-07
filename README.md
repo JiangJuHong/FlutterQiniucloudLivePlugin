@@ -106,14 +106,6 @@ Flutter 七牛云直播云插件，支持IOS、Android客户端
         | 10 | 播放完成（该状态只针对点播有效）
         
 0. VideoSizeChanged 回调：`仅支持Android`  
-### CameraStreamingSettingEntity
-    * `focusMode` 对焦模式 仅 `Android` 可用
-    * `recordingHint` Recording hint 仅 `Android` 可用
-### QiniucloudAudioSourceTypeEnum
-    * `MIXAUDIO` 合流数据，仅 `Android` 可用
-
-### QiniucloudPlayerDisplayAspectRatioEnum  
-0. IOS不支持 `ASPECT_RATIO_FIT_PARENT` 属性  
 
 ### QiniucloudPushView 监听器  
 0. StateChanged 状态码: `IOS` or `Android` 不一致  
@@ -130,6 +122,25 @@ Flutter 七牛云直播云插件，支持IOS、Android客户端
     | AUDIO_RECORDING_FAIL  | 麦克风打开失败 | √ |
     | DISCONNECTED  | 已经断开连接(直播断开) | √ | √
     | TORCH_INFO  | 开启闪光灯 | √ |
+
+0. StreamStatusChanged 状态  
+    IOS 仅包含 `audioFps、videoFps、totalAVBitrate` 属性
+    
+0. ConferenceStateChanged IOS暂不支持(计划内)
+
+0. UserJoinConference IOS暂不支持(计划内)
+
+0. UserLeaveConference IOS暂不支持(计划内)
+
+0. RecordAudioFailedHandled IOS暂不支持
+
+0. RestartStreamingHandled IOS暂不支持
+
+0. PreviewSizeSelected IOS暂不支持
+
+0. PreviewFpsSelected IOS暂不支持
+
+0. AudioSourceAvailable IOS暂不支持
         
 ## 使用
 使用Demo时请主动更改推流地址和播放地址  

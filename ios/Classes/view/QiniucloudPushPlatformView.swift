@@ -258,16 +258,6 @@ public class QiniucloudPushPlatformView : NSObject,FlutterPlatformView,PLMediaSt
             videoCaptureConfig?.streamMirrorFrontFacing = frontCameraMirror as! Bool;
         }
         
-        //  # 预览大小比例
-        if let cameraPrvSizeRatio = cameraSetting["cameraPrvSizeRatio"]{
-            
-        }
-        
-        //  # 预览大小级别
-        if let cameraPrvSizeLevel = cameraSetting["cameraPrvSizeLevel"]{
-            
-        }
-        
         // 美颜设置
         self.session?.setBeautifyModeOn(cameraSetting["builtInFaceBeautyEnabled"] as! Bool);
         if cameraSetting["faceBeauty"] != nil{
@@ -302,15 +292,82 @@ public class QiniucloudPushPlatformView : NSObject,FlutterPlatformView,PLMediaSt
         
         // 视频质量
         if let videoQuality = streamingProfile["videoQuality"]{
-            
+            var result = "";
+            switch videoQuality as! Int {
+            case 0:
+                result = kPLVideoStreamingQualityLow1;
+                break;
+            case 1:
+                result = kPLVideoStreamingQualityLow2;
+                break;
+            case 3:
+                result = kPLVideoStreamingQualityLow3;
+                break;
+            case 10:
+                result = kPLVideoStreamingQualityMedium1;
+                break;
+            case 11:
+                result = kPLVideoStreamingQualityMedium2;
+                break;
+            case 12:
+                result = kPLVideoStreamingQualityMedium3;
+                break;
+            case 20:
+                result = kPLVideoStreamingQualityHigh1;
+                break;
+            case 21:
+                result = kPLVideoStreamingQualityHigh2;
+                break;
+            case 22:
+                result = kPLVideoStreamingQualityHigh3;
+                break;
+            default:
+                break;
+            }
+            self.videoStreamingConfig = PLVideoStreamingConfiguration.init(videoQuality: result);
+        }
+        
+        // 音频质量
+        if let audioQuality = streamingProfile["audioQuality"]{
+            var result = "";
+            switch audioQuality as! Int {
+            case 20:
+                result = kPLAudioStreamingQualityHigh2;
+                break;
+            case 21:
+                result = kPLAudioStreamingQualityHigh3;
+                break;
+            default:
+                break;
+            }
+            self.audioStreamingConfig = PLAudioStreamingConfiguration.init(audioQuality: result);
+        }
+        
+        // 是否启用 QUIC 推流
+        if let quicEnable = streamingProfile["quicEnable"]{
+            session?.isQuicEnable = quicEnable as! Bool;
         }
     }
     
     /**
      *  加载连麦参数配置
      */
-    private func loadConnectOptions(_ connectOptiions :Any?){
+    private func loadConnectOptions(_ connectOptiionsStr :Any?){
+        if connectOptiionsStr == nil || connectOptiionsStr is NSNull{
+            return;
+        }
+        let connectOptiions = JsonUtil.getDictionaryFromJSONString(jsonString: connectOptiionsStr  as! String)
         
+        // 编码方向
+        if let videoEncodingOrientation = connectOptiions["videoEncodingOrientation"]{
+            if (videoEncodingOrientation as! String) == "PORT"{
+                session?.videoOrientation = AVCaptureVideoOrientation.portrait;
+            }
+            
+            if (videoEncodingOrientation as! String) == "LAND"{
+                session?.videoOrientation = AVCaptureVideoOrientation.landscapeLeft;
+            }
+        }
     }
     
     /**
@@ -469,7 +526,8 @@ public class QiniucloudPushPlatformView : NSObject,FlutterPlatformView,PLMediaSt
      * 更新推流参数
      */
     private func setStreamingProfile(call: FlutterMethodCall, result: @escaping FlutterResult) {
-        
+        self.session!.reloadVideoStreamingConfiguration(videoStreamingConfig);
+        result(nil);
     }
     
     /**
@@ -567,8 +625,8 @@ public class QiniucloudPushPlatformView : NSObject,FlutterPlatformView,PLMediaSt
     
     
     /**
-    *  RTC状态发生改变
-    */
+     *  RTC状态发生改变
+     */
     public func mediaStreamingSession(_ session: PLMediaStreamingSession!, rtcStateDidChange state: PLRTCState) {
         print(1);
     }
@@ -586,10 +644,15 @@ public class QiniucloudPushPlatformView : NSObject,FlutterPlatformView,PLMediaSt
     }
     
     /**
-    *  媒体流实时状态发生改变
-    */
+     *  媒体流实时状态发生改变
+     */
     public func mediaStreamingSession(_ session: PLMediaStreamingSession!, streamStatusDidUpdate status: PLStreamStatus!) {
         self.invokeListener(type: PushCallBackNoticeEnum.StateChanged, params:"STREAMING");
+        self.invokeListener(type: PushCallBackNoticeEnum.StreamStatusChanged, params:[
+            "audioFps":status.audioFPS,
+            "videoFps":status.videoFPS,
+            "totalAVBitrate":status.totalBitrate
+        ]);
     }
     
     /**
@@ -598,4 +661,5 @@ public class QiniucloudPushPlatformView : NSObject,FlutterPlatformView,PLMediaSt
     public func mediaStreamingSession(_ session: PLMediaStreamingSession!, didDisconnectWithError error: Error!) {
         self.invokeListener(type: PushCallBackNoticeEnum.StateChanged, params:"IOERROR");
     }
+    
 }

@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_qiniucloud_live_plugin/entity/conference_options_entity.dart';
 import 'package:flutter_qiniucloud_live_plugin/entity/face_beauty_setting_entity.dart';
+import 'package:flutter_qiniucloud_live_plugin/entity/streaming_profile_entity.dart';
 import 'package:flutter_qiniucloud_live_plugin/entity/watermark_setting_entity.dart';
 import 'package:flutter_qiniucloud_live_plugin/enums/qiniucloud_audio_source_type_enum.dart';
 import 'package:flutter_qiniucloud_live_plugin/enums/qiniucloud_camera_type_enum.dart';
@@ -189,6 +190,15 @@ class QiniucloudPushViewController {
   }) async {
     return await _channel.invokeMethod('setConferenceOptions', {
       "conferenceOptions": conferenceOptions,
+    });
+  }
+
+  /// 更新推流参数
+  Future<void> setStreamingProfile({
+    @required StreamingProfileEntity streamingProfile,
+  }) async {
+    return await _channel.invokeMethod('setStreamingProfile', {
+      "streamingProfile": streamingProfile,
     });
   }
 
