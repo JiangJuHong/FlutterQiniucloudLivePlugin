@@ -256,6 +256,7 @@ public class QiniucloudPushPlatformView extends PlatformViewFactory implements P
 
         // 预览设置
         cameraStreamingSetting = JSON.parseObject(cameraSettingStr, CameraStreamingSetting.class);
+        cameraStreamingSetting.setCameraPrvSizeRatio(CameraStreamingSetting.PREVIEW_SIZE_RATIO.RATIO_16_9);
         if (cameraStreamingSetting == null) {
             Log.e(TAG, "init: 相机信息初始化失败!");
         } else {

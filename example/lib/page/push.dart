@@ -77,6 +77,9 @@ class PushPageState extends State<PushPage> {
 
   /// 状态改变事件
   stateChanged(status) async {
+    // TODO: 这里需要处理一下，android 端，状态字符串会包含引号，造成后续比较的时候不匹配
+    var chars = "\"";
+    status = status.replaceAll(RegExp('^[$chars]+|[$chars]+\$'), '');
     this.setState(() => this.status = status);
   }
 
