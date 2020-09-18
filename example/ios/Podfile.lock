@@ -1,0 +1,43 @@
+PODS:
+  - Flutter (1.0.0)
+  - flutter_qiniucloud_live_plugin (0.0.1):
+    - Flutter
+    - PLPlayerKit
+    - PLRTCStreamingKit
+  - permission_handler (4.3.0):
+    - Flutter
+  - PLPlayerKit (3.4.3):
+    - PLPlayerKit/iphoneos (= 3.4.3)
+  - PLPlayerKit/iphoneos (3.4.3)
+  - PLRTCStreamingKit (3.2.2):
+    - PLRTCStreamingKit/iphoneos (= 3.2.2)
+  - PLRTCStreamingKit/iphoneos (3.2.2)
+
+DEPENDENCIES:
+  - Flutter (from `Flutter`)
+  - flutter_qiniucloud_live_plugin (from `.symlinks/plugins/flutter_qiniucloud_live_plugin/ios`)
+  - permission_handler (from `.symlinks/plugins/permission_handler/ios`)
+
+SPEC REPOS:
+  trunk:
+    - PLPlayerKit
+    - PLRTCStreamingKit
+
+EXTERNAL SOURCES:
+  Flutter:
+    :path: Flutter
+  flutter_qiniucloud_live_plugin:
+    :path: ".symlinks/plugins/flutter_qiniucloud_live_plugin/ios"
+  permission_handler:
+    :path: ".symlinks/plugins/permission_handler/ios"
+
+SPEC CHECKSUMS:
+  Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
+  flutter_qiniucloud_live_plugin: 4b4df0219e1da211b33eee4fe2a5f03572ff6a89
+  permission_handler: 5c75cfde1229eb85f22d367c093900fac03c6c9e
+  PLPlayerKit: a44734dc78c1f8f9fb22c537fa1916612fa46b06
+  PLRTCStreamingKit: 94391de3cdb8c6b8810f51ec1d0b0b6e7f222fd0
+
+PODFILE CHECKSUM: fba0f0a2cbc80cef48543e10e57d045d5c6104d2
+
+COCOAPODS: 1.9.1

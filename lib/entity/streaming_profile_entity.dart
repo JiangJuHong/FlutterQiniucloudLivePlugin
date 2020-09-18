@@ -18,6 +18,7 @@ class StreamingProfileEntity {
   StreamingProfileEntity({
     this.publishUrl,
     this.videoQuality: QiniucloudPushVideoQualityEnum.VIDEO_QUALITY_HIGH3,
+    this.audioQuality: QiniucloudPushAudioQualityEnum.AUDIO_QUALITY_96,
     this.quicEnable: true,
   });
 
