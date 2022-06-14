@@ -25,8 +25,8 @@ Flutter 七牛云直播云插件
   s.vendored_frameworks = '**/*.framework'
 
   # 七牛云直播云播放端依赖(https://developer.qiniu.com/pili/sdk/1211/ios-playback-end-the-sdk)
-  s.dependency 'PLPlayerKit'
+  s.dependency 'PLPlayerKit', '3.4.3'
   # 七牛云直播云连麦端依赖(https://developer.qiniu.com/pili/sdk/4311/PLRTCStreamingKit)
-  s.dependency 'PLRTCStreamingKit'
+  s.dependency 'PLRTCStreamingKit', '3.2.2'
 
 end
