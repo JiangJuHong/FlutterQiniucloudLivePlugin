@@ -25,8 +25,12 @@ flutter:
   # be modified. They are used by the tooling to maintain consistency when
   # adding or updating assets for this project.
   plugin:
-    androidPackage: top.huic.flutter_qiniucloud_live_plugin
-    pluginClass: FlutterQiniucloudLivePlugin
+    platforms:
+      android:
+        package: top.huic.flutter_qiniucloud_live_plugin
+        pluginClass: FlutterQiniucloudLivePlugin
+      ios:
+        pluginClass: FlutterQiniucloudLivePlugin
 
   # To add assets to your plugin package, add an assets section, like this:
   # assets:
