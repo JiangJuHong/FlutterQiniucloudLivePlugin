@@ -64,6 +64,19 @@ height="300em" style="max-width:100%;display: inline-block;"/>
     <string>audio</string>
 </array>
 ```
+修改 ``Podfile``，增加 ``config.build_settings['ENABLE_BITCODE'] = 'NO'``
+````
+post_install do |installer|
+  installer.pods_project.targets.each do |target|
+    flutter_additional_ios_build_settings(target)
+    target.build_configurations.each do |config|
+      config.build_settings['ENABLE_BITCODE'] = 'NO'
+    end
+  end
+end
+
+````
+
 
 ## 注意事项
 由于Android、IOS底层兼容不一致，导致以下内容会受影响：
