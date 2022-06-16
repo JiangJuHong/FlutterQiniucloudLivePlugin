@@ -558,14 +558,20 @@ public class QiniucloudPushPlatformView: NSObject, FlutterPlatformView, PLMediaS
      * 设置预览镜像
      */
     private func setPreviewMirror(call: FlutterMethodCall, result: @escaping FlutterResult) {
-
+        if let mirror = CommonUtils.getParam(call: call, result: result, param: "mirror") as? Bool {
+            session?.previewMirrorFrontFacing = mirror;
+            result(true);
+        }
     }
 
     /**
      * 设置推流镜像
      */
     private func setEncodingMirror(call: FlutterMethodCall, result: @escaping FlutterResult) {
-
+        if let mirror = CommonUtils.getParam(call: call, result: result, param: "mirror") as? Bool {
+            session?.streamMirrorFrontFacing = mirror;
+            result(true);
+        }
     }
 
     /**
