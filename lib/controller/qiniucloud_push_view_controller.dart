@@ -13,8 +13,7 @@ import 'package:flutter_qiniucloud_live_plugin/view/qiniucloud_push_view.dart';
 
 /// 连麦视图控制器
 class QiniucloudPushViewController {
-  QiniucloudPushViewController(int id)
-      : _channel = new MethodChannel('${QiniucloudPushViewState.type}_$id');
+  QiniucloudPushViewController(int id) : _channel = new MethodChannel('${QiniucloudPushViewState.type}_$id');
 
   final MethodChannel _channel;
 
@@ -71,11 +70,13 @@ class QiniucloudPushViewController {
     @required userId, // 用户ID
     @required roomName, //房间名
     @required roomToken, //房间token
+    ConferenceOptionsEntity conferenceOptions, // 连麦参数(仅ios有效)
   }) async {
     return await _channel.invokeMethod('startConference', {
       "userId": userId,
       "roomName": roomName,
       "roomToken": roomToken,
+      "options": conferenceOptions == null ? null : conferenceOptions.toJson(),
     });
   }
 
@@ -128,11 +129,7 @@ class QiniucloudPushViewController {
   }) async {
     return await _channel.invokeMethod('mute', {
       "mute": mute,
-      "audioSource": audioSource == null
-          ? null
-          : audioSource
-              .toString()
-              .replaceAll("QiniucloudAudioSourceTypeEnum.", ""),
+      "audioSource": audioSource == null ? null : audioSource.toString().replaceAll("QiniucloudAudioSourceTypeEnum.", ""),
     });
   }
 
@@ -143,8 +140,7 @@ class QiniucloudPushViewController {
 
   /// 更新美颜信息
   Future<void> updateFaceBeautySetting(FaceBeautySettingEntity data) async {
-    return await _channel.invokeMethod(
-        'updateFaceBeautySetting', data.toJson());
+    return await _channel.invokeMethod('updateFaceBeautySetting', data.toJson());
   }
 
   /// 改变预览镜像
@@ -184,7 +180,7 @@ class QiniucloudPushViewController {
     });
   }
 
-  /// 设置连麦参数
+  /// 设置连麦参数(仅Android有效)
   Future<bool> setConferenceOptions({
     @required ConferenceOptionsEntity conferenceOptions,
   }) async {
@@ -263,10 +259,7 @@ class QiniucloudConnectedPushListener {
 
           // 初始化类型
           for (var item in QiniucloudPushListenerTypeEnum.values) {
-            if (item
-                    .toString()
-                    .replaceFirst("QiniucloudPushListenerTypeEnum.", "") ==
-                typeStr) {
+            if (item.toString().replaceFirst("QiniucloudPushListenerTypeEnum.", "") == typeStr) {
               type = item;
               break;
             }
@@ -301,5 +294,4 @@ class QiniucloudConnectedPushListener {
 }
 
 /// 推流监听器值模型
-typedef QiniucloudPushListenerValue<P> = void Function(
-    QiniucloudPushListenerTypeEnum type, P params);
+typedef QiniucloudPushListenerValue<P> = void Function(QiniucloudPushListenerTypeEnum type, P params);

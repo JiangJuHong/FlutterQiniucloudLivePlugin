@@ -2,6 +2,8 @@
 
 Flutter 七牛云直播云插件，支持IOS、Android客户端
 
+**重构计划：打算重构为RTMP推流端和RTMP播放端，拆分插件**
+
 ## Getting Started
 
 集成七牛云直播云推流、观看等功能
