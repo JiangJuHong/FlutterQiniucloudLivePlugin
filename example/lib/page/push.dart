@@ -36,8 +36,7 @@ class PushPageState extends State<PushPage> {
   String connectedStatus;
 
   /// 美颜对象
-  FaceBeautySettingEntity faceBeautySettingEntity =
-      FaceBeautySettingEntity(beautyLevel: 0, redden: 0, whiten: 0);
+  FaceBeautySettingEntity faceBeautySettingEntity = FaceBeautySettingEntity(beautyLevel: 0, redden: 0, whiten: 0);
 
   @override
   void initState() {
@@ -208,22 +207,19 @@ class PushPageState extends State<PushPage> {
   /// 更新美颜信息
   onUpdateFaceBeautySetting() async {
     await controller.updateFaceBeautySetting(faceBeautySettingEntity);
-    this.setState(() => info =
-        "更新美颜信息成功:${faceBeautySettingEntity.beautyLevel},${faceBeautySettingEntity.redden},${faceBeautySettingEntity.whiten}");
+    this.setState(() => info = "更新美颜信息成功:${faceBeautySettingEntity.beautyLevel},${faceBeautySettingEntity.redden},${faceBeautySettingEntity.whiten}");
   }
 
   /// 设置预览镜像
   onSetPreviewMirror(mirror) async {
     bool res = await controller.setPreviewMirror(mirror: mirror);
-    this.setState(
-        () => info = "预览镜像${mirror ? "打开" : "关闭"}${res ? "成功" : "失败"}");
+    this.setState(() => info = "预览镜像${mirror ? "打开" : "关闭"}${res ? "成功" : "失败"}");
   }
 
   /// 设置推流镜像
   onSetEncodingMirror(mirror) async {
     bool res = await controller.setEncodingMirror(mirror: mirror);
-    this.setState(
-        () => info = "推流镜像${mirror ? "打开" : "关闭"}${res ? "成功" : "失败"}");
+    this.setState(() => info = "推流镜像${mirror ? "打开" : "关闭"}${res ? "成功" : "失败"}");
   }
 
   /// 开启耳返
@@ -244,8 +240,7 @@ class PushPageState extends State<PushPage> {
       await controller.startConference(
         roomName: "194f98358c934071a20c33431fd71423",
         userId: "af182f7402d74c7d82ea38f5482621b4",
-        roomToken:
-            "v740N_w0pHblR7KZMSPHhfdqjxrHEv5e_yBaiq0e:rSIkdWuf_h6vUbY46C59XbKkzdo=:eyJyb29tX25hbWUiOiIxOTRmOTgzNThjOTM0MDcxYTIwYzMzNDMxZmQ3MTQyMyIsImV4cGlyZV9hdCI6MTU4MTIwNzQ2NSwicGVybSI6ImFkbWluIiwidmVyc2lvbiI6IjIuMCIsInVzZXJfaWQiOiJhZjE4MmY3NDAyZDc0YzdkODJlYTM4ZjU0ODI2MjFiNCJ9",
+        roomToken: "v740N_w0pHblR7KZMSPHhfdqjxrHEv5e_yBaiq0e:rSIkdWuf_h6vUbY46C59XbKkzdo=:eyJyb29tX25hbWUiOiIxOTRmOTgzNThjOTM0MDcxYTIwYzMzNDMxZmQ3MTQyMyIsImV4cGlyZV9hdCI6MTU4MTIwNzQ2NSwicGVybSI6ImFkbWluIiwidmVyc2lvbiI6IjIuMCIsInVzZXJfaWQiOiJhZjE4MmY3NDAyZDc0YzdkODJlYTM4ZjU0ODI2MjFiNCJ9",
       );
       this.setState(() => info = "连麦执行成功");
     } catch (e) {
@@ -303,10 +298,11 @@ class PushPageState extends State<PushPage> {
               children: <Widget>[
                 QiniucloudPushView(
                   cameraStreamingSetting: CameraStreamingSettingEntity(
-                      faceBeauty: faceBeautySettingEntity),
+                    faceBeauty: faceBeautySettingEntity,
+                    cameraFacingId: QiniucloudCameraTypeEnum.CAMERA_FACING_FRONT,
+                  ),
                   streamingProfile: StreamingProfileEntity(
-                    publishUrl:
-                    "rtmp://pili-publish.tianshitaiyuan.com/zuqulive/test?e=1583495173&token=v740N_w0pHblR7KZMSPHhfdqjxrHEv5e_yBaiq0e:B0gtMgQHqUABNL_jiqa5SmSX-Dg=1",
+                    publishUrl: "rtmp://pili-publish.tianshitaiyuan.com/zuqulive/test?e=1583495173&token=v740N_w0pHblR7KZMSPHhfdqjxrHEv5e_yBaiq0e:B0gtMgQHqUABNL_jiqa5SmSX-Dg=1",
                   ),
                   onViewCreated: onViewCreated,
                 ),
@@ -367,8 +363,7 @@ class PushPageState extends State<PushPage> {
                                   activeColor: Colors.blue,
                                   onChanged: (double val) {
                                     this.setState(() {
-                                      this.faceBeautySettingEntity.beautyLevel =
-                                          val;
+                                      this.faceBeautySettingEntity.beautyLevel = val;
                                     });
                                     onUpdateFaceBeautySetting();
                                   },
@@ -433,8 +428,7 @@ class PushPageState extends State<PushPage> {
                             child: Text("开始推流"),
                           ),
                           RaisedButton(
-                            onPressed:
-                                this.status == "STREAMING" ? onStopPush : null,
+                            onPressed: this.status == "STREAMING" ? onStopPush : null,
                             child: Text("停止推流"),
                           ),
                           RaisedButton(
@@ -470,65 +464,47 @@ class PushPageState extends State<PushPage> {
                             child: Text("恢复声音"),
                           ),
                           RaisedButton(
-                            onPressed: this.status != null
-                                ? () => onSetPreviewMirror(true)
-                                : null,
+                            onPressed: this.status != null ? () => onSetPreviewMirror(true) : null,
                             child: Text("打开预览镜像"),
                           ),
                           RaisedButton(
-                            onPressed: this.status != null
-                                ? () => onSetPreviewMirror(false)
-                                : null,
+                            onPressed: this.status != null ? () => onSetPreviewMirror(false) : null,
                             child: Text("关闭预览镜像"),
                           ),
                           RaisedButton(
-                            onPressed: this.status != null
-                                ? () => onSetEncodingMirror(true)
-                                : null,
+                            onPressed: this.status != null ? () => onSetEncodingMirror(true) : null,
                             child: Text("打开推流镜像"),
                           ),
                           RaisedButton(
-                            onPressed: this.status != null
-                                ? () => onSetEncodingMirror(false)
-                                : null,
+                            onPressed: this.status != null ? () => onSetEncodingMirror(false) : null,
                             child: Text("关闭推流镜像"),
                           ),
                           RaisedButton(
-                            onPressed:
-                                this.status != null ? onStartPlayback : null,
+                            onPressed: this.status != null ? onStartPlayback : null,
                             child: Text("开启耳返"),
                           ),
                           RaisedButton(
-                            onPressed:
-                                this.status != null ? onStopPlayback : null,
+                            onPressed: this.status != null ? onStopPlayback : null,
                             child: Text("关闭耳返"),
                           ),
                           RaisedButton(
-                            onPressed:
-                                this.status != null ? onStartConference : null,
+                            onPressed: this.status != null ? onStartConference : null,
                             child: Text("开始连麦"),
                           ),
                           RaisedButton(
-                            onPressed:
-                                this.status != null ? onStopConference : null,
+                            onPressed: this.status != null ? onStopConference : null,
                             child: Text("关闭连麦"),
                           ),
                           RaisedButton(
-                            onPressed: this.status == "STREAMING"
-                                ? getVideoEncodingSize
-                                : null,
+                            onPressed: this.status == "STREAMING" ? getVideoEncodingSize : null,
                             child: Text("获得编码器输出画面高宽"),
                           ),
                           RaisedButton(
-                            onPressed: this.status != null
-                                ? onSetAbsoluteMixOverlayRect
-                                : null,
+                            onPressed: this.status != null ? onSetAbsoluteMixOverlayRect : null,
                             child: Text("设置合流"),
                           ),
                           RaisedButton(
-                            onPressed: this.status != null
-                                ? onSetLocalWindowPosition
-                                : null,
+                            onPressed: this.status != null ? onSetLocalWindowPosition : null,
                             child: Text("自定义推流窗口位置(连麦下有效)"),
                           ),
                         ],

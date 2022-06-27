@@ -239,7 +239,7 @@ public class QiniucloudPushPlatformView: NSObject, FlutterPlatformView, PLMediaS
         let cameraSetting = JsonUtil.getDictionaryFromJSONString(jsonString: cameraSettingStr as! String);
 
         //  # 摄像头
-        if let cameraFacingId = cameraSetting["CAMERA_FACING_BACK"] {
+        if let cameraFacingId = cameraSetting["cameraFacingId"] {
             if cameraFacingId as! String == "CAMERA_FACING_BACK" {
                 videoCaptureConfig?.position = AVCaptureDevice.Position.back;
             }
