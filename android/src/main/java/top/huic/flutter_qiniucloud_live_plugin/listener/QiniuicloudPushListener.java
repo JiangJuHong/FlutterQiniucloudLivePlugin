@@ -5,9 +5,13 @@ import android.hardware.Camera;
 import android.os.Handler;
 import android.os.Looper;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.alibaba.fastjson.JSON;
 import com.qiniu.pili.droid.rtcstreaming.RTCConferenceState;
 import com.qiniu.pili.droid.rtcstreaming.RTCConferenceStateChangedListener;
+import com.qiniu.pili.droid.rtcstreaming.RTCMediaSubscribeCallback;
 import com.qiniu.pili.droid.rtcstreaming.RTCUserEventListener;
 import com.qiniu.pili.droid.streaming.AudioSourceCallback;
 import com.qiniu.pili.droid.streaming.StreamStatusCallback;
@@ -15,6 +19,7 @@ import com.qiniu.pili.droid.streaming.StreamingProfile;
 import com.qiniu.pili.droid.streaming.StreamingSessionListener;
 import com.qiniu.pili.droid.streaming.StreamingState;
 import com.qiniu.pili.droid.streaming.StreamingStateChangedListener;
+import com.qiniu.pili.droid.streaming.SurfaceTextureCallback;
 
 import java.nio.ByteBuffer;
 import java.util.HashMap;
@@ -29,7 +34,7 @@ import top.huic.flutter_qiniucloud_live_plugin.enums.PushCallBackNoticeEnum;
  *
  * @author 蒋具宏
  */
-public class QiniuicloudPushListener implements RTCConferenceStateChangedListener, StreamingSessionListener, StreamingStateChangedListener, RTCUserEventListener, StreamStatusCallback, AudioSourceCallback {
+public class QiniuicloudPushListener implements RTCConferenceStateChangedListener, StreamingSessionListener, StreamingStateChangedListener, RTCUserEventListener, StreamStatusCallback, AudioSourceCallback, SurfaceTextureCallback {
 
     /**
      * 日志标签
@@ -63,6 +68,18 @@ public class QiniuicloudPushListener implements RTCConferenceStateChangedListene
      * @param params 参数
      */
     private void invokeListener(final PushCallBackNoticeEnum type, final Object params) {
+        invokeListener(type, params, null);
+    }
+
+
+    /**
+     * 调用监听器
+     *
+     * @param type     类型
+     * @param params   参数
+     * @param callback 回调
+     */
+    private void invokeListener(final PushCallBackNoticeEnum type, final Object params, final MethodChannel.Result callback) {
         // 切换到主线程
         Handler mainHandler = new Handler(Looper.getMainLooper());
         mainHandler.post(new Runnable() {
@@ -71,7 +88,7 @@ public class QiniuicloudPushListener implements RTCConferenceStateChangedListene
                 Map<String, Object> resultParams = new HashMap<>(2, 1);
                 resultParams.put("type", type);
                 resultParams.put("params", params == null ? null : JSON.toJSONString(params));
-                channel.invokeMethod(LISTENER_FUNC_NAME, JSON.toJSONString(resultParams));
+                channel.invokeMethod(LISTENER_FUNC_NAME, JSON.toJSONString(resultParams), callback);
             }
         });
     }
@@ -136,5 +153,61 @@ public class QiniuicloudPushListener implements RTCConferenceStateChangedListene
     @Override
     public void notifyStreamStatusChanged(StreamingProfile.StreamStatus streamStatus) {
         invokeListener(PushCallBackNoticeEnum.StreamStatusChanged, streamStatus);
+    }
+
+    @Override
+    public void onSurfaceCreated() {
+
+    }
+
+    @Override
+    public void onSurfaceChanged(int i, int i1) {
+
+    }
+
+    @Override
+    public void onSurfaceDestroyed() {
+
+    }
+
+    @Override
+    public int onDrawFrame(final int texId, int width, int height, float[] transformMatrix) {
+        // 经过处理后的 TexId
+        final Integer[] newTexId = {null};
+
+        // 回调通知
+        Map<String, Object> params = new HashMap<>(4, 1);
+        params.put("texId", texId);
+        params.put("width", width);
+        params.put("height", height);
+        params.put("transformMatrix", height);
+        invokeListener(PushCallBackNoticeEnum.DrawFrame, params, new MethodChannel.Result() {
+            @Override
+            public void success(@Nullable Object result) {
+                newTexId[0] = (Integer) result;
+            }
+
+            @Override
+            public void error(@NonNull String errorCode, @Nullable String errorMessage, @Nullable Object errorDetails) {
+                newTexId[0] = texId;
+            }
+
+            @Override
+            public void notImplemented() {
+                newTexId[0] = texId;
+            }
+        });
+
+        // 循环占用，保证返回最新内容
+        try {
+            while (newTexId[0] == null) {
+                Thread.sleep(1);
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        // 返回最新的内容
+        return newTexId[0];
     }
 }

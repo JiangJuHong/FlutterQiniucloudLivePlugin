@@ -57,8 +57,8 @@ class PushPageState extends State<PushPage> {
   onViewCreated(QiniucloudPushViewController controller) async {
     this.controller = controller;
     controller.addListener(onListener);
-//    bool result = await controller.resume();
-//    this.setState(() => info = "预览执行结果: $result");
+   bool result = await controller.resume();
+   this.setState(() => info = "预览执行结果: $result");
   }
 
   /// 监听器

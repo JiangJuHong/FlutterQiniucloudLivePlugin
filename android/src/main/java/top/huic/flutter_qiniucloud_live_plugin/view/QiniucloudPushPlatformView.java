@@ -252,6 +252,7 @@ public class QiniucloudPushPlatformView extends PlatformViewFactory implements P
         manager.setStreamingStateListener(listener);
         manager.setUserEventListener(listener);
         manager.setStreamStatusCallback(listener);
+        manager.setSurfaceTextureCallback(listener);
         manager.setAudioSourceCallback(listener);
 
         // 预览设置
@@ -426,9 +427,9 @@ public class QiniucloudPushPlatformView extends PlatformViewFactory implements P
      */
     private void switchCamera(MethodCall call, final MethodChannel.Result result) {
         CameraStreamingSetting.CAMERA_FACING_ID id;
-        if(cameraStreamingSetting.getCameraFacingId() == CameraStreamingSetting.CAMERA_FACING_ID.CAMERA_FACING_FRONT){
+        if (cameraStreamingSetting.getCameraFacingId() == CameraStreamingSetting.CAMERA_FACING_ID.CAMERA_FACING_FRONT) {
             id = CameraStreamingSetting.CAMERA_FACING_ID.CAMERA_FACING_BACK;
-        }else{
+        } else {
             id = CameraStreamingSetting.CAMERA_FACING_ID.CAMERA_FACING_FRONT;
         }
         cameraStreamingSetting.setCameraFacingId(id);
