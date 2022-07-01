@@ -184,7 +184,7 @@ public class QiniuicloudPushListener implements RTCConferenceStateChangedListene
         invokeListener(PushCallBackNoticeEnum.DrawFrame, params, new MethodChannel.Result() {
             @Override
             public void success(@Nullable Object result) {
-                newTexId[0] = (Integer) result;
+                newTexId[0] = result == null ? texId : (Integer) result;
             }
 
             @Override
@@ -201,12 +201,11 @@ public class QiniuicloudPushListener implements RTCConferenceStateChangedListene
         // 循环占用，保证返回最新内容
         try {
             while (newTexId[0] == null) {
-                Thread.sleep(1);
+                Thread.sleep(0);
             }
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
         // 返回最新的内容
         return newTexId[0];
     }

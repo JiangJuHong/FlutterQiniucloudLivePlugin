@@ -270,12 +270,12 @@ class QiniucloudConnectedPushListener {
             throw MissingPluginException();
           }
 
-          // 回调触发
+          // 回调触发，只接收最后一个返回值
+          dynamic result;
           for (var item in _listeners) {
-            item(type, params ?? paramsStr);
+            result = item(type, params ?? paramsStr);
           }
-
-          break;
+          return result;
         default:
           throw MissingPluginException();
       }
@@ -294,4 +294,4 @@ class QiniucloudConnectedPushListener {
 }
 
 /// 推流监听器值模型
-typedef QiniucloudPushListenerValue<P> = void Function(QiniucloudPushListenerTypeEnum type, P params);
+typedef QiniucloudPushListenerValue<P> = dynamic Function(QiniucloudPushListenerTypeEnum type, P params);

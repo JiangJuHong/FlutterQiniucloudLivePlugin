@@ -29,4 +29,7 @@ enum QiniucloudPushListenerTypeEnum {
 
   /// 用户离开连麦
   UserLeaveConference,
+
+  /// 流改变
+  DrawFrame,
 }
