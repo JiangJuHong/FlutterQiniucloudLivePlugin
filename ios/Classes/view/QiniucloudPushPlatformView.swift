@@ -1,4 +1,5 @@
-import PLRTCStreamingKit
+import PLMediaStreamingKit
+import CoreVideo.CVPixelBuffer
 
 //  Created by 蒋具宏 on 2020/3/3.
 
@@ -54,6 +55,9 @@ public class QiniucloudPushPlatformView: NSObject, FlutterPlatformView, PLMediaS
      * 监听器回调的方法名
      */
     private static let LISTENER_FUNC_NAME = "onPushListener";
+
+    /// 七牛云委托代理
+    public static var qiniuCloudDelegate: QiniuCloudDelegate?;
 
     /**
      * 通信管道
@@ -294,7 +298,7 @@ public class QiniucloudPushPlatformView: NSObject, FlutterPlatformView, PLMediaS
 
         // 推流地址
         if let publishUrl = streamingProfile["publishUrl"] {
-            self.session?.pushURL = URL(string: publishUrl as! String);
+            self.session?.pushURL = URL(string: publishUrl as! String)!;
         }
 
         // 视频质量
@@ -400,19 +404,19 @@ public class QiniucloudPushPlatformView: NSObject, FlutterPlatformView, PLMediaS
      * 开始连麦
      */
     private func startConference(call: FlutterMethodCall, result: @escaping FlutterResult) {
-        if let userId = CommonUtils.getParam(call: call, result: result, param: "userId") as? String,
-           let roomName = CommonUtils.getParam(call: call, result: result, param: "roomName") as? String,
-           let roomToken = CommonUtils.getParam(call: call, result: result, param: "roomToken") as? String {
-            session?.startConference(withRoomName: roomName, userID: userId, roomToken: roomToken, rtcConfiguration: PLRTCConfiguration())
-            result(nil);
-        }
+//        if let userId = CommonUtils.getParam(call: call, result: result, param: "userId") as? String,
+//           let roomName = CommonUtils.getParam(call: call, result: result, param: "roomName") as? String,
+//           let roomToken = CommonUtils.getParam(call: call, result: result, param: "roomToken") as? String {
+//            session?.startConference(withRoomName: roomName, userID: userId, roomToken: roomToken, rtcConfiguration: PLRTCConfiguration())
+        result(nil);
+//        }
     }
 
     /**
      * 停止连麦
      */
     private func stopConference(call: FlutterMethodCall, result: @escaping FlutterResult) {
-        session?.stopConference();
+//        session?.stopConference();
         result(nil);
     }
 
@@ -424,7 +428,7 @@ public class QiniucloudPushPlatformView: NSObject, FlutterPlatformView, PLMediaS
         publishUrl = publishUrl ?? session?.pushURL.absoluteString;
 
         // 开始推流
-        session?.startStreaming(withPush: URL(string: publishUrl!), feedback: {
+        session?.startStreaming(withPush: URL(string: publishUrl!)!, feedback: {
             (feedback: PLStreamStartStateFeedback) -> Void in
             result(feedback == PLStreamStartStateFeedback.success);
         });
@@ -507,13 +511,7 @@ public class QiniucloudPushPlatformView: NSObject, FlutterPlatformView, PLMediaS
     private func mute(call: FlutterMethodCall, result: @escaping FlutterResult) {
         if let mute = CommonUtils.getParam(call: call, result: result, param: "mute") as? Bool,
            let audioSource = CommonUtils.getParam(call: call, result: result, param: "audioSource") as? String {
-            if audioSource == "MIC" {
-                session?.isMuted = mute;
-                session?.isMuteMixedAudio = mute;
-            }
-            if audioSource == "SPEAKER" {
-                session?.isMuteSpeaker = mute;
-            }
+            session?.isMuted = mute;
             result(nil);
         }
     }
@@ -524,7 +522,7 @@ public class QiniucloudPushPlatformView: NSObject, FlutterPlatformView, PLMediaS
      */
     private func kickoutUser(call: FlutterMethodCall, result: @escaping FlutterResult) {
         if let userId = CommonUtils.getParam(call: call, result: result, param: "userId") as? String {
-            session?.kickoutUserID(userId)
+//            session?.kickoutUserID(userId)
             result(nil);
         }
     }
@@ -541,7 +539,7 @@ public class QiniucloudPushPlatformView: NSObject, FlutterPlatformView, PLMediaS
      * 更新推流参数
      */
     private func setStreamingProfile(call: FlutterMethodCall, result: @escaping FlutterResult) {
-        self.session!.reloadVideoStreamingConfiguration(videoStreamingConfig);
+        self.session!.reloadVideoStreamingConfiguration(videoStreamingConfig!);
         result(nil);
     }
 
@@ -651,18 +649,10 @@ public class QiniucloudPushPlatformView: NSObject, FlutterPlatformView, PLMediaS
         self.channel!.invokeMethod(QiniucloudPushPlatformView.LISTENER_FUNC_NAME, arguments: JsonUtil.toJson(resultParams));
     }
 
-
-    /**
-     *  RTC状态发生改变
-     */
-    public func mediaStreamingSession(_ session: PLMediaStreamingSession!, rtcStateDidChange state: PLRTCState) {
-        print(1);
-    }
-
     /**
      *  媒体流状态发生改变
      */
-    public func mediaStreamingSession(_ session: PLMediaStreamingSession!, streamStateDidChange state: PLStreamState) {
+    public func mediaStreamingSession(_ session: PLMediaStreamingSession, streamStateDidChange state: PLStreamState) {
         if state == PLStreamState.connected {
             self.invokeListener(type: PushCallBackNoticeEnum.StateChanged, params: "CONNECTING");
         }
@@ -674,7 +664,7 @@ public class QiniucloudPushPlatformView: NSObject, FlutterPlatformView, PLMediaS
     /**
      *  媒体流实时状态发生改变
      */
-    public func mediaStreamingSession(_ session: PLMediaStreamingSession!, streamStatusDidUpdate status: PLStreamStatus!) {
+    public func mediaStreamingSession(_ session: PLMediaStreamingSession, streamStatusDidUpdate status: PLStreamStatus) {
         self.invokeListener(type: PushCallBackNoticeEnum.StateChanged, params: "STREAMING");
         self.invokeListener(type: PushCallBackNoticeEnum.StreamStatusChanged, params: [
             "audioFps": status.audioFPS,
@@ -686,8 +676,15 @@ public class QiniucloudPushPlatformView: NSObject, FlutterPlatformView, PLMediaS
     /**
      *  连接错误
      */
-    public func mediaStreamingSession(_ session: PLMediaStreamingSession!, didDisconnectWithError error: Error!) {
+    public func mediaStreamingSession(_ session: PLMediaStreamingSession, didDisconnectWithError error: Error) {
         self.invokeListener(type: PushCallBackNoticeEnum.StateChanged, params: "IOERROR");
     }
 
+    /// 流处理器
+    public func mediaStreamingSession(_ session: PLMediaStreamingSession, cameraSourceDidGet pixelBuffer: CVPixelBuffer, timingInfo: CMSampleTimingInfo) -> Unmanaged<CVPixelBuffer> {
+        if QiniucloudPushPlatformView.qiniuCloudDelegate == nil {
+            return Unmanaged<CVPixelBuffer>.passUnretained(pixelBuffer)
+        }
+        return QiniucloudPushPlatformView.qiniuCloudDelegate!.mediaStreamingSession(session, cameraSourceDidGet: pixelBuffer, timingInfo: timingInfo)
+    }
 }

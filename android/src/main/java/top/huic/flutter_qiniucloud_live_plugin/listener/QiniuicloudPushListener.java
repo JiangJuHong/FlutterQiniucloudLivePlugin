@@ -185,9 +185,6 @@ public class QiniuicloudPushListener implements RTCConferenceStateChangedListene
             @Override
             public void success(@Nullable Object result) {
                 newTexId[0] = result == null ? texId : (Integer) result;
-                System.out.println("=======================");
-                System.out.println(result == null ? texId : (Integer) result);
-                System.out.println("=======================");
             }
 
             @Override
