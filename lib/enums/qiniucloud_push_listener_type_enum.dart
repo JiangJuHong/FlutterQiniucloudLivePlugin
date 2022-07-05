@@ -29,10 +29,4 @@ enum QiniucloudPushListenerTypeEnum {
 
   /// 用户离开连麦
   UserLeaveConference,
-
-  /// 流渲染（Android）
-  DrawFrame,
-
-  /// 相机流（IOS）
-  CameraSourceDidGetPixelBuffer,
 }

@@ -46,8 +46,4 @@ public enum PushCallBackNoticeEnum {
      * 用户离开连麦
      */
     UserLeaveConference,
-    /**
-     * 视频绘制
-     */
-    DrawFrame,
 }

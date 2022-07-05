@@ -47,6 +47,11 @@ public class QiniuicloudPushListener implements RTCConferenceStateChangedListene
     private final static String LISTENER_FUNC_NAME = "onPushListener";
 
     /**
+     * 回调监听器
+     */
+    public static SurfaceTextureCallback callback;
+
+    /**
      * 全局上下文
      */
     private Context context;
@@ -172,41 +177,9 @@ public class QiniuicloudPushListener implements RTCConferenceStateChangedListene
 
     @Override
     public int onDrawFrame(final int texId, int width, int height, float[] transformMatrix) {
-        // 经过处理后的 TexId
-        final Integer[] newTexId = {null};
-
-        // 回调通知
-        Map<String, Object> params = new HashMap<>(4, 1);
-        params.put("texId", texId);
-        params.put("width", width);
-        params.put("height", height);
-        params.put("transformMatrix", height);
-        invokeListener(PushCallBackNoticeEnum.DrawFrame, params, new MethodChannel.Result() {
-            @Override
-            public void success(@Nullable Object result) {
-                newTexId[0] = result == null ? texId : (Integer) result;
-            }
-
-            @Override
-            public void error(@NonNull String errorCode, @Nullable String errorMessage, @Nullable Object errorDetails) {
-                newTexId[0] = texId;
-            }
-
-            @Override
-            public void notImplemented() {
-                newTexId[0] = texId;
-            }
-        });
-
-        // 循环占用，保证返回最新内容
-        try {
-            while (newTexId[0] == null) {
-                Thread.sleep(0);
-            }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        if (callback != null) {
+            return callback.onDrawFrame(texId, width, height, transformMatrix);
         }
-        // 返回最新的内容
-        return newTexId[0];
+        return texId;
     }
 }
