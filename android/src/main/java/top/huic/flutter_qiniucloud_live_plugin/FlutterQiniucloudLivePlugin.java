@@ -1,8 +1,6 @@
 package top.huic.flutter_qiniucloud_live_plugin;
 
 import android.content.Context;
-
-import com.qiniu.pili.droid.streaming.MediaStreamingManager;
 import com.qiniu.pili.droid.streaming.StreamingEnv;
 
 import androidx.annotation.NonNull;
