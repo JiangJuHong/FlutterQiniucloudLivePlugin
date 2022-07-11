@@ -2,8 +2,7 @@ package top.huic.flutter_qiniucloud_live_plugin;
 
 import android.content.Context;
 
-import com.qiniu.pili.droid.rtcstreaming.RTCMediaStreamingManager;
-import com.qiniu.pili.droid.rtcstreaming.RTCServerRegion;
+import com.qiniu.pili.droid.streaming.MediaStreamingManager;
 import com.qiniu.pili.droid.streaming.StreamingEnv;
 
 import androidx.annotation.NonNull;
@@ -15,7 +14,6 @@ import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
 import io.flutter.plugin.common.PluginRegistry.Registrar;
 import io.flutter.plugin.platform.PlatformViewRegistry;
-import top.huic.flutter_qiniucloud_live_plugin.view.QiniucloudConnectedPlayerPlatformView;
 import top.huic.flutter_qiniucloud_live_plugin.view.QiniucloudPushPlatformView;
 import top.huic.flutter_qiniucloud_live_plugin.view.QiniucloudPlayerPlatformView;
 
@@ -40,12 +38,8 @@ public class FlutterQiniucloudLivePlugin implements FlutterPlugin, MethodCallHan
         // 初始化七牛云
         StreamingEnv.init(context);
 
-        // 初始化七牛云连麦
-        RTCMediaStreamingManager.init(context, RTCServerRegion.RTC_CN_SERVER);
-
         // 注册View
         registry.registerViewFactory(QiniucloudPlayerPlatformView.SIGN, new QiniucloudPlayerPlatformView(context, messenger));
-        registry.registerViewFactory(QiniucloudConnectedPlayerPlatformView.SIGN, new QiniucloudConnectedPlayerPlatformView(context, messenger));
         registry.registerViewFactory(QiniucloudPushPlatformView.SIGN, new QiniucloudPushPlatformView(context, messenger));
     }
 

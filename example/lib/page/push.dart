@@ -1,11 +1,8 @@
 import 'dart:convert';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_qiniucloud_live_plugin/view/qiniucloud_push_view.dart';
 import 'package:flutter_qiniucloud_live_plugin/controller/qiniucloud_push_view_controller.dart';
-import 'package:flutter_qiniucloud_live_plugin/controller/qiniucloud_connected_player_view_controller.dart';
-import 'package:flutter_qiniucloud_live_plugin/view/qiniucloud_connected_player_view.dart';
 import 'package:flutter_qiniucloud_live_plugin/enums/qiniucloud_push_listener_type_enum.dart';
 import 'package:flutter_qiniucloud_live_plugin/entity/face_beauty_setting_entity.dart';
 import 'package:flutter_qiniucloud_live_plugin/entity/camera_streaming_setting_entity.dart';
@@ -22,9 +19,6 @@ class PushPage extends StatefulWidget {
 class PushPageState extends State<PushPage> {
   /// 推流控制器
   QiniucloudPushViewController controller;
-
-  /// 连麦控制器
-  QiniucloudConnectedPlayerViewController playerController;
 
   /// 当前状态
   String status;
@@ -234,57 +228,10 @@ class PushPageState extends State<PushPage> {
     this.setState(() => info = "关闭执行成功");
   }
 
-  /// 开始连麦
-  onStartConference() async {
-    try {
-      await controller.startConference(
-        roomName: "194f98358c934071a20c33431fd71423",
-        userId: "af182f7402d74c7d82ea38f5482621b4",
-        roomToken: "v740N_w0pHblR7KZMSPHhfdqjxrHEv5e_yBaiq0e:rSIkdWuf_h6vUbY46C59XbKkzdo=:eyJyb29tX25hbWUiOiIxOTRmOTgzNThjOTM0MDcxYTIwYzMzNDMxZmQ3MTQyMyIsImV4cGlyZV9hdCI6MTU4MTIwNzQ2NSwicGVybSI6ImFkbWluIiwidmVyc2lvbiI6IjIuMCIsInVzZXJfaWQiOiJhZjE4MmY3NDAyZDc0YzdkODJlYTM4ZjU0ODI2MjFiNCJ9",
-      );
-      this.setState(() => info = "连麦执行成功");
-    } catch (e) {
-      this.setState(() => info = "连麦执行失败:$e");
-    }
-  }
-
-  /// 关闭连麦
-  onStopConference() async {
-    await controller.stopConference();
-    this.setState(() => info = "关闭连麦执行成功");
-  }
-
   /// 获取编码器输出的画面的高宽
   getVideoEncodingSize() async {
     Map<String, dynamic> data = await controller.getVideoEncodingSize();
     this.setState(() => info = "编码器高宽为:${data['height']},${data['width']}");
-  }
-
-  /// 连麦视图创建事件
-  onPlayerViewCreated(viewId, playerController) {
-    // 添加到远程视图
-    this.playerController = playerController;
-    controller.addRemoteWindow(id: viewId);
-  }
-
-  /// 设置合流参数
-  onSetAbsoluteMixOverlayRect() {
-    playerController.setAbsoluteMixOverlayRect(
-      x: 0,
-      y: 0,
-      w: 100,
-      h: 100,
-    );
-  }
-
-  /// 自定义推流窗口地址(连麦下有效)
-  onSetLocalWindowPosition() {
-    controller.setLocalWindowPosition(
-      x: 0,
-      y: 10,
-      w: 50,
-      h: 50,
-    );
   }
 
   @override
@@ -305,18 +252,6 @@ class PushPageState extends State<PushPage> {
                     publishUrl: "rtmp://pili-publish.tianshitaiyuan.com/zuqulive/test?e=1583495173&token=v740N_w0pHblR7KZMSPHhfdqjxrHEv5e_yBaiq0e:B0gtMgQHqUABNL_jiqa5SmSX-Dg=1",
                   ),
                   onViewCreated: onViewCreated,
-                ),
-                Positioned(
-                  right: 0,
-                  height: 100,
-                  width: 100,
-                  top: 0,
-                  child: Container(
-                    width: MediaQuery.of(context).size.width / 2,
-                    child: QiniucloudConnectPlayerView(
-                      onViewCreated: onPlayerViewCreated,
-                    ),
-                  ),
                 ),
                 Align(
                   alignment: new FractionalOffset(0.5, 0.95),
@@ -488,24 +423,8 @@ class PushPageState extends State<PushPage> {
                             child: Text("关闭耳返"),
                           ),
                           RaisedButton(
-                            onPressed: this.status != null ? onStartConference : null,
-                            child: Text("开始连麦"),
-                          ),
-                          RaisedButton(
-                            onPressed: this.status != null ? onStopConference : null,
-                            child: Text("关闭连麦"),
-                          ),
-                          RaisedButton(
                             onPressed: this.status == "STREAMING" ? getVideoEncodingSize : null,
                             child: Text("获得编码器输出画面高宽"),
-                          ),
-                          RaisedButton(
-                            onPressed: this.status != null ? onSetAbsoluteMixOverlayRect : null,
-                            child: Text("设置合流"),
-                          ),
-                          RaisedButton(
-                            onPressed: this.status != null ? onSetLocalWindowPosition : null,
-                            child: Text("自定义推流窗口位置(连麦下有效)"),
                           ),
                         ],
                       ),
