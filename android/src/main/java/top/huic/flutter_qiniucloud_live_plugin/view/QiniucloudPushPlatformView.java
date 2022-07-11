@@ -2,8 +2,10 @@ package top.huic.flutter_qiniucloud_live_plugin.view;
 
 
 import android.content.Context;
+import android.hardware.Camera;
 import android.util.Log;
 import android.view.View;
+
 import com.alibaba.fastjson.JSON;
 import com.qiniu.pili.droid.streaming.AVCodecType;
 import com.qiniu.pili.droid.streaming.CameraStreamingSetting;
@@ -11,9 +13,11 @@ import com.qiniu.pili.droid.streaming.MediaStreamingManager;
 import com.qiniu.pili.droid.streaming.MicrophoneStreamingSetting;
 import com.qiniu.pili.droid.streaming.StreamingProfile;
 import com.qiniu.pili.droid.streaming.WatermarkSetting;
+
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
+
 import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
@@ -199,13 +203,10 @@ public class QiniucloudPushPlatformView extends PlatformViewFactory implements P
         Map<String, Object> cameraSettingMap = JSON.parseObject(cameraSettingStr);
         // 推流参数(仅主播)
         String streamingProfileStr = (String) params.get("streamingProfile");
-        // 连麦参数
-        String connectOptionsStr = (String) params.get("connectOptions");
-
 
         // 初始化视图
         view = new CameraPreviewFrameView(context);
-        manager = new MediaStreamingManager(context, view, AVCodecType.SW_VIDEO_WITH_SW_AUDIO_CODEC);
+        manager = new MediaStreamingManager(context, view, AVCodecType.HW_VIDEO_SURFACE_AS_INPUT_WITH_HW_AUDIO_CODEC);
 
         QiniuicloudPushListener listener = new QiniuicloudPushListener(context, methodChannel);
         manager.setStreamingSessionListener(listener);
@@ -220,12 +221,10 @@ public class QiniucloudPushPlatformView extends PlatformViewFactory implements P
         if (cameraStreamingSetting == null) {
             Log.e(TAG, "init: 相机信息初始化失败!");
         } else {
-            // 美颜过滤(设置美颜后，启用美颜过滤，没设置美颜，则自动过滤空)
-            cameraStreamingSetting.setVideoFilter(CameraStreamingSetting.VIDEO_FILTER_TYPE.VIDEO_FILTER_BEAUTY);
-
-            // 美颜设置
+            // 美颜设置,设置美颜后，启用美颜过滤，没设置美颜，则自动过滤空
             Map faceBeauty = (Map) cameraSettingMap.get("faceBeauty");
             if (faceBeauty != null) {
+                cameraStreamingSetting.setVideoFilter(CameraStreamingSetting.VIDEO_FILTER_TYPE.VIDEO_FILTER_BEAUTY);
                 cameraStreamingSetting.setFaceBeautySetting(new CameraStreamingSetting.FaceBeautySetting(Float.valueOf(faceBeauty.get("beautyLevel").toString()), Float.valueOf(faceBeauty.get("whiten").toString()), Float.valueOf(faceBeauty.get("redden").toString())));
             }
         }
