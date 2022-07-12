@@ -253,7 +253,7 @@ public class QiniucloudPushPlatformView: NSObject, FlutterPlatformView, PLMediaS
 
         // 美颜设置
         self.session?.setBeautifyModeOn(cameraSetting["builtInFaceBeautyEnabled"] as! Bool);
-        if cameraSetting["faceBeauty"] != nil {
+        if cameraSetting["faceBeauty"] != nil && !(cameraSetting["faceBeauty"] is NSNull) {
             let faceBeauty = cameraSetting["faceBeauty"] as! [String: Any];
             // 红润
             self.session?.setRedden(faceBeauty["redden"] as! CGFloat);
