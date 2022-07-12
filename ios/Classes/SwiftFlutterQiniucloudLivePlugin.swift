@@ -12,12 +12,6 @@ public class SwiftFlutterQiniucloudLivePlugin: NSObject, FlutterPlugin {
     let instance = SwiftFlutterQiniucloudLivePlugin()
     registrar.addMethodCallDelegate(instance, channel: channel)
     
-    // 注册界面
-    // 连麦播放界面
-    registrar.register(
-        QiniucloudConnectedPlayerPlatformViewFactory(message: registrar.messenger()),
-        withId: QiniucloudConnectedPlayerPlatformViewFactory.SIGN
-    );
     // 播放界面
     registrar.register(
         QiniucloudPlayerPlatformViewFactory(message: registrar.messenger()),

@@ -48,8 +48,7 @@ public class QiniucloudPushPlatformViewFactory: NSObject, FlutterPlatformViewFac
     }
 }
 
-//  七牛云连麦推流视图
-
+//  七牛云推流视图
 public class QiniucloudPushPlatformView: NSObject, FlutterPlatformView, PLMediaStreamingSessionDelegate {
     /**
      * 监听器回调的方法名
@@ -116,12 +115,6 @@ public class QiniucloudPushPlatformView: NSObject, FlutterPlatformView, PLMediaS
         case "pause":
             self.pause(call: call, result: result);
             break;
-        case "startConference":
-            self.startConference(call: call, result: result);
-            break;
-        case "stopConference":
-            self.stopConference(call: call, result: result);
-            break;
         case "startStreaming":
             self.startStreaming(call: call, result: result);
             break;
@@ -155,20 +148,11 @@ public class QiniucloudPushPlatformView: NSObject, FlutterPlatformView, PLMediaS
         case "mute":
             self.mute(call: call, result: result);
             break;
-        case "kickoutUser":
-            self.kickoutUser(call: call, result: result);
-            break;
         case "setConferenceOptions":
             self.setConferenceOptions(call: call, result: result);
             break;
         case "setStreamingProfile":
             self.setStreamingProfile(call: call, result: result);
-            break;
-        case "getParticipantsCount":
-            self.getParticipantsCount(call: call, result: result);
-            break;
-        case "getParticipants":
-            self.getParticipants(call: call, result: result);
             break;
         case "setPreviewMirror":
             self.setPreviewMirror(call: call, result: result);
@@ -224,7 +208,6 @@ public class QiniucloudPushPlatformView: NSObject, FlutterPlatformView, PLMediaS
         let dict = args as! Dictionary<String, Any>;
         self.loadVideoCaptureConfig(dict["cameraStreamingSetting"]);
         self.loadStreamingProfile(dict["streamingProfile"]);
-        self.loadConnectOptions(dict["connectOptions"]);
 
         // 初始化会话对象
         self.session = PLMediaStreamingSession(videoCaptureConfiguration: videoCaptureConfig, audioCaptureConfiguration: audioCaptureConfig, videoStreamingConfiguration: videoStreamingConfig, audioStreamingConfiguration: audioStreamingConfig, stream: nil);
@@ -232,7 +215,6 @@ public class QiniucloudPushPlatformView: NSObject, FlutterPlatformView, PLMediaS
         // 初始化完会话对象后再加载一次设置，设置session相关内容
         self.loadVideoCaptureConfig(dict["cameraStreamingSetting"]);
         self.loadStreamingProfile(dict["streamingProfile"]);
-        self.loadConnectOptions(dict["connectOptions"]);
 
         // 绑定监听器
         self.session?.delegate = self;
@@ -361,27 +343,6 @@ public class QiniucloudPushPlatformView: NSObject, FlutterPlatformView, PLMediaS
     }
 
     /**
-     *  加载连麦参数配置
-     */
-    private func loadConnectOptions(_ connectOptiionsStr: Any?) {
-        if connectOptiionsStr == nil || connectOptiionsStr is NSNull {
-            return;
-        }
-        let connectOptiions = JsonUtil.getDictionaryFromJSONString(jsonString: connectOptiionsStr as! String)
-
-        // 编码方向
-        if let videoEncodingOrientation = connectOptiions["videoEncodingOrientation"] {
-            if (videoEncodingOrientation as! String) == "PORT" {
-                session?.videoOrientation = AVCaptureVideoOrientation.portrait;
-            }
-
-            if (videoEncodingOrientation as! String) == "LAND" {
-                session?.videoOrientation = AVCaptureVideoOrientation.landscapeLeft;
-            }
-        }
-    }
-
-    /**
      * 打开摄像头和麦克风采集
      */
     private func resume(call: FlutterMethodCall, result: @escaping FlutterResult) {
@@ -397,26 +358,6 @@ public class QiniucloudPushPlatformView: NSObject, FlutterPlatformView, PLMediaS
      */
     private func pause(call: FlutterMethodCall, result: @escaping FlutterResult) {
         session?.stopCapture();
-        result(nil);
-    }
-
-    /**
-     * 开始连麦
-     */
-    private func startConference(call: FlutterMethodCall, result: @escaping FlutterResult) {
-//        if let userId = CommonUtils.getParam(call: call, result: result, param: "userId") as? String,
-//           let roomName = CommonUtils.getParam(call: call, result: result, param: "roomName") as? String,
-//           let roomToken = CommonUtils.getParam(call: call, result: result, param: "roomToken") as? String {
-//            session?.startConference(withRoomName: roomName, userID: userId, roomToken: roomToken, rtcConfiguration: PLRTCConfiguration())
-        result(nil);
-//        }
-    }
-
-    /**
-     * 停止连麦
-     */
-    private func stopConference(call: FlutterMethodCall, result: @escaping FlutterResult) {
-//        session?.stopConference();
         result(nil);
     }
 
@@ -516,17 +457,6 @@ public class QiniucloudPushPlatformView: NSObject, FlutterPlatformView, PLMediaS
         }
     }
 
-
-    /**
-     * 根据用户ID踢人
-     */
-    private func kickoutUser(call: FlutterMethodCall, result: @escaping FlutterResult) {
-        if let userId = CommonUtils.getParam(call: call, result: result, param: "userId") as? String {
-//            session?.kickoutUserID(userId)
-            result(nil);
-        }
-    }
-
     /**
      * 设置连麦参数
      */
@@ -541,20 +471,6 @@ public class QiniucloudPushPlatformView: NSObject, FlutterPlatformView, PLMediaS
     private func setStreamingProfile(call: FlutterMethodCall, result: @escaping FlutterResult) {
         self.session!.reloadVideoStreamingConfiguration(videoStreamingConfig!);
         result(nil);
-    }
-
-    /**
-     * 获取参与连麦的人数，不包括自己
-     */
-    private func getParticipantsCount(call: FlutterMethodCall, result: @escaping FlutterResult) {
-
-    }
-
-    /**
-     * 获取参与连麦的用户ID列表，不包括自己
-     */
-    private func getParticipants(call: FlutterMethodCall, result: @escaping FlutterResult) {
-
     }
 
     /**
