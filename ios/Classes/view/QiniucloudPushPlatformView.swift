@@ -244,13 +244,11 @@ public class QiniucloudPushPlatformView: NSObject, FlutterPlatformView, PLMediaS
 
         //  # 镜像翻转(预览端)
         if let frontCameraPreviewMirror = cameraSetting["frontCameraPreviewMirror"] {
-            videoCaptureConfig?.previewMirrorRearFacing = frontCameraPreviewMirror as! Bool;
             videoCaptureConfig?.previewMirrorFrontFacing = frontCameraPreviewMirror as! Bool;
         }
 
         //  # 镜像翻转(播放端)
         if let frontCameraMirror = cameraSetting["frontCameraMirror"] {
-            videoCaptureConfig?.streamMirrorRearFacing = frontCameraMirror as! Bool;
             videoCaptureConfig?.streamMirrorFrontFacing = frontCameraMirror as! Bool;
         }
 
