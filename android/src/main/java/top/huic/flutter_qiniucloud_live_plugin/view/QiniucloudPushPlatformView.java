@@ -228,6 +228,7 @@ public class QiniucloudPushPlatformView extends PlatformViewFactory implements P
                 cameraStreamingSetting.setFaceBeautySetting(new CameraStreamingSetting.FaceBeautySetting(Float.valueOf(faceBeauty.get("beautyLevel").toString()), Float.valueOf(faceBeauty.get("whiten").toString()), Float.valueOf(faceBeauty.get("redden").toString())));
             }
         }
+        cameraStreamingSetting.setCameraId(Camera.CameraInfo.CAMERA_FACING_BACK);
 
         // 推流设置
         if (streamingProfileStr != null) {
@@ -235,6 +236,10 @@ public class QiniucloudPushPlatformView extends PlatformViewFactory implements P
         } else {
             streamingProfile = new StreamingProfile();
         }
+
+        // 编码质量设置
+        streamingProfile.setEncodingSizeLevel(StreamingProfile.VIDEO_ENCODING_HEIGHT_1088);
+        streamingProfile.setEncoderRCMode(StreamingProfile.EncoderRCModes.QUALITY_PRIORITY);
 
         // 麦克风设置
         microphoneStreamingSetting = new MicrophoneStreamingSetting();
