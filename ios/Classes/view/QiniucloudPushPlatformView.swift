@@ -49,6 +49,7 @@ public class QiniucloudPushPlatformViewFactory: NSObject, FlutterPlatformViewFac
 }
 
 //  七牛云推流视图
+
 public class QiniucloudPushPlatformView: NSObject, FlutterPlatformView, PLMediaStreamingSessionDelegate {
     /**
      * 监听器回调的方法名
@@ -208,6 +209,8 @@ public class QiniucloudPushPlatformView: NSObject, FlutterPlatformView, PLMediaS
         let dict = args as! Dictionary<String, Any>;
         self.loadVideoCaptureConfig(dict["cameraStreamingSetting"]);
         self.loadStreamingProfile(dict["streamingProfile"]);
+
+        videoCaptureConfig?.sessionPreset = AVCaptureSession.Preset.high.rawValue
 
         // 初始化会话对象
         self.session = PLMediaStreamingSession(videoCaptureConfiguration: videoCaptureConfig, audioCaptureConfiguration: audioCaptureConfig, videoStreamingConfiguration: videoStreamingConfig, audioStreamingConfiguration: audioStreamingConfig, stream: nil);
