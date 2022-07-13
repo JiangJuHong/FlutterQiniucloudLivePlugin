@@ -228,7 +228,6 @@ public class QiniucloudPushPlatformView extends PlatformViewFactory implements P
                 cameraStreamingSetting.setFaceBeautySetting(new CameraStreamingSetting.FaceBeautySetting(Float.valueOf(faceBeauty.get("beautyLevel").toString()), Float.valueOf(faceBeauty.get("whiten").toString()), Float.valueOf(faceBeauty.get("redden").toString())));
             }
         }
-        cameraStreamingSetting.setCameraId(Camera.CameraInfo.CAMERA_FACING_BACK);
 
         // 推流设置
         if (streamingProfileStr != null) {
