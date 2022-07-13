@@ -4,6 +4,7 @@ import android.content.Context;
 import android.hardware.Camera;
 import android.os.Handler;
 import android.os.Looper;
+
 import com.alibaba.fastjson.JSON;
 import com.qiniu.pili.droid.streaming.AudioSourceCallback;
 import com.qiniu.pili.droid.streaming.StreamStatusCallback;
@@ -12,6 +13,7 @@ import com.qiniu.pili.droid.streaming.StreamingSessionListener;
 import com.qiniu.pili.droid.streaming.StreamingState;
 import com.qiniu.pili.droid.streaming.StreamingStateChangedListener;
 import com.qiniu.pili.droid.streaming.SurfaceTextureCallback;
+
 import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.List;
@@ -64,18 +66,19 @@ public class QiniuicloudPushListener implements StreamingSessionListener, Stream
      * @param params 参数
      */
     private void invokeListener(final PushCallBackNoticeEnum type, final Object params) {
-        invokeListener(type, params, null);
+        invokeListener(type, params, null, true);
     }
 
 
     /**
      * 调用监听器
      *
-     * @param type     类型
-     * @param params   参数
-     * @param callback 回调
+     * @param type      类型
+     * @param params    参数
+     * @param callback  回调
+     * @param jsonParam 是否序列化参数
      */
-    private void invokeListener(final PushCallBackNoticeEnum type, final Object params, final MethodChannel.Result callback) {
+    private void invokeListener(final PushCallBackNoticeEnum type, final Object params, final MethodChannel.Result callback, final boolean jsonParam) {
         // 切换到主线程
         Handler mainHandler = new Handler(Looper.getMainLooper());
         mainHandler.post(new Runnable() {
@@ -83,7 +86,7 @@ public class QiniuicloudPushListener implements StreamingSessionListener, Stream
             public void run() {
                 Map<String, Object> resultParams = new HashMap<>(2, 1);
                 resultParams.put("type", type);
-                resultParams.put("params", params == null ? null : JSON.toJSONString(params));
+                resultParams.put("params", params == null ? null : (jsonParam ? JSON.toJSONString(params) : params));
                 channel.invokeMethod(LISTENER_FUNC_NAME, JSON.toJSONString(resultParams), callback);
             }
         });
@@ -115,7 +118,7 @@ public class QiniuicloudPushListener implements StreamingSessionListener, Stream
 
     @Override
     public void onStateChanged(StreamingState status, Object extra) {
-        invokeListener(PushCallBackNoticeEnum.StateChanged, status);
+        invokeListener(PushCallBackNoticeEnum.StateChanged, status, null, false);
     }
 
     @Override

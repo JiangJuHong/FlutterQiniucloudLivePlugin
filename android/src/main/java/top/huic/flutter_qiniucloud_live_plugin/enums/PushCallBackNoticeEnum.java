@@ -34,16 +34,4 @@ public enum PushCallBackNoticeEnum {
      * 状态发生改变
      */
     StateChanged,
-    /**
-     * 连麦状态改变
-     */
-    ConferenceStateChanged,
-    /**
-     * 用户加入连麦
-     */
-    UserJoinConference,
-    /**
-     * 用户离开连麦
-     */
-    UserLeaveConference,
 }
