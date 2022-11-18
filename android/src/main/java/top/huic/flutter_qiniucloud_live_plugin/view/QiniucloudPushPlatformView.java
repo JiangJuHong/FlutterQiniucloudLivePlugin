@@ -71,7 +71,7 @@ public class QiniucloudPushPlatformView extends PlatformViewFactory implements P
     /**
      * 预览参数
      */
-    private CameraStreamingSetting cameraStreamingSetting;
+    public static CameraStreamingSetting cameraStreamingSetting;
 
     /**
      * 麦克风参数
