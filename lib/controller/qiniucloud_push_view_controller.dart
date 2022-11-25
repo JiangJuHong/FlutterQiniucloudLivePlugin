@@ -162,6 +162,13 @@ class QiniucloudPushViewController {
   Future<Map> getVideoEncodingSize() async {
     return jsonDecode(await _channel.invokeMethod('getVideoEncodingSize'));
   }
+
+  /// 设置混音 - [path] 音频文件
+  /// [loop] 是否循环播放
+  Future<void> setMix({@required String path, bool loop: false}) async => await _channel.invokeMethod('setMix', {"path": path, "loop": loop});
+
+  /// 释放当前音频资源
+  Future<void> closeCurrentAudio() async => await _channel.invokeMethod('closeCurrentAudio');
 }
 
 /// 七牛云连麦监听器

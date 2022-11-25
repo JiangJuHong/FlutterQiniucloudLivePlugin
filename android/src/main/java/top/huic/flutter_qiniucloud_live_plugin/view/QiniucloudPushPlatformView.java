@@ -13,7 +13,9 @@ import com.qiniu.pili.droid.streaming.MediaStreamingManager;
 import com.qiniu.pili.droid.streaming.MicrophoneStreamingSetting;
 import com.qiniu.pili.droid.streaming.StreamingProfile;
 import com.qiniu.pili.droid.streaming.WatermarkSetting;
+import com.qiniu.pili.droid.streaming.microphone.AudioMixer;
 
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
@@ -163,6 +165,12 @@ public class QiniucloudPushPlatformView extends PlatformViewFactory implements P
                 break;
             case "updateFaceBeautySetting":
                 this.updateFaceBeautySetting(call, result);
+                break;
+            case "setMix":
+                this.setMix(call, result);
+                break;
+            case "closeCurrentAudio":
+                this.closeCurrentAudio(call, result);
                 break;
             default:
                 result.notImplemented();
@@ -428,6 +436,31 @@ public class QiniucloudPushPlatformView extends PlatformViewFactory implements P
         CameraStreamingSetting.FaceBeautySetting faceBeautySetting = new CameraStreamingSetting.FaceBeautySetting((float) beautyLevel, (float) whiten, (float) redden);
         cameraStreamingSetting.setFaceBeautySetting(faceBeautySetting);
         manager.updateFaceBeautySetting(faceBeautySetting);
+        result.success(null);
+    }
+
+
+    /**
+     * 设置混音
+     */
+    private void setMix(MethodCall call, final MethodChannel.Result result) {
+        String path = CommonUtil.getParam(call, result, "path");
+        Boolean loop = CommonUtil.getParam(call, result, "loop");
+        AudioMixer mix = this.manager.getAudioMixer();
+        try {
+            mix.setFile(path, loop);
+        } catch (IOException ignored) {
+
+        }
+        result.success(null);
+    }
+
+
+    /**
+     * 释放音频资源
+     */
+    private void closeCurrentAudio(MethodCall call, final MethodChannel.Result result) {
+        this.manager.getAudioMixer().stop();
         result.success(null);
     }
 }

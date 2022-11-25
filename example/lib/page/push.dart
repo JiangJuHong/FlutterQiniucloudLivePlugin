@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_qiniucloud_live_plugin/view/qiniucloud_push_view.dart';
 import 'package:flutter_qiniucloud_live_plugin/controller/qiniucloud_push_view_controller.dart';
@@ -51,8 +52,8 @@ class PushPageState extends State<PushPage> {
   onViewCreated(QiniucloudPushViewController controller) async {
     this.controller = controller;
     controller.addListener(onListener);
-   bool result = await controller.resume();
-   this.setState(() => info = "预览执行结果: $result");
+    bool result = await controller.resume();
+    this.setState(() => info = "预览执行结果: $result");
   }
 
   /// 监听器
@@ -232,6 +233,22 @@ class PushPageState extends State<PushPage> {
   getVideoEncodingSize() async {
     Map<String, dynamic> data = await controller.getVideoEncodingSize();
     this.setState(() => info = "编码器高宽为:${data['height']},${data['width']}");
+  }
+
+  /// 设置混音
+  setMix() async {
+    FilePickerResult result = await FilePicker.platform.pickFiles();
+    if (result == null) {
+      return;
+    }
+    await controller.setMix(path: result.files.first.path, loop: true);
+    this.setState(() => info = "设置混响成功");
+  }
+
+  /// 释放音频资源
+  closeCurrentAudio() async {
+    await controller.closeCurrentAudio();
+    this.setState(() => info = "释放音频资源成功");
   }
 
   @override
@@ -425,6 +442,14 @@ class PushPageState extends State<PushPage> {
                           TextButton(
                             onPressed: this.status == "STREAMING" ? getVideoEncodingSize : null,
                             child: Text("获得编码器输出画面高宽"),
+                          ),
+                          TextButton(
+                            onPressed: setMix,
+                            child: Text("设置混音"),
+                          ),
+                          TextButton(
+                            onPressed: closeCurrentAudio,
+                            child: Text("释放音频资源"),
                           ),
                         ],
                       ),

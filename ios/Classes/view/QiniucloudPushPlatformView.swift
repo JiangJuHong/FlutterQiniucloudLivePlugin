@@ -50,7 +50,7 @@ public class QiniucloudPushPlatformViewFactory: NSObject, FlutterPlatformViewFac
 
 //  七牛云推流视图
 
-public class QiniucloudPushPlatformView: NSObject, FlutterPlatformView, PLMediaStreamingSessionDelegate {
+public class QiniucloudPushPlatformView: NSObject, FlutterPlatformView, PLMediaStreamingSessionDelegate, PLAudioPlayerDelegate {
     /**
      * 监听器回调的方法名
      */
@@ -93,6 +93,9 @@ public class QiniucloudPushPlatformView: NSObject, FlutterPlatformView, PLMediaS
      *  音频编码配置
      */
     private var audioStreamingConfig: PLAudioStreamingConfiguration?;
+
+    /// 混音是否循环
+    private var mixLoop: Bool = false;
 
     init(_ frame: CGRect) {
         self.frame = frame;
@@ -181,6 +184,10 @@ public class QiniucloudPushPlatformView: NSObject, FlutterPlatformView, PLMediaS
             break;
         case "setLocalWindowPosition":
             self.setLocalWindowPosition(call: call, result: result);
+        case "setMix":
+            self.setMix(call: call, result: result);
+        case "closeCurrentAudio":
+            self.closeCurrentAudio(call: call, result: result);
             break;
         default:
             result(FlutterMethodNotImplemented);
@@ -498,14 +505,16 @@ public class QiniucloudPushPlatformView: NSObject, FlutterPlatformView, PLMediaS
      * 开启耳返
      */
     private func startPlayback(call: FlutterMethodCall, result: @escaping FlutterResult) {
-
+        session!.isPlayback = true;
+        result(true);
     }
 
     /**
      * 关闭耳返
      */
     private func stopPlayback(call: FlutterMethodCall, result: @escaping FlutterResult) {
-
+        session!.isPlayback = false;
+        result(true);
     }
 
     /**
@@ -548,6 +557,24 @@ public class QiniucloudPushPlatformView: NSObject, FlutterPlatformView, PLMediaS
      */
     private func setLocalWindowPosition(call: FlutterMethodCall, result: @escaping FlutterResult) {
 
+    }
+
+    /// 设置混音
+    public func setMix(call: FlutterMethodCall, result: @escaping FlutterResult) {
+        if let path = CommonUtils.getParam(call: call, result: result, param: "path") as? String,
+           let loop = CommonUtils.getParam(call: call, result: result, param: "loop") as? Bool {
+            self.mixLoop = loop;
+            let player = self.session!.audioPlayer(withFilePath: path)
+            player.play();
+            player.delegate = self
+            result(nil);
+        }
+    }
+
+    /// 释放当前音频资源
+    public func closeCurrentAudio(call: FlutterMethodCall, result: @escaping FlutterResult) {
+        self.session!.closeCurrentAudio();
+        result(nil);
     }
 
     /**
@@ -603,5 +630,10 @@ public class QiniucloudPushPlatformView: NSObject, FlutterPlatformView, PLMediaS
             return Unmanaged<CVPixelBuffer>.passUnretained(pixelBuffer)
         }
         return QiniucloudPushPlatformView.qiniuCloudDelegate!.mediaStreamingSession(session, cameraSourceDidGet: pixelBuffer, timingInfo: timingInfo)
+    }
+
+    /// 音频播放结束回调
+    public func didAudioFilePlayingFinishedAndShouldAudioPlayerPlayAgain(_ audioPlayer: PLAudioPlayer!) -> Bool {
+        return mixLoop;
     }
 }
