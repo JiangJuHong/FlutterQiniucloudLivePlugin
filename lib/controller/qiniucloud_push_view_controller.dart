@@ -167,6 +167,10 @@ class QiniucloudPushViewController {
   /// [loop] 是否循环播放
   Future<void> setMix({@required String path, bool loop: false}) async => await _channel.invokeMethod('setMix', {"path": path, "loop": loop});
 
+  /// 设置混音音量
+  /// [volume] 音量
+  Future<void> setMixVolume({@required double volume}) async => await _channel.invokeMethod('setMixVolume', {"volume": volume});
+
   /// 释放当前音频资源
   Future<void> closeCurrentAudio() async => await _channel.invokeMethod('closeCurrentAudio');
 }

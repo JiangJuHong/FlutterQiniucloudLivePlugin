@@ -169,6 +169,9 @@ public class QiniucloudPushPlatformView extends PlatformViewFactory implements P
             case "setMix":
                 this.setMix(call, result);
                 break;
+            case "setMixVolume":
+                this.setMixVolume(call, result);
+                break;
             case "closeCurrentAudio":
                 this.closeCurrentAudio(call, result);
                 break;
@@ -455,6 +458,13 @@ public class QiniucloudPushPlatformView extends PlatformViewFactory implements P
         result.success(null);
     }
 
+    /**
+     * 设置混音音量
+     */
+    private void setMixVolume(MethodCall call, final MethodChannel.Result result) {
+        float volume = CommonUtil.getParam(call, result, "volume");
+        this.manager.getAudioMixer().setVolume(volume, volume);
+    }
 
     /**
      * 释放音频资源

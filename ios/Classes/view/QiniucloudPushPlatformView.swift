@@ -97,6 +97,9 @@ public class QiniucloudPushPlatformView: NSObject, FlutterPlatformView, PLMediaS
     /// 混音是否循环
     private var mixLoop: Bool = false;
 
+    /// 音频对象
+    private var audio: PLAudioPlayer?;
+
     init(_ frame: CGRect) {
         self.frame = frame;
     }
@@ -567,6 +570,15 @@ public class QiniucloudPushPlatformView: NSObject, FlutterPlatformView, PLMediaS
             let player = self.session!.audioPlayer(withFilePath: path)
             player.play();
             player.delegate = self
+            self.audio = player;
+            result(nil);
+        }
+    }
+
+    /// 设置混音音量
+    public func setMixVolume(call: FlutterMethodCall, result: @escaping FlutterResult) {
+        if let volume = CommonUtils.getParam(call: call, result: result, param: "volume") as? Double {
+            self.audio?.volume = volume;
             result(nil);
         }
     }
@@ -574,6 +586,7 @@ public class QiniucloudPushPlatformView: NSObject, FlutterPlatformView, PLMediaS
     /// 释放当前音频资源
     public func closeCurrentAudio(call: FlutterMethodCall, result: @escaping FlutterResult) {
         self.session!.closeCurrentAudio();
+        self.audio = nil;
         result(nil);
     }
 
