@@ -189,6 +189,8 @@ public class QiniucloudPushPlatformView: NSObject, FlutterPlatformView, PLMediaS
             self.setLocalWindowPosition(call: call, result: result);
         case "setMix":
             self.setMix(call: call, result: result);
+        case "setMixVolume":
+            self.setMixVolume(call: call, result: result);
         case "closeCurrentAudio":
             self.closeCurrentAudio(call: call, result: result);
             break;
