@@ -346,83 +346,83 @@ class PushPageState extends State<PushPage> {
                               ),
                             ],
                           ),
-                          RaisedButton(
+                          TextButton(
                             onPressed: this.status == null ? onResume : null,
                             child: Text("开始预览"),
                           ),
-                          RaisedButton(
+                          TextButton(
                             onPressed: this.status != null ? onPause : null,
                             child: Text("暂停预览"),
                           ),
-                          RaisedButton(
+                          TextButton(
                             onPressed: this.status == null ? onDestroy : null,
                             child: Text("销毁资源"),
                           ),
-                          RaisedButton(
+                          TextButton(
                             onPressed: this.status == "READY" ? onPush : null,
                             child: Text("开始推流"),
                           ),
-                          RaisedButton(
+                          TextButton(
                             onPressed: this.status == "STREAMING" ? onStopPush : null,
                             child: Text("停止推流"),
                           ),
-                          RaisedButton(
+                          TextButton(
                             onPressed: onCheckZoomSupported,
                             child: Text("是否支持缩放"),
                           ),
-                          RaisedButton(
+                          TextButton(
                             onPressed: onSetMaxZoom,
                             child: Text("设置为最大缩放比例"),
                           ),
-                          RaisedButton(
+                          TextButton(
                             onPressed: this.status != null ? onResetZoom : null,
                             child: Text("重置缩放比例"),
                           ),
-                          RaisedButton(
+                          TextButton(
                             onPressed: onTurnLightOn,
                             child: Text("开启闪光灯"),
                           ),
-                          RaisedButton(
+                          TextButton(
                             onPressed: onTurnLightOff,
                             child: Text("关闭闪光灯"),
                           ),
-                          RaisedButton(
+                          TextButton(
                             onPressed: onSwitchCamera,
                             child: Text("切换摄像头"),
                           ),
-                          RaisedButton(
+                          TextButton(
                             onPressed: () => onMute(true),
                             child: Text("开启静音"),
                           ),
-                          RaisedButton(
+                          TextButton(
                             onPressed: () => onMute(false),
                             child: Text("恢复声音"),
                           ),
-                          RaisedButton(
+                          TextButton(
                             onPressed: this.status != null ? () => onSetPreviewMirror(true) : null,
                             child: Text("打开预览镜像"),
                           ),
-                          RaisedButton(
+                          TextButton(
                             onPressed: this.status != null ? () => onSetPreviewMirror(false) : null,
                             child: Text("关闭预览镜像"),
                           ),
-                          RaisedButton(
+                          TextButton(
                             onPressed: this.status != null ? () => onSetEncodingMirror(true) : null,
                             child: Text("打开推流镜像"),
                           ),
-                          RaisedButton(
+                          TextButton(
                             onPressed: this.status != null ? () => onSetEncodingMirror(false) : null,
                             child: Text("关闭推流镜像"),
                           ),
-                          RaisedButton(
+                          TextButton(
                             onPressed: this.status != null ? onStartPlayback : null,
                             child: Text("开启耳返"),
                           ),
-                          RaisedButton(
+                          TextButton(
                             onPressed: this.status != null ? onStopPlayback : null,
                             child: Text("关闭耳返"),
                           ),
-                          RaisedButton(
+                          TextButton(
                             onPressed: this.status == "STREAMING" ? getVideoEncodingSize : null,
                             child: Text("获得编码器输出画面高宽"),
                           ),

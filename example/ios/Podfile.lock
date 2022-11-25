@@ -4,7 +4,7 @@ PODS:
     - Flutter
     - PLMediaStreamingKit (= 3.0.7)
     - PLPlayerKit (= 3.4.3)
-  - permission_handler (4.3.0):
+  - "permission_handler (4.4.0+hotfix.4)":
     - Flutter
   - PLMediaStreamingKit (3.0.7):
     - PLMediaStreamingKit/iphoneos (= 3.0.7)
@@ -32,12 +32,12 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/permission_handler/ios"
 
 SPEC CHECKSUMS:
-  Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
+  Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
   flutter_qiniucloud_live_plugin: da542c66d6aade51e9abd45257ae3ca2a0ce985b
-  permission_handler: 5c75cfde1229eb85f22d367c093900fac03c6c9e
+  permission_handler: 8278954f2382902f63f00dd8828769c0bd6d511b
   PLMediaStreamingKit: 1fb5c63f2f0b64bdd7efe31fec4b758894ea6626
   PLPlayerKit: a44734dc78c1f8f9fb22c537fa1916612fa46b06
 
-PODFILE CHECKSUM: 96a0047845f962487b194a3aa86ff7b33aa09ba1
+PODFILE CHECKSUM: 87585dfbd547da448f47d098e60e7673ff168ae0
 
 COCOAPODS: 1.11.3

@@ -281,31 +281,31 @@ class PlayerPageState extends State<PlayerPage> {
                       Text("当前状态:${getStatusText()},视频高宽:$height,$width"),
                       Wrap(
                         children: <Widget>[
-                          RaisedButton(
+                          TextButton(
                             onPressed: onStart,
                             child: Text("开始播放"),
                           ),
-                          RaisedButton(
+                          TextButton(
                             onPressed: onPause,
                             child: Text("暂停"),
                           ),
-                          RaisedButton(
+                          TextButton(
                             onPressed: onStopPlayback,
                             child: Text("停止"),
                           ),
-                          RaisedButton(
+                          TextButton(
                             onPressed: onGetRtmpVideoTimestamp,
                             child: Text("获得视频时间戳"),
                           ),
-                          RaisedButton(
+                          TextButton(
                             onPressed: onGetRtmpVideoTimestamp,
                             child: Text("获得音频时间戳"),
                           ),
-                          RaisedButton(
+                          TextButton(
                             onPressed: onSetBufferingEnabled,
                             child: Text("启用/关闭 播放器预缓存"),
                           ),
-                          RaisedButton(
+                          TextButton(
                             onPressed: onGetHttpBufferSize,
                             child: Text("获得已缓冲长度"),
                           ),

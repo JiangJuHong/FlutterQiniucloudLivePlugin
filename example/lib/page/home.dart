@@ -51,11 +51,11 @@ class HomePageState extends State<HomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            RaisedButton(
+            TextButton(
               onPressed: onConnectedPush,
               child: Text("开始推流"),
             ),
-            RaisedButton(
+            TextButton(
               onPressed: onPlayer,
               child: Text("开始播放"),
             ),
