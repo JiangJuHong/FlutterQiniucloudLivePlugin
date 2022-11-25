@@ -452,8 +452,8 @@ public class QiniucloudPushPlatformView extends PlatformViewFactory implements P
         AudioMixer mix = this.manager.getAudioMixer();
         try {
             mix.setFile(path, loop);
+            mix.play();
         } catch (IOException ignored) {
-
         }
         result.success(null);
     }
@@ -464,6 +464,7 @@ public class QiniucloudPushPlatformView extends PlatformViewFactory implements P
     private void setMixVolume(MethodCall call, final MethodChannel.Result result) {
         float volume = Float.valueOf(CommonUtil.getParam(call, result, "volume").toString());
         this.manager.getAudioMixer().setVolume(volume, volume);
+        result.success(null);
     }
 
     /**
