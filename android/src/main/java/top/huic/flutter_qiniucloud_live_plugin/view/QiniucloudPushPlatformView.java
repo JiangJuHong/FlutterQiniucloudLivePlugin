@@ -462,7 +462,7 @@ public class QiniucloudPushPlatformView extends PlatformViewFactory implements P
      * 设置混音音量
      */
     private void setMixVolume(MethodCall call, final MethodChannel.Result result) {
-        float volume = CommonUtil.getParam(call, result, "volume");
+        float volume = Float.valueOf(CommonUtil.getParam(call, result, "volume").toString());
         this.manager.getAudioMixer().setVolume(volume, volume);
     }
 
