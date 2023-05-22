@@ -70,7 +70,7 @@ class QiniucloudPushViewController {
 
   /// 设置缩放比例
   Future<void> setZoomValue({
-    @required int value,
+    int value,
   }) async {
     return await _channel.invokeMethod('setZoomValue', {"value": value});
   }
@@ -102,8 +102,8 @@ class QiniucloudPushViewController {
 
   /// 静音
   Future<void> mute({
-    @required bool mute,
-    @required QiniucloudAudioSourceTypeEnum audioSource,
+    bool mute,
+    QiniucloudAudioSourceTypeEnum audioSource,
   }) async {
     return await _channel.invokeMethod('mute', {
       "mute": mute,
@@ -123,7 +123,7 @@ class QiniucloudPushViewController {
 
   /// 改变预览镜像
   Future<bool> setPreviewMirror({
-    @required bool mirror,
+    bool mirror,
   }) async {
     return await _channel.invokeMethod('setPreviewMirror', {
       "mirror": mirror,
@@ -132,7 +132,7 @@ class QiniucloudPushViewController {
 
   /// 改变推流镜像
   Future<bool> setEncodingMirror({
-    @required bool mirror,
+    bool mirror,
   }) async {
     return await _channel.invokeMethod('setEncodingMirror', {
       "mirror": mirror,
@@ -151,7 +151,7 @@ class QiniucloudPushViewController {
 
   /// 更新推流参数
   Future<void> setStreamingProfile({
-    @required StreamingProfileEntity streamingProfile,
+    StreamingProfileEntity streamingProfile,
   }) async {
     return await _channel.invokeMethod('setStreamingProfile', {
       "streamingProfile": streamingProfile,
@@ -165,11 +165,11 @@ class QiniucloudPushViewController {
 
   /// 设置混音 - [path] 音频文件
   /// [loop] 是否循环播放
-  Future<void> setMix({@required String path, bool loop: false}) async => await _channel.invokeMethod('setMix', {"path": path, "loop": loop});
+  Future<void> setMix({String path, bool loop: false}) async => await _channel.invokeMethod('setMix', {"path": path, "loop": loop});
 
   /// 设置混音音量
   /// [volume] 音量
-  Future<void> setMixVolume({@required double volume}) async => await _channel.invokeMethod('setMixVolume', {"volume": volume});
+  Future<void> setMixVolume({double volume}) async => await _channel.invokeMethod('setMixVolume', {"volume": volume});
 
   /// 释放当前音频资源
   Future<void> closeCurrentAudio() async => await _channel.invokeMethod('closeCurrentAudio');

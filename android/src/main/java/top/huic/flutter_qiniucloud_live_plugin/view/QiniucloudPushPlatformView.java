@@ -454,6 +454,7 @@ public class QiniucloudPushPlatformView extends PlatformViewFactory implements P
             mix.setFile(path, loop);
             mix.play();
         } catch (IOException ignored) {
+            result.error(ignored.getMessage(), ignored.getMessage(), ignored.getMessage());
         }
         result.success(null);
     }

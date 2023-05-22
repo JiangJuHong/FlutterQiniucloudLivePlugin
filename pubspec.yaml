@@ -5,7 +5,7 @@ author:
 homepage: https://github.com/JiangJuHong/FlutterQiniucloudLivePlugin
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: ">=2.1.0"
 
 dependencies:
   flutter:

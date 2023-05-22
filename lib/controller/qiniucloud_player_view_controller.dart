@@ -8,8 +8,7 @@ import 'package:flutter_qiniucloud_live_plugin/view/qiniucloud_player_view.dart'
 
 /// 视图控制器
 class QiniucloudPlayerViewController {
-  QiniucloudPlayerViewController(int id)
-      : _channel = new MethodChannel('${QiniucloudPlayerViewState.type}_$id');
+  QiniucloudPlayerViewController(int id) : _channel = new MethodChannel('${QiniucloudPlayerViewState.type}_$id');
 
   final MethodChannel _channel;
 
@@ -34,7 +33,7 @@ class QiniucloudPlayerViewController {
 
   /// 设置画面预览模式
   Future<void> setDisplayAspectRatio({
-    @required QiniucloudPlayerDisplayAspectRatioEnum mode,
+    QiniucloudPlayerDisplayAspectRatioEnum mode,
   }) async {
     return _channel.invokeMethod('setDisplayAspectRatio', {
       "mode": QiniucloudPlayerDisplayAspectRatioEnumTool.toInt(mode),
@@ -44,8 +43,7 @@ class QiniucloudPlayerViewController {
   /// 开始播放
   Future<void> start({
     String url, // URL，如果该属性不为null，则会执行切换操作
-    bool
-        sameSource : false, // 是否是同种格式播放，同格式切换打开更快 @waring 当sameSource 为 YES 时，视频格式与切换前视频格式不同时，会导致视频打开失败【该属性仅IOS有效】
+    bool sameSource: false, // 是否是同种格式播放，同格式切换打开更快 @waring 当sameSource 为 YES 时，视频格式与切换前视频格式不同时，会导致视频打开失败【该属性仅IOS有效】
   }) async {
     return await _channel.invokeMethod('start', {
       "url": url,
@@ -75,10 +73,9 @@ class QiniucloudPlayerViewController {
 
   /// 暂停/恢复播放器的预缓冲
   Future<void> setBufferingEnabled({
-    @required bool enabled,
+    bool enabled,
   }) async {
-    return await _channel
-        .invokeMethod('setBufferingEnabled', {"enabled": enabled});
+    return await _channel.invokeMethod('setBufferingEnabled', {"enabled": enabled});
   }
 
   /// 获取已经缓冲的长度
@@ -109,10 +106,7 @@ class QiniucloudPlayerListener {
 
           // 初始化类型
           for (var item in QiniucloudPlayerListenerTypeEnum.values) {
-            if (item
-                    .toString()
-                    .replaceFirst("QiniucloudPlayerListenerTypeEnum.", "") ==
-                typeStr) {
+            if (item.toString().replaceFirst("QiniucloudPlayerListenerTypeEnum.", "") == typeStr) {
               type = item;
               break;
             }
@@ -147,5 +141,4 @@ class QiniucloudPlayerListener {
 }
 
 /// 推流监听器值模型
-typedef QiniucloudPlayerListenerValue<P> = void Function(
-    QiniucloudPlayerListenerTypeEnum type, P params);
+typedef QiniucloudPlayerListenerValue<P> = void Function(QiniucloudPlayerListenerTypeEnum type, P params);
