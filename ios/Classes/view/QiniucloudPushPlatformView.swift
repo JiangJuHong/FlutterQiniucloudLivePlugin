@@ -221,11 +221,13 @@ public class QiniucloudPushPlatformView: NSObject, FlutterPlatformView, PLMediaS
         let dict = args as! Dictionary<String, Any>;
         self.loadVideoCaptureConfig(dict["cameraStreamingSetting"]);
         self.loadStreamingProfile(dict["streamingProfile"]);
-
         videoCaptureConfig?.sessionPreset = AVCaptureSession.Preset.high.rawValue
 
+        // 是否是仅音屏模式
+        let isAudioMode = dict["onlyAudio"] as! Bool;
+
         // 初始化会话对象
-        self.session = PLMediaStreamingSession(videoCaptureConfiguration: videoCaptureConfig, audioCaptureConfiguration: audioCaptureConfig, videoStreamingConfiguration: videoStreamingConfig, audioStreamingConfiguration: audioStreamingConfig, stream: nil);
+        self.session = PLMediaStreamingSession(videoCaptureConfiguration: isAudioMode ? nil : videoCaptureConfig, audioCaptureConfiguration: audioCaptureConfig, videoStreamingConfiguration: isAudioMode ? nil : videoStreamingConfig, audioStreamingConfiguration: audioStreamingConfig, stream: nil);
 
         // 初始化完会话对象后再加载一次设置，设置session相关内容
         self.loadVideoCaptureConfig(dict["cameraStreamingSetting"]);

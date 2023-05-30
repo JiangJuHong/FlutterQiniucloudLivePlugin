@@ -215,9 +215,12 @@ public class QiniucloudPushPlatformView extends PlatformViewFactory implements P
         // 推流参数(仅主播)
         String streamingProfileStr = (String) params.get("streamingProfile");
 
+        // 是否是音频模式
+        Boolean isAudioMode = (Boolean) params.get("onlyAudio");
+
         // 初始化视图
         view = new CameraPreviewFrameView(context);
-        manager = new MediaStreamingManager(context, view, AVCodecType.HW_VIDEO_SURFACE_AS_INPUT_WITH_HW_AUDIO_CODEC);
+        manager = new MediaStreamingManager(context, view, isAudioMode ? AVCodecType.HW_AUDIO_CODEC : AVCodecType.HW_VIDEO_SURFACE_AS_INPUT_WITH_HW_AUDIO_CODEC);
 
         QiniuicloudPushListener listener = new QiniuicloudPushListener(context, methodChannel);
         manager.setStreamingSessionListener(listener);
@@ -227,16 +230,19 @@ public class QiniucloudPushPlatformView extends PlatformViewFactory implements P
         manager.setAudioSourceCallback(listener);
 
         // 预览设置
-        cameraStreamingSetting = JSON.parseObject(cameraSettingStr, CameraStreamingSetting.class);
-        cameraStreamingSetting.setCameraPrvSizeRatio(CameraStreamingSetting.PREVIEW_SIZE_RATIO.RATIO_16_9);
-        if (cameraStreamingSetting == null) {
-            Log.e(TAG, "init: 相机信息初始化失败!");
-        } else {
-            // 美颜设置,设置美颜后，启用美颜过滤，没设置美颜，则自动过滤空
-            Map faceBeauty = (Map) cameraSettingMap.get("faceBeauty");
-            if (faceBeauty != null) {
-                cameraStreamingSetting.setVideoFilter(CameraStreamingSetting.VIDEO_FILTER_TYPE.VIDEO_FILTER_BEAUTY);
-                cameraStreamingSetting.setFaceBeautySetting(new CameraStreamingSetting.FaceBeautySetting(Float.valueOf(faceBeauty.get("beautyLevel").toString()), Float.valueOf(faceBeauty.get("whiten").toString()), Float.valueOf(faceBeauty.get("redden").toString())));
+        if (!isAudioMode) {
+            cameraStreamingSetting = JSON.parseObject(cameraSettingStr, CameraStreamingSetting.class);
+            if (cameraStreamingSetting == null) {
+                Log.e(TAG, "init: 相机信息初始化失败!");
+            } else {
+                // 设置画面比例
+                cameraStreamingSetting.setCameraPrvSizeRatio(CameraStreamingSetting.PREVIEW_SIZE_RATIO.RATIO_16_9);
+                // 美颜设置,设置美颜后，启用美颜过滤，没设置美颜，则自动过滤空
+                Map faceBeauty = (Map) cameraSettingMap.get("faceBeauty");
+                if (faceBeauty != null) {
+                    cameraStreamingSetting.setVideoFilter(CameraStreamingSetting.VIDEO_FILTER_TYPE.VIDEO_FILTER_BEAUTY);
+                    cameraStreamingSetting.setFaceBeautySetting(new CameraStreamingSetting.FaceBeautySetting(Float.valueOf(faceBeauty.get("beautyLevel").toString()), Float.valueOf(faceBeauty.get("whiten").toString()), Float.valueOf(faceBeauty.get("redden").toString())));
+                }
             }
         }
 

@@ -18,12 +18,10 @@ class QiniucloudPushView extends StatefulWidget {
   /// 创建事件
   final ValueChanged<QiniucloudPushViewController> onViewCreated;
 
-  const QiniucloudPushView({
-    Key key,
-    this.onViewCreated,
-    this.cameraStreamingSetting,
-    this.streamingProfile,
-  }) : super(key: key);
+  /// 是否仅音频模式
+  final bool onlyAudio;
+
+  const QiniucloudPushView({Key key, this.onViewCreated, this.cameraStreamingSetting, this.streamingProfile, this.onlyAudio = false}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => QiniucloudPushViewState();
@@ -39,6 +37,7 @@ class QiniucloudPushViewState extends State<QiniucloudPushView> {
     Map<String, dynamic> params = {
       "streamingProfile": widget.streamingProfile != null ? jsonEncode(widget.streamingProfile) : null,
       "cameraStreamingSetting": widget.cameraStreamingSetting != null ? jsonEncode(widget.cameraStreamingSetting) : null,
+      "onlyAudio": widget.onlyAudio,
     };
     // 请求参数解码器
     var paramsCodec = StandardMessageCodec();
