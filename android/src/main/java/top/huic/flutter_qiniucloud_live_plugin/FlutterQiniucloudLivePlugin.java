@@ -1,9 +1,13 @@
 package top.huic.flutter_qiniucloud_live_plugin;
 
 import android.content.Context;
+
+import com.qiniu.pili.droid.rtcstreaming.RTCMediaStreamingManager;
+import com.qiniu.pili.droid.rtcstreaming.RTCServerRegion;
 import com.qiniu.pili.droid.streaming.StreamingEnv;
 
 import androidx.annotation.NonNull;
+
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.MethodCall;
@@ -34,6 +38,7 @@ public class FlutterQiniucloudLivePlugin implements FlutterPlugin, MethodCallHan
         this.context = context;
 
         // 初始化七牛云
+        RTCMediaStreamingManager.init(context, RTCServerRegion.RTC_CN_SERVER);
         StreamingEnv.init(context);
 
         // 注册View

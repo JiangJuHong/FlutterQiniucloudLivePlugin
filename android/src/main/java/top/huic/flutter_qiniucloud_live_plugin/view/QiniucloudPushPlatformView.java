@@ -2,14 +2,13 @@ package top.huic.flutter_qiniucloud_live_plugin.view;
 
 
 import android.content.Context;
-import android.hardware.Camera;
 import android.util.Log;
 import android.view.View;
-
 import com.alibaba.fastjson.JSON;
+import com.qiniu.pili.droid.rtcstreaming.RTCAudioSource;
+import com.qiniu.pili.droid.rtcstreaming.RTCMediaStreamingManager;
 import com.qiniu.pili.droid.streaming.AVCodecType;
 import com.qiniu.pili.droid.streaming.CameraStreamingSetting;
-import com.qiniu.pili.droid.streaming.MediaStreamingManager;
 import com.qiniu.pili.droid.streaming.MicrophoneStreamingSetting;
 import com.qiniu.pili.droid.streaming.StreamingProfile;
 import com.qiniu.pili.droid.streaming.WatermarkSetting;
@@ -63,7 +62,7 @@ public class QiniucloudPushPlatformView extends PlatformViewFactory implements P
     /**
      * 流管理器
      */
-    private MediaStreamingManager manager;
+    private RTCMediaStreamingManager manager;
 
     /**
      * 推流参数
@@ -220,7 +219,7 @@ public class QiniucloudPushPlatformView extends PlatformViewFactory implements P
 
         // 初始化视图
         view = new CameraPreviewFrameView(context);
-        manager = new MediaStreamingManager(context, view, isAudioMode ? AVCodecType.HW_AUDIO_CODEC : AVCodecType.HW_VIDEO_SURFACE_AS_INPUT_WITH_HW_AUDIO_CODEC);
+        manager = new RTCMediaStreamingManager(context, view, isAudioMode ? AVCodecType.HW_AUDIO_CODEC : AVCodecType.HW_VIDEO_SURFACE_AS_INPUT_WITH_HW_AUDIO_CODEC);
 
         QiniuicloudPushListener listener = new QiniuicloudPushListener(context, methodChannel);
         manager.setStreamingSessionListener(listener);
@@ -269,14 +268,14 @@ public class QiniucloudPushPlatformView extends PlatformViewFactory implements P
      * 打开摄像头和麦克风采集
      */
     private void resume(MethodCall call, final MethodChannel.Result result) {
-        result.success(manager.resume());
+        result.success(manager.startCapture());
     }
 
     /**
      * 关闭摄像头和麦克风采集
      */
     private void pause(MethodCall call, final MethodChannel.Result result) {
-        manager.pause();
+        manager.stopCapture();
         result.success(null);
     }
 
@@ -376,7 +375,11 @@ public class QiniucloudPushPlatformView extends PlatformViewFactory implements P
      */
     private void mute(MethodCall call, final MethodChannel.Result result) {
         boolean mute = CommonUtil.getParam(call, result, "mute");
-        manager.mute(mute);
+        if (mute) {
+            manager.mute(RTCAudioSource.MIC);
+        } else {
+            manager.unMute(RTCAudioSource.MIC);
+        }
         result.success(null);
     }
 
