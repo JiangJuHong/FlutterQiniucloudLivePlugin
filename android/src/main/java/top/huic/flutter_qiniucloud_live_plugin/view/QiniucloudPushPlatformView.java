@@ -5,6 +5,8 @@ import android.content.Context;
 import android.util.Log;
 import android.view.View;
 import com.alibaba.fastjson.JSON;
+import com.qiniu.android.dns.IResolver;
+import com.qiniu.android.dns.local.AndroidDnsServer;
 import com.qiniu.pili.droid.rtcstreaming.RTCAudioSource;
 import com.qiniu.pili.droid.rtcstreaming.RTCMediaStreamingManager;
 import com.qiniu.pili.droid.streaming.AVCodecType;
