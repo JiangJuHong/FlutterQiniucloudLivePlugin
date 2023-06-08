@@ -4,6 +4,7 @@ package top.huic.flutter_qiniucloud_live_plugin.view;
 import android.content.Context;
 import android.util.Log;
 import android.view.View;
+
 import com.alibaba.fastjson.JSON;
 import com.qiniu.android.dns.IResolver;
 import com.qiniu.android.dns.local.AndroidDnsServer;
@@ -221,7 +222,11 @@ public class QiniucloudPushPlatformView extends PlatformViewFactory implements P
 
         // 初始化视图
         view = new CameraPreviewFrameView(context);
-        manager = new RTCMediaStreamingManager(context, view, isAudioMode ? AVCodecType.HW_AUDIO_CODEC : AVCodecType.HW_VIDEO_SURFACE_AS_INPUT_WITH_HW_AUDIO_CODEC);
+        if (!isAudioMode) {
+            manager = new RTCMediaStreamingManager(context, view, AVCodecType.HW_VIDEO_SURFACE_AS_INPUT_WITH_HW_AUDIO_CODEC);
+        } else {
+            manager = new RTCMediaStreamingManager(context, AVCodecType.HW_AUDIO_CODEC);
+        }
 
         QiniuicloudPushListener listener = new QiniuicloudPushListener(context, methodChannel);
         manager.setStreamingSessionListener(listener);
@@ -229,6 +234,7 @@ public class QiniucloudPushPlatformView extends PlatformViewFactory implements P
         manager.setStreamStatusCallback(listener);
         manager.setSurfaceTextureCallback(listener);
         manager.setAudioSourceCallback(listener);
+        manager.setAudioLevelCallback(listener);
 
         // 预览设置
         if (!isAudioMode) {

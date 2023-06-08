@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.os.Looper;
 
 import com.alibaba.fastjson.JSON;
+import com.qiniu.pili.droid.rtcstreaming.RTCAudioLevelCallback;
 import com.qiniu.pili.droid.streaming.AudioSourceCallback;
 import com.qiniu.pili.droid.streaming.StreamStatusCallback;
 import com.qiniu.pili.droid.streaming.StreamingProfile;
@@ -27,7 +28,7 @@ import top.huic.flutter_qiniucloud_live_plugin.enums.PushCallBackNoticeEnum;
  *
  * @author 蒋具宏
  */
-public class QiniuicloudPushListener implements StreamingSessionListener, StreamingStateChangedListener, StreamStatusCallback, AudioSourceCallback, SurfaceTextureCallback {
+public class QiniuicloudPushListener implements StreamingSessionListener, StreamingStateChangedListener, StreamStatusCallback, AudioSourceCallback, SurfaceTextureCallback, RTCAudioLevelCallback {
 
     /**
      * 日志标签
@@ -157,5 +158,10 @@ public class QiniuicloudPushListener implements StreamingSessionListener, Stream
             return callback.onDrawFrame(texId, width, height, transformMatrix);
         }
         return texId;
+    }
+
+    @Override
+    public void onAudioLevelChanged(String userId, int level) {
+        System.out.println("userId:" + userId + ",level:" + level);
     }
 }
