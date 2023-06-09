@@ -122,6 +122,12 @@ public class QiniucloudPushPlatformView: NSObject, FlutterPlatformView, PLMediaS
         case "pause":
             self.pause(call: call, result: result);
             break;
+        case "startConference":
+            self.startConference(call: call, result: result);
+            break;
+        case "stopConference":
+            self.stopConference(call: call, result: result);
+            break;
         case "startStreaming":
             self.startStreaming(call: call, result: result);
             break;
@@ -373,6 +379,26 @@ public class QiniucloudPushPlatformView: NSObject, FlutterPlatformView, PLMediaS
      */
     private func pause(call: FlutterMethodCall, result: @escaping FlutterResult) {
         session?.stopCapture();
+        result(nil);
+    }
+
+    /**
+     * 开始连麦
+     */
+    private func startConference(call: FlutterMethodCall, result: @escaping FlutterResult) {
+        if let userId = CommonUtils.getParam(call: call, result: result, param: "userId") as? String,
+           let roomName = CommonUtils.getParam(call: call, result: result, param: "roomName") as? String,
+           let roomToken = CommonUtils.getParam(call: call, result: result, param: "roomToken") as? String {
+            session?.startConference(withRoomName: roomName, userID: userId, roomToken: roomToken, rtcConfiguration: PLRTCConfiguration())
+            result(nil);
+        }
+    }
+
+    /**
+     * 停止连麦
+     */
+    private func stopConference(call: FlutterMethodCall, result: @escaping FlutterResult) {
+        session?.stopConference();
         result(nil);
     }
 

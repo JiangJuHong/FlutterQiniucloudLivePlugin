@@ -10,6 +10,7 @@ import com.qiniu.android.dns.IResolver;
 import com.qiniu.android.dns.local.AndroidDnsServer;
 import com.qiniu.pili.droid.rtcstreaming.RTCAudioSource;
 import com.qiniu.pili.droid.rtcstreaming.RTCMediaStreamingManager;
+import com.qiniu.pili.droid.rtcstreaming.RTCStartConferenceCallback;
 import com.qiniu.pili.droid.streaming.AVCodecType;
 import com.qiniu.pili.droid.streaming.CameraStreamingSetting;
 import com.qiniu.pili.droid.streaming.MicrophoneStreamingSetting;
@@ -113,6 +114,12 @@ public class QiniucloudPushPlatformView extends PlatformViewFactory implements P
                 break;
             case "pause":
                 this.pause(call, result);
+                break;
+            case "startConference":
+                this.startConference(call, result);
+                break;
+            case "stopConference":
+                this.stopConference(call, result);
                 break;
             case "startStreaming":
                 this.startStreaming(call, result);
@@ -284,6 +291,39 @@ public class QiniucloudPushPlatformView extends PlatformViewFactory implements P
      */
     private void pause(MethodCall call, final MethodChannel.Result result) {
         manager.stopCapture();
+        result.success(null);
+    }
+
+    /**
+     * 开始连麦
+     */
+    private void startConference(MethodCall call, final MethodChannel.Result result) {
+        String userId = CommonUtil.getParam(call, result, "userId");
+        String roomName = CommonUtil.getParam(call, result, "roomName");
+        String roomToken = CommonUtil.getParam(call, result, "roomToken");
+
+        final boolean[] executeReturn = {false};
+        manager.startConference(userId, roomName, roomToken, new RTCStartConferenceCallback() {
+            @Override
+            public void onStartConferenceSuccess() {
+                CommonUtil.runMainThreadReturn(result, null);
+            }
+
+            @Override
+            public void onStartConferenceFailed(int i) {
+                if (!executeReturn[0]) {
+                    CommonUtil.runMainThreadReturnError(result, String.valueOf(i), "", "");
+                    executeReturn[0] = true;
+                }
+            }
+        });
+    }
+
+    /**
+     * 停止连麦
+     */
+    private void stopConference(MethodCall call, final MethodChannel.Result result) {
+        manager.stopConference();
         result.success(null);
     }
 
