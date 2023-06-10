@@ -1,7 +1,7 @@
 import Flutter
 import UIKit
 import PLPlayerKit
-import PLMediaStreamingKit
+import PLRTCStreamingKit
 
 public class SwiftFlutterQiniucloudLivePlugin: NSObject, FlutterPlugin {
   public static func register(with registrar: FlutterPluginRegistrar) {

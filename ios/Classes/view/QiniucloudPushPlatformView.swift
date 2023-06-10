@@ -1,4 +1,4 @@
-import PLMediaStreamingKit
+import PLRTCStreamingKit
 import CoreVideo.CVPixelBuffer
 
 //  Created by 蒋具宏 on 2020/3/3.
@@ -598,8 +598,8 @@ public class QiniucloudPushPlatformView: NSObject, FlutterPlatformView, PLMediaS
            let loop = CommonUtils.getParam(call: call, result: result, param: "loop") as? Bool {
             self.mixLoop = loop;
             let player = self.session!.audioPlayer(withFilePath: path)
-            player.play();
-            player.delegate = self
+            player?.play();
+            player?.delegate = self
             self.audio = player;
             result(nil);
         }
@@ -668,11 +668,11 @@ public class QiniucloudPushPlatformView: NSObject, FlutterPlatformView, PLMediaS
     }
 
     /// 流处理器
-    public func mediaStreamingSession(_ session: PLMediaStreamingSession, cameraSourceDidGet pixelBuffer: CVPixelBuffer, timingInfo: CMSampleTimingInfo) -> Unmanaged<CVPixelBuffer> {
+    public func mediaStreamingSession(_ session: PLMediaStreamingSession!, cameraSourceDidGet pixelBuffer: CVPixelBuffer!) -> Unmanaged<CVPixelBuffer>! {
         if QiniucloudPushPlatformView.qiniuCloudDelegate == nil {
             return Unmanaged<CVPixelBuffer>.passUnretained(pixelBuffer)
         }
-        return QiniucloudPushPlatformView.qiniuCloudDelegate!.mediaStreamingSession(session, cameraSourceDidGet: pixelBuffer, timingInfo: timingInfo)
+        return QiniucloudPushPlatformView.qiniuCloudDelegate!.mediaStreamingSession(session, cameraSourceDidGet: pixelBuffer, timingInfo: CMSampleTimingInfo())
     }
 
     /// 音频播放结束回调

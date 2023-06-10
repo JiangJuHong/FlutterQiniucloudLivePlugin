@@ -1,4 +1,4 @@
-import PLMediaStreamingKit
+import PLRTCStreamingKit
 
 /// 七牛云委托代理
 public protocol QiniuCloudDelegate: NSObjectProtocol {

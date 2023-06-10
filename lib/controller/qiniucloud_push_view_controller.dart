@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_qiniucloud_live_plugin/entity/conference_options_entity.dart';
 import 'package:flutter_qiniucloud_live_plugin/entity/face_beauty_setting_entity.dart';
 import 'package:flutter_qiniucloud_live_plugin/entity/streaming_profile_entity.dart';
 import 'package:flutter_qiniucloud_live_plugin/entity/watermark_setting_entity.dart';
@@ -47,6 +48,26 @@ class QiniucloudPushViewController {
   /// 释放不紧要资源。
   Future<void> destroy() async {
     return await _channel.invokeMethod('destroy');
+  }
+
+  /// 开始连麦
+  Future<void> startConference({
+    @required userId, // 用户ID
+    @required roomName, //房间名
+    @required roomToken, //房间token
+    ConferenceOptionsEntity conferenceOptions, // 连麦参数(仅ios有效)
+  }) async {
+    return await _channel.invokeMethod('startConference', {
+      "userId": userId,
+      "roomName": roomName,
+      "roomToken": roomToken,
+      "options": conferenceOptions == null ? null : conferenceOptions.toJson(),
+    });
+  }
+
+  /// 停止连麦
+  Future<bool> stopConference() async {
+    return await _channel.invokeMethod('stopConference');
   }
 
   /// 开始推流
