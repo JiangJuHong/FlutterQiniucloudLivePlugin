@@ -108,7 +108,12 @@ public class QiniucloudPushPlatformView: NSObject, FlutterPlatformView, PLMediaS
         if session == nil {
             return UIView();
         }
-        return session!.previewView;
+        
+        var view = session!.previewView;
+        if view == nil{
+            return UIView();
+        }
+        return view!;
     }
 
     /**
