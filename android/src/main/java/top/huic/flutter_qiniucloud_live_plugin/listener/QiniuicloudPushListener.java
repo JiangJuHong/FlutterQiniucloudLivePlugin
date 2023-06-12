@@ -7,6 +7,8 @@ import android.os.Looper;
 
 import com.alibaba.fastjson.JSON;
 import com.qiniu.pili.droid.rtcstreaming.RTCAudioLevelCallback;
+import com.qiniu.pili.droid.rtcstreaming.RTCConferenceState;
+import com.qiniu.pili.droid.rtcstreaming.RTCConferenceStateChangedListener;
 import com.qiniu.pili.droid.streaming.AudioSourceCallback;
 import com.qiniu.pili.droid.streaming.StreamStatusCallback;
 import com.qiniu.pili.droid.streaming.StreamingProfile;
@@ -28,7 +30,7 @@ import top.huic.flutter_qiniucloud_live_plugin.enums.PushCallBackNoticeEnum;
  *
  * @author 蒋具宏
  */
-public class QiniuicloudPushListener implements StreamingSessionListener, StreamingStateChangedListener, StreamStatusCallback, AudioSourceCallback, SurfaceTextureCallback, RTCAudioLevelCallback {
+public class QiniuicloudPushListener implements StreamingSessionListener, StreamingStateChangedListener, StreamStatusCallback, AudioSourceCallback, SurfaceTextureCallback, RTCAudioLevelCallback, RTCConferenceStateChangedListener {
 
     /**
      * 日志标签
@@ -163,5 +165,10 @@ public class QiniuicloudPushListener implements StreamingSessionListener, Stream
     @Override
     public void onAudioLevelChanged(String userId, int level) {
         System.out.println("userId:" + userId + ",level:" + level);
+    }
+
+    @Override
+    public void onConferenceStateChanged(RTCConferenceState rtcConferenceState, int i) {
+        invokeListener(PushCallBackNoticeEnum.ConferenceStateChanged, rtcConferenceState.name());
     }
 }

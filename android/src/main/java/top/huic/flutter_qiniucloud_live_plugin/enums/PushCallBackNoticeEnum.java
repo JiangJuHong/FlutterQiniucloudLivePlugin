@@ -34,4 +34,8 @@ public enum PushCallBackNoticeEnum {
      * 状态发生改变
      */
     StateChanged,
+    /**
+     * 连麦状态发生改变
+     */
+    ConferenceStateChanged,
 }

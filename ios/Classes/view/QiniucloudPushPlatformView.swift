@@ -246,6 +246,10 @@ public class QiniucloudPushPlatformView: NSObject, FlutterPlatformView, PLMediaS
 
         // 绑定监听器
         self.session?.delegate = self;
+        
+        // 初始化区域
+        self.session!.setWithServerRegionID(PLRTC_SERVER_REGION.DEFAULT, serverRegionName: "");
+        
     }
 
     /**
@@ -683,5 +687,30 @@ public class QiniucloudPushPlatformView: NSObject, FlutterPlatformView, PLMediaS
     /// 音频播放结束回调
     public func didAudioFilePlayingFinishedAndShouldAudioPlayerPlayAgain(_ audioPlayer: PLAudioPlayer!) -> Bool {
         return mixLoop;
+    }
+    
+    /// 连麦状态回调
+    public func mediaStreamingSession(_ session: PLMediaStreamingSession!, rtcStateDidChange state: PLRTCState) {
+        self.invokeListener(type: PushCallBackNoticeEnum.ConferenceStateChanged, params: String(state.rawValue));
+    }
+    
+    /// 连麦错误回调
+    public func mediaStreamingSession(_ session: PLMediaStreamingSession!, rtcDidFailWithError error: Error!) {
+        print(1);
+    }
+    
+    /// 连麦被踢出房间回调
+    public func mediaStreamingSession(_ session: PLMediaStreamingSession!, didKickoutByUserID userID: String!) {
+        print(1);
+    }
+    
+    /// 连麦用户加入房间
+    public func mediaStreamingSession(_ session: PLMediaStreamingSession!, didJoinConferenceOfUserID userID: String!) {
+        print(1);
+    }
+    
+    /// 连麦用户离开房间
+    public func mediaStreamingSession(_ session: PLMediaStreamingSession!, didLeaveConferenceOfUserID userID: String!) {
+        print(1);
     }
 }

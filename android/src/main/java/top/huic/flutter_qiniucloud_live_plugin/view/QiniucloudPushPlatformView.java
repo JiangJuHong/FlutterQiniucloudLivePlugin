@@ -9,6 +9,7 @@ import com.alibaba.fastjson.JSON;
 import com.qiniu.android.dns.IResolver;
 import com.qiniu.android.dns.local.AndroidDnsServer;
 import com.qiniu.pili.droid.rtcstreaming.RTCAudioSource;
+import com.qiniu.pili.droid.rtcstreaming.RTCConferenceOptions;
 import com.qiniu.pili.droid.rtcstreaming.RTCMediaStreamingManager;
 import com.qiniu.pili.droid.rtcstreaming.RTCStartConferenceCallback;
 import com.qiniu.pili.droid.streaming.AVCodecType;
@@ -229,11 +230,24 @@ public class QiniucloudPushPlatformView extends PlatformViewFactory implements P
 
         // 初始化视图
         view = new CameraPreviewFrameView(context);
-        if (!isAudioMode) {
+        if (Boolean.FALSE.equals(isAudioMode)) {
             manager = new RTCMediaStreamingManager(context, view, AVCodecType.HW_VIDEO_SURFACE_AS_INPUT_WITH_HW_AUDIO_CODEC);
         } else {
             manager = new RTCMediaStreamingManager(context, AVCodecType.HW_AUDIO_CODEC);
         }
+
+        // 设置连麦参数
+        RTCConferenceOptions options = new RTCConferenceOptions();
+        options.setVideoEncodingSizeRatio(RTCConferenceOptions.VIDEO_ENCODING_SIZE_RATIO.RATIO_16_9);
+        options.setVideoEncodingSizeLevel(RTCConferenceOptions.VIDEO_ENCODING_SIZE_HEIGHT_480);
+        options.setVideoEncodingOrientation(RTCConferenceOptions.VIDEO_ENCODING_ORIENTATION.PORT);
+        // 主播／副主播可以配置不同的连麦码率
+        options.setVideoBitrateRange(300 * 1024, 800 * 1024);
+        // 配置房间状态回调的触发间隔，0 即为关闭（默认关闭）
+        options.setStreamStatsInterval(500);
+        // 配置是否开启硬编
+        options.setHWCodecEnabled(true);
+        manager.setConferenceOptions(options);
 
         QiniuicloudPushListener listener = new QiniuicloudPushListener(context, methodChannel);
         manager.setStreamingSessionListener(listener);
@@ -242,6 +256,7 @@ public class QiniucloudPushPlatformView extends PlatformViewFactory implements P
         manager.setSurfaceTextureCallback(listener);
         manager.setAudioSourceCallback(listener);
         manager.setAudioLevelCallback(listener);
+        manager.setConferenceStateListener(listener);
 
         // 预览设置
         if (!isAudioMode) {
