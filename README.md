@@ -5,6 +5,20 @@ Flutter 七牛云直播云插件，支持IOS、Android客户端
 **当前版本未发布正式版，请谨慎使用**  
 **重构计划：打算重构为RTMP推流端和RTMP播放端，拆分插件**
 
+# 终章
+## 致所有 flutter_qiniucloud_live_plugin 贡献者及用户
+````
+由于此插件是基于七牛云直播云SDK进行Flutter封装，鉴于七牛云连麦相关内容需要用到RTC SDK，所以此项目不再维护，后续将开放七牛云RTC SDk for flutter，支持直播、连麦所有相关功能，具体请参考：https://developer.qiniu.com/rtc/8802/pd-overview。本项目将在一段时间后进行归档，不再进行维护。
+
+至今此项目支持直播推流、拉流功能，此功能可继续使用，相关Issues不再维护。RTC SDK开源后大家可转至 RTC SDK进行使用。
+
+一个项目的征途结束了，开源的步伐永远不滞。
+欢迎加入Flutter讨论群，QQ群号: 850923396
+
+2022-03-30
+````
+
+
 ## Getting Started
 
 集成七牛云直播云推流、观看等功能
